@@ -9,6 +9,12 @@ import org.springframework.stereotype.Repository;
 @Repository// Estoy indicando que este componente actuará como gestor de acceso a la capa de persistencia de datos, considerándola como una base de datos.
 //Se escribe @Repository para indicar que cumple con el patrón de diseño Repository, de modo que actúa como punto de acceso a los datos en una aplicación.
 public interface ClientRepository extends JpaRepository<Cliente, Long> {//me dice que JpaRepository va a usar la clase Cliente y va a trabajar con objetos de tipo Cliente
+//Usando ClientRepository voy a poder acceder a todos los metodos de JpaRepository.
+
+
+
+
+
 
 //Cliente es la entidad con la que está asociado el repositorio y Long es el tipo de datos del identificador principal de la entidad.
 }

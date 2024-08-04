@@ -37,7 +37,7 @@ public class ClientController {
 
 
 
-    @GetMapping("/")// en locaHhost: 8080/api/clients/ --> aca en esta ruta me va a devolver todos los clientes
+    @GetMapping("/")// en locaHhost: 8080/api/clients/ --> aca en esta ruta me va a devolver todos los clientes.// lo que se esta definiendo aca es la ruta y tambein la respuesta que se va a obtener cuando se hace una peticion a esta ruta.
     public List<Cliente> getAllClients(){
         return clientRepository.findAll();
 
@@ -55,8 +55,28 @@ public class ClientController {
     }
 
 @PatchMapping ("/nuevoName")
-    public void updateName(@RequestParam String name, @RequestParam long id){
-        clientRepository.findById(id).orElse(null).setName(name);
+    public String updateName(@RequestParam String name, @RequestParam long id){
+        Cliente idd = clientRepository.findById(id).orElse(null);
+        idd.setName(name);
+        clientRepository.save(idd);
+        return "nombre cambiado";
+    }
+
+    @PostMapping("/new")// El meotodo se va a disparar cuando se reciba una solicitud POST en la ruta "/api/clients/new".
+    public Cliente createClient(@RequestParam String name, @RequestParam String lastName, @RequestParam String email){
+//        clientRepository.save(new Cliente(name, lastName, email));
+        Cliente cliente = new Cliente();
+        cliente.setName(name);
+        cliente.setLastName(lastName);
+        cliente.setEmail(email);
+        return clientRepository.save(cliente);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public String deleteClient(@PathVariable long id){
+        clientRepository.deleteById(id);
+        return "El cliente fue boorado con id: " + id;
     }
 
 
