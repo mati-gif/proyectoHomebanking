@@ -18,13 +18,32 @@ public class HomebankingApplication {
 		return (args) -> {// Devuelve una implementación de CommandLineRunner que guarda varios objetos Cliente en la base de datos usando clientRepository.save().
 			// save a couple of customers
 
-			
-			clientRepository.save(new Cliente("Jack", "Bauer", "j.bauer@me.com"));   //creando y guardando en la base de datos los clientes.
-			clientRepository.save(new Cliente("Chloe", "O'Brian", "c.obrian@me.com"));
-			clientRepository.save(new Cliente("Kim", "Bauer",	"k.bauer@me.com"));
-			clientRepository.save(new Cliente("David", "Palmer", "d.palmer@me.com"));
-			clientRepository.save(new Cliente("Michelle", "Dessler", "m.dessler@me.com"));
-			clientRepository.save(new Cliente("Lionel", "Messi", "l.messi@me.com"));
+			Cliente cliente1 = new Cliente("Jack", "Bauer", "j.bauer@me.com");
+			clientRepository.save(cliente1);//creando y guardando en la base de datos los clientes.
+
+			Cliente cliente2 = new Cliente("Chloe", "O'Brian", "c.obrian@me.com");
+			clientRepository.save(cliente2);
+
+			Cliente cliente3 = new Cliente("Kim", "Bauer", "k.bauer@me.com");
+			clientRepository.save(cliente3);
+
+			Cliente cliente4 = new Cliente("David", "Palmer", "d.palmer@me.com");
+			clientRepository.save(cliente4);
+
+			Cliente cliente5 = new Cliente("Michelle", "Dessler", "m.dessler@me.com");
+			clientRepository.save(cliente5);
+
+			Cliente cliente6 = new Cliente("Lionel", "Messi", "l.messi@me.com");
+			clientRepository.save(cliente6);
+
+			System.out.println(cliente6);
+
+//			clientRepository.save(new Cliente("Jack", "Bauer", "j.bauer@me.com"));
+//			clientRepository.save(new Cliente("Chloe", "O'Brian", "c.obrian@me.com"));
+//			clientRepository.save(new Cliente("Kim", "Bauer",	"k.bauer@me.com"));
+//			clientRepository.save(new Cliente("David", "Palmer", "d.palmer@me.com"));
+//			clientRepository.save(new Cliente("Michelle", "Dessler", "m.dessler@me.com"));
+//			clientRepository.save(new Cliente("Lionel", "Messi", "l.messi@me.com"));
 		};
 	}
 

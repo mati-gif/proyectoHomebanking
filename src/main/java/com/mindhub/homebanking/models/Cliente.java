@@ -30,7 +30,11 @@ public class Cliente {
 
 
 
-    public Cliente() {
+    public Cliente() {//JPA y Hibernate requieren un constructor sin argumentos para crear instancias de la entidad a través de la reflexión.Basicamente para generar un espacio en memoria.
+        // Esto es necesario para que el framework pueda crear instancias de la entidad sin conocer los detalles de sus constructores.
+
+
+        //la reflexión se refiere a la capacidad del lenguaje para inspeccionar y manipular las clases, interfaces, métodos y campos en tiempo de ejecución. Esto significa que puedes, por ejemplo, obtener información sobre una clase, crear instancias de objetos, llamar a métodos y acceder a campos, todo sin conocer de antemano sus nombres o tipos exactos en tiempo de compilación.
     }
 
     public long getId() {
