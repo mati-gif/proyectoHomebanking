@@ -14,11 +14,14 @@ public class HomebankingApplication {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 	@Bean//un  bean es simplemente una clase Java normal, escrita para seguir algunas reglas importantes. Pedimos que se ejecute esto primero.
-	public CommandLineRunner initData(ClientRepository clientRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.initData toma una instancia de ClientRepository como parámetro y utiliza este repositorio para guardar algunos clientes en la base de datos al iniciar la aplicación.
+	public CommandLineRunner initData(ClientRepository clientRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
+		// initData toma una instancia de ClientRepository como parámetro y utiliza este repositorio para guardar algunos clientes en la base de datos al iniciar la aplicación.
+//Es un singleton que se ejecutan una vez cada vez que se inicia la aplicación.
+
 		return (args) -> {// Devuelve una implementación de CommandLineRunner que guarda varios objetos Cliente en la base de datos usando clientRepository.save().
 			// save a couple of customers
 
-			Cliente cliente1 = new Cliente("Jack", "Bauer", "j.bauer@me.com");
+			Cliente cliente1 = new Cliente("Melba", "Morel", "M.morel@me.com");
 			clientRepository.save(cliente1);//creando y guardando en la base de datos los clientes.
 
 			Cliente cliente2 = new Cliente("Chloe", "O'Brian", "c.obrian@me.com");

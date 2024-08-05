@@ -14,7 +14,7 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)// Hace que el valor de ese Id sea generado por la base de datos automáticamente para que no se repita. es decir Genera de manera automatica el id para que no se repita.(Se genera en el sistema de persistencia en la base de datos)
-    private long id; //con @Id le estoy diciendo que la propiedad long id es la clave primaria  de este objeto en la base de datos.
+    private Long id; //con @Id le estoy diciendo que la propiedad long id es la clave primaria  de este objeto en la base de datos.
     //es decir va a ser el unico dato que no se ve a repetir en esa tabla. Cada instancia (objeto) de la clase Cliente va a tener un id unico.
     private String name;
     private String lastName;
@@ -34,7 +34,8 @@ public class Cliente {
         // Esto es necesario para que el framework pueda crear instancias de la entidad sin conocer los detalles de sus constructores.
 
 
-        //la reflexión se refiere a la capacidad del lenguaje para inspeccionar y manipular las clases, interfaces, métodos y campos en tiempo de ejecución. Esto significa que puedes, por ejemplo, obtener información sobre una clase, crear instancias de objetos, llamar a métodos y acceder a campos, todo sin conocer de antemano sus nombres o tipos exactos en tiempo de compilación.
+        //la reflexión se refiere a la capacidad del lenguaje para inspeccionar y manipular las clases, interfaces, métodos y campos en tiempo de ejecución. Esto significa que se puede, por ejemplo, obtener información sobre una clase, crear instancias de objetos, llamar a métodos y acceder a campos, todo sin conocer de antemano sus nombres o tipos exactos en tiempo de compilación.
+        //Si no se proporciona un constructor vacío, JPA/Hibernate no podrán instanciar la entidad correctamente.
     }
 
     public long getId() {
@@ -69,6 +70,7 @@ public class Cliente {
         this.name = name;
     }
 
+    //esto es para que el objeto cliente se pueda mostrar en la consola.
     @Override
     public String toString() {
         return "Cliente{" +
@@ -78,4 +80,10 @@ public class Cliente {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+
+
+
+    //Usar Long en lugar de long para el campo id permite que el campo tenga un valor nulo antes de ser asignado por la base de datos y facilita el manejo del campo a través de frameworks como JPA y Hibernate.
+    //basicamente porque es útil poder tener un valor nulo para el id antes de que se genere un valor único automáticamente por la base de datos. Esto indica que el id aún no ha sido asignado.
 }
