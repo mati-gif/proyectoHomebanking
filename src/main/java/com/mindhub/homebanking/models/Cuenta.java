@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 //import javax.persistence.Entity;
 //import javax.persistence.Id;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -27,8 +29,13 @@ public class Cuenta {
 
     @ManyToOne(fetch = FetchType.EAGER) // significa que cuando se carga una instancia de la entidad actual, la instancia asociada de Cliente también se carga inmediatamente. Esto puede ser útil si siempre necesitas acceder a los datos de Cliente junto con la entidad principal.
     //FetchType determina cuándo y cómo se cargan las entidades relacionadas desde la base de datos.
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "cliente_id") // Esta seria la clave foreana en la tabla Cuenta.
     private Cliente cliente;
+
+
+
+    @OneToMany(mappedBy = "cuenta", fetch = FetchType.EAGER)
+     Set<Transaccion> transacciones = new HashSet<>();
 
 
 
@@ -82,5 +89,18 @@ public class Cuenta {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+
+
+
+    public Set<Transaccion> getTransacciones() {
+        return transacciones;
+    }
+
+
+    public void addTransacciones(Transaccion transaccion){
+        transaccion.setCuenta(this);
+        transacciones.add(transaccion);
+    }
+
 
 }
