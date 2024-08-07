@@ -25,8 +25,12 @@ public class Cliente {
 
 
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
-    Set<Cuenta> cuentas = new HashSet<>();
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)//mappedBy = “cliente”: Esto especifica que la relación es bidireccional y que la entidad Cuenta tiene una propiedad llamada cliente que es la dueña de la relación.
+            //significa que las entidades Cuenta relacionadas se cargarán inmediatamente junto con la entidad actual. Cuando consultas la entidad actual, todas las instancias de Cuenta asociadas se recuperan en la misma consulta.
+    Set<Cuenta> cuentas = new HashSet<>(); //new HashSet<>();: Inicializa la variable cuentas como una nueva instancia de HashSet, que es una implementación de Set.
+
+    //cuentas: Es el nombre de la variable de instancia que representa la colección de Cuenta.
+
 
 
     public Cliente(String name, String lastName, String email) {
@@ -45,11 +49,11 @@ public class Cliente {
         //Si no se proporciona un constructor vacío, JPA/Hibernate no podrán instanciar la entidad correctamente.
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -89,6 +93,18 @@ public class Cliente {
         cuenta.setCliente(this);
         cuentas.add(cuenta);
     }
+
+    //cuenta: Este es el parámetro que se pasó al método, que es una instancia de la clase Cuenta.
+    //setCliente(this): Aquí se está llamando al método setCliente del objeto cuenta.
+    // El argumento this se refiere a la instancia actual de Cliente. Esto establece la relación bidireccional, asegurando que la cuenta sepa a qué cliente pertenece.
+
+    //cuentas: Este es el conjunto (Set<Cuenta>) que pertenece a la instancia actual de Cliente.
+    //add(cuenta): Este método agrega la instancia de Cuenta al conjunto cuentas.
+
+
+
+
+
 
     //esto es para que el objeto cliente se pueda mostrar en la consola.
     @Override

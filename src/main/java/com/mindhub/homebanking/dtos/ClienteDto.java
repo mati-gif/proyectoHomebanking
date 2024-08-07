@@ -1,6 +1,7 @@
 package com.mindhub.homebanking.dtos;
 
 import com.mindhub.homebanking.models.Cliente;
+import com.mindhub.homebanking.models.Cuenta;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,12 +19,18 @@ public class ClienteDto {
         this.name = cliente.getName();
         this.lastName = cliente.getLastName();
         this.email = cliente.getEmail();
-        this.cuentas = cliente.getCuentas().stream()
-                .map(CuentaDto::new)
-                .collect(Collectors.toSet());
+//        this.cuentas = cliente.getCuentas().stream()
+//                .map(CuentaDto::new)
+//                .collect(Collectors.toSet());
+        this.cuentas = convertCuentasToDto(cliente.getCuentas());
 
     }
 
+    private Set<CuentaDto> convertCuentasToDto(Set<Cuenta> cuentas) {
+        return cuentas.stream()
+                .map(CuentaDto::new)
+                .collect(Collectors.toSet());
+    }
 
     public Long getId() {
         return id;
