@@ -36,7 +36,7 @@ public class Cuenta {
 
     @OneToMany(mappedBy = "cuenta", fetch = FetchType.EAGER)
      Set<Transaccion> transacciones = new HashSet<>();
-
+//Estoy declarando un Set llamad transacciones que contendra objetos de tipo Transaccion.
 
 
     public Cuenta(String number, LocalDate creationDate, double balance) {

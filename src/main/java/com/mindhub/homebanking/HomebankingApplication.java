@@ -37,7 +37,7 @@ public class HomebankingApplication {
 			System.out.println(tomorrow);
 
 
-			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime now = LocalDateTime.now();        //Declaras una variable llamada now de tipo LocalDateTime
 			System.out.println(now);
 
 //			LocalDateTime later = now.plusDays(1);
@@ -107,6 +107,7 @@ public class HomebankingApplication {
 			cliente2.addCuentas(cuenta3);
 			cliente2.addCuentas(cuenta4);
 
+
 			countRepository.save(cuenta3);
 			countRepository.save(cuenta4);
 
@@ -119,9 +120,11 @@ public class HomebankingApplication {
 		cuenta3.addTransacciones(transaccion8);
 		cuenta3.addTransacciones(transaccion9);
 
-		transactionRepository.save(transaccion4);
-		transactionRepository.save(transaccion5);
-		transactionRepository.save(transaccion6);
+		transactionRepository.save(transaccion7);
+		transactionRepository.save(transaccion8);
+		transactionRepository.save(transaccion9);
+
+
 
 
 

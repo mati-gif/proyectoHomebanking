@@ -49,11 +49,18 @@ public class ClientController {
 // en locaHhost: 8080/api/clients/all --> aca en esta ruta me va a devolver todos los clientes.// lo que se esta definiendo aca es la ruta y tambein la respuesta que se va a obtener cuando se hace una peticion a esta ruta.
     public ResponseEntity<List<ClienteDto>>  getAllClients() {
 
-        List<Cliente> clientes = clientRepository.findAll();//devuelve una lista de todos los clientes
+        List<Cliente> clientes = clientRepository.findAll();//devuelve una lista de todos los clientes.
+//Estoy declarando una lista llamada clientes que contendra objetos de tipo Cliente.
 
-        List<ClienteDto> clientesDto = clientes.stream()
-                .map(cliente -> new ClienteDto(cliente))
-                .collect(Collectors.toList());
+        List<ClienteDto> clientesDto = clientes.stream() //Declara una lista llamada clientesDto que contendrá objetos de tipo ClienteDto.
+                // clientes.stream(): Convierte la colección clientes en un flujo (stream). Un flujo es una secuencia de elementos que se pueden procesar de manera funcional.
+                .map(cliente -> new ClienteDto(cliente)) //Aplica una función a cada elemento del flujo. En este caso, para cada cliente en el flujo, se crea una nueva instancia de ClienteDto usando el constructor ClienteDto(cliente).
+                // La función map transforma cada cliente en un ClienteDto.
+
+                .collect(Collectors.toList());   // Recoge los elementos transformados del flujo y los convierte en una lista. Collectors.toList() es un colector que acumula los elementos en una lista.
+
+        //toma una colección de clientes, la convierte en un flujo, transforma cada cliente en un ClienteDto, y finalmente recoge todos los ClienteDto en una lista llamada clientesDto.
+
 
         return new ResponseEntity<>(clientesDto, HttpStatus.OK);
 
@@ -64,6 +71,8 @@ public class ClientController {
     public ResponseEntity<?> getClientById(@PathVariable Long id) {//@PathVariable long id: Vincula el parámetro de ruta {id} al parámetro id del método.
         //Captura el valor del {id} en la URL.
             Cliente cliente = clientRepository.findById(id).orElse(null);
+            //Cliente cliente => Estoy declarando un objeto cliente de tipo Cliente que contendra los datos del cliente que coincida con el id especificado.
+
             if(cliente == null) {
 
                 return new ResponseEntity<>("Cliente no encontrado", HttpStatus.NOT_FOUND);

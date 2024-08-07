@@ -27,6 +27,10 @@ public class Cliente {
 
     @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)//mappedBy = “cliente”: Esto especifica que la relación es bidireccional y que la entidad Cuenta tiene una propiedad llamada cliente que es la dueña de la relación.
             //significa que las entidades Cuenta relacionadas se cargarán inmediatamente junto con la entidad actual. Cuando consultas la entidad actual, todas las instancias de Cuenta asociadas se recuperan en la misma consulta.
+    //FetchType.EAGER, estás diciendo que quieres que la entidad con la que esta relacionada la clase Cliente  se cargue inmediatamente junto con la entidad principal. Es como si estuvieras pidiendo que, al obtener la entidad principal de la base de datos, también se obtengan automáticamente todas las entidades relacionadas en la misma operación.
+
+
+
     Set<Cuenta> cuentas = new HashSet<>(); //new HashSet<>();: Inicializa la variable cuentas como una nueva instancia de HashSet, que es una implementación de Set.
 
     //cuentas: Es el nombre de la variable de instancia que representa la colección de Cuenta.
@@ -93,6 +97,7 @@ public class Cliente {
         cuenta.setCliente(this);
         cuentas.add(cuenta);
     }
+
 
     //cuenta: Este es el parámetro que se pasó al método, que es una instancia de la clase Cuenta.
     //setCliente(this): Aquí se está llamando al método setCliente del objeto cuenta.

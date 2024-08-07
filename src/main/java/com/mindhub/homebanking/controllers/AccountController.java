@@ -96,14 +96,14 @@ public class AccountController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCount(@PathVariable Long id) {
-
-        if(countRepository.existsById(id)){
+        if (countRepository.existsById(id)) {
             countRepository.deleteById(id);
             return new ResponseEntity<>("Cuenta eliminada", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
     }
+
 
 
     @PutMapping("/modificar/{id}")

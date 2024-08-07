@@ -18,9 +18,9 @@ public class CuentaDto {
 
 
     public CuentaDto(Cuenta cuenta) {
-        this.id = cuenta.getId();
+        this.id = cuenta.getId();           //Asigna el valor del id del objeto Cuenta al id del CuentaDto.
         this.number = cuenta.getNumber();
-        this.creationDate = cuenta.getCreationDate();
+        this.creationDate = cuenta.getCreationDate();  //asiga el valor de la fecha de creacion del objeto Cuenta al creationDate del CuentaDto.
         this.balance = cuenta.getBalance();
         this.transacciones = converTransaccionesToDto(cuenta.getTransacciones());
     }
