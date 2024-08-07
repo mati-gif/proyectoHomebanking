@@ -1,11 +1,11 @@
 package com.mindhub.homebanking.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;      //todas estas anotaciones JPA  se hacen para conectar la clase a una tabla de base de datos.
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.mindhub.homebanking.dtos.CuentaDto;
+import jakarta.persistence.*;
+//import org.hibernate.annotations.GenericGenerator;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity//indica que estoy generaqndo una tabla en la base de datos con el nombre de Cliente donde se alamcenaran los objetos como filas en esa tabla.
@@ -14,12 +14,19 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)// Hace que el valor de ese Id sea generado por la base de datos automáticamente para que no se repita. es decir Genera de manera automatica el id para que no se repita.(Se genera en el sistema de persistencia en la base de datos)
+
+
     private Long id; //con @Id le estoy diciendo que la propiedad long id es la clave primaria  de este objeto en la base de datos.
     //es decir va a ser el unico dato que no se ve a repetir en esa tabla. Cada instancia (objeto) de la clase Cliente va a tener un id unico.
     private String name;
     private String lastName;
     private String email;
 
+
+
+
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
+    Set<Cuenta> cuentas = new HashSet<>();
 
 
     public Cliente(String name, String lastName, String email) {
@@ -54,6 +61,8 @@ public class Cliente {
         this.email = email;
     }
 
+
+
     public String getLastName() {
         return lastName;
     }
@@ -68,6 +77,17 @@ public class Cliente {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public Set<Cuenta> getCuentas() {
+        return cuentas;
+    }
+
+    public void addCuentas(Cuenta cuenta){
+
+        cuenta.setCliente(this);
+        cuentas.add(cuenta);
     }
 
     //esto es para que el objeto cliente se pueda mostrar en la consola.
