@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 //import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Entity//indica que estoy generaqndo una tabla en la base de datos con el nombre de Cliente donde se alamcenaran los objetos como filas en esa tabla.
@@ -27,13 +29,19 @@ public class Cliente {
 
     @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)//mappedBy = “cliente”: Esto especifica que la relación es bidireccional y que la entidad Cuenta tiene una propiedad llamada cliente que es la dueña de la relación.
             //significa que las entidades Cuenta relacionadas se cargarán inmediatamente junto con la entidad actual. Cuando consultas la entidad actual, todas las instancias de Cuenta asociadas se recuperan en la misma consulta.
-    //FetchType.EAGER, estás diciendo que quieres que la entidad con la que esta relacionada la clase Cliente  se cargue inmediatamente junto con la entidad principal. Es como si estuvieras pidiendo que, al obtener la entidad principal de la base de datos, también se obtengan automáticamente todas las entidades relacionadas en la misma operación.
+    //FetchType.EAGER, estoy diciendo que quiero que la entidad con la que esta relacionada la clase Cliente  se cargue inmediatamente junto con la entidad principal. Es como si estuvieras pidiendo que, al obtener la entidad principal de la base de datos, también se obtengan automáticamente todas las entidades relacionadas en la misma operación.
 
 
 
     Set<Cuenta> cuentas = new HashSet<>(); //new HashSet<>();: Inicializa la variable cuentas como una nueva instancia de HashSet, que es una implementación de Set.
 
     //cuentas: Es el nombre de la variable de instancia que representa la colección de Cuenta.
+
+
+
+
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
+    Set<ClientePrestamo> clientePrestamos = new HashSet<>();
 
 
 
@@ -69,8 +77,6 @@ public class Cliente {
         this.email = email;
     }
 
-
-
     public String getLastName() {
         return lastName;
     }
@@ -92,11 +98,20 @@ public class Cliente {
         return cuentas;
     }
 
+    public Set<ClientePrestamo> getClientePrestamos() {
+        return clientePrestamos;
+    }
+
+    public void setClientePrestamos(Set<ClientePrestamo> clientePrestamos) {
+        this.clientePrestamos = clientePrestamos;
+    }
+
     public void addCuentas(Cuenta cuenta){
 
         cuenta.setCliente(this);
         cuentas.add(cuenta);
     }
+
 
 
     //cuenta: Este es el parámetro que se pasó al método, que es una instancia de la clase Cuenta.
@@ -105,6 +120,67 @@ public class Cliente {
 
     //cuentas: Este es el conjunto (Set<Cuenta>) que pertenece a la instancia actual de Cliente.
     //add(cuenta): Este método agrega la instancia de Cuenta al conjunto cuentas.
+
+
+
+
+
+    public void addClientePrestamo(ClientePrestamo clientePrestamo){
+        clientePrestamo.setCliente(this);
+
+        clientePrestamos.add(clientePrestamo);
+
+
+    }
+    //clientePrestamo: Este es el parámetro que se pasó al método, que es una instancia de la clase ClientePrestamo.
+    //setCliente(this): Aquí se está llamando al método setCliente del objeto clientePrestamo.
+    // El argumento this se refiere a la instancia del objeto actual de  la clase  Cliente. Esto establece la relación bidireccional, asegurando que clientePrestamo sepa a qué cliente pertenece.
+
+    //clientePrestamos: Este es el conjunto (Set<ClientePrestamo>) que pertenece a la instancia actual de Cliente.
+    //add(clientePrestamo): Este método agrega la instancia de ClientePrestamo al conjunto clientePrestamos.
+
+
+
+
+
+    public List<Prestamo> getPrestamos(){
+        return clientePrestamos.stream().map(c -> c.getPrestamo()).collect(Collectors.toList());
+    }
+
+//Este metodo devuelve la lista de préstamos de un cliente.
+//List<Prestamo> ==> significa que va a retornar una lista de objetos de tipo Prestamo.
+
+//clientePrestamos  ==> es el conjunto (Set<ClientePrestamo>) que pertenece a la instancia actual de Cliente.
+
+//clientePrestamos.stream() ===> stream() es un metodo que convierte la lista clientePrestamos en un flujo de datos "Stream".
+// Esto permite realizar operaciones funcionales (como mapear, filtrar, etc.) sobre los elementos de la lista de manera secuencial o paralela.
+
+//map(): Es una operación intermedia en los "streams" que transforma cada elemento del flujo de datos.
+// El método map() se utiliza para mapear cada elemento del flujo de datos a un nuevo elemento en el flujo de datos resultante.
+
+//(c -> c.getCliente()): Es una expresión lambda. Para cada elemento "c" del flujo clientePrestamos, la expresión lambda aplica el método getCliente() sobre "c".
+
+//"c": Representa cada elemento de clientePrestamos.
+//c.getCliente(): Extrae el objeto Cliente de cada elemento "c". Ademas "c" es de la clase  ClientePrestamo, que tiene el método getCliente(), y este método retorna un objeto de tipo Cliente.
+
+//Como resultado, map() genera un nuevo flujo de datos donde cada elemento es un objeto Cliente.
+
+//.collect(Collectors.toList()):
+
+//collect(): Es una operación terminal en los streams que recopila los elementos transformados en una estructura de datos concreta, en este caso, una lista.
+ //Collectors.toList(): Indica que los elementos del flujo deben ser recolectados y almacenados en una lista.
+
+    //Resultado Final:
+    //Se retorna una lista (List<Cliente>) que contiene todos los objetos Cliente extraídos de cada elemento de la lista clientePrestamos.
+
+
+    //Resumen:
+    //Este método recorre una lista (clientePrestamos), extrae un objeto Cliente de cada elemento en esa lista usando getCliente(), y luego almacena todos estos objetos Cliente en una nueva lista que es devuelta como resultado.
+
+
+
+
+
 
 
 

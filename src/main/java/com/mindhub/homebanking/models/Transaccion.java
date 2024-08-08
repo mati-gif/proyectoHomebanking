@@ -18,6 +18,8 @@ public class Transaccion {
     private double amount;
     private String description;
     private LocalDateTime date;
+
+    @Enumerated(EnumType.STRING)
     private TransactionType type;
 
 

@@ -1,12 +1,7 @@
 package com.mindhub.homebanking;
 
-import com.mindhub.homebanking.models.Cliente;//importo la clase cliente.
-import com.mindhub.homebanking.models.Cuenta;
-import com.mindhub.homebanking.models.Transaccion;
-import com.mindhub.homebanking.models.TransactionType;
-import com.mindhub.homebanking.repositories.ClientRepository;// importo el repositorio , para poder hacer operaciones con la base de datos.
-import com.mindhub.homebanking.repositories.CountRepository;
-import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.models.*;
+import com.mindhub.homebanking.repositories.*;
 import org.springframework.boot.CommandLineRunner;//es una interfaz que permite ejecutar código al inicio de la aplicación.
 import org.springframework.boot.SpringApplication;// se usa para arrancar la aplicación Spring Boot.
 import org.springframework.boot.autoconfigure.SpringBootApplication; //es una anotación que indica que esta es una aplicación Spring Boot
@@ -14,6 +9,9 @@ import org.springframework.context.annotation.Bean;//es una anotación para defi
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootApplication
 public class HomebankingApplication {
@@ -22,12 +20,39 @@ public class HomebankingApplication {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 	@Bean//un  bean es simplemente una clase Java normal, escrita para seguir algunas reglas importantes. Pedimos que se ejecute esto primero.
-	public CommandLineRunner initData(ClientRepository clientRepository, CountRepository countRepository, TransactionRepository transactionRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
+	public CommandLineRunner initData(ClientRepository clientRepository, CountRepository countRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
 		// initData toma una instancia de ClientRepository como parámetro y utiliza este repositorio para guardar algunos clientes en la base de datos al iniciar la aplicación.
 //Es un singleton que se ejecutan una vez cada vez que se inicia la aplicación.
 
 		return (args) -> {// Devuelve una implementación de CommandLineRunner que guarda varios objetos Cliente en la base de datos usando clientRepository.save().
 			// save a couple of customers
+
+
+
+
+
+
+
+
+
+			////------Creando los prestamos---------////
+
+//			List<Integer> hipotecaPayments = Arrays.asList(12, 24, 36, 48, 60);
+			Prestamo prestamo1 = new Prestamo("Hipoteca",500.000, Arrays.asList(12, 24, 36, 48, 60));
+
+			loanRepository.save(prestamo1);
+
+//			List<Integer> personalPayments2 = Arrays.asList( 6, 12, 24.);
+			Prestamo prestamo2 = new Prestamo("Personal",100.000, Arrays.asList( 6, 12, 24));
+			loanRepository.save(prestamo2);
+
+
+//			List<Integer> automotrizPayments3 = Arrays.asList(6, 12, 24, 36);
+			Prestamo prestamo3 = new Prestamo("Automotriz",300.000, Arrays.asList(6, 12, 24, 36));
+
+			loanRepository.save(prestamo3);
+
+			////-----------------------------------////
 
 
 			LocalDate today = LocalDate.now();
@@ -43,6 +68,12 @@ public class HomebankingApplication {
 //			LocalDateTime later = now.plusDays(1);
 //			System.out.println(later);
 
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -84,14 +115,24 @@ public class HomebankingApplication {
 
 
 
+/////--------------------- Crear ClientLoan y asociar los préstamos al cliente Melba    --------------//
+
+
+ClientePrestamo clientePrestamo1 = new ClientePrestamo(cliente1, prestamo1,400000.0,Arrays.asList(60));
+
+cliente1.addClientePrestamo(clientePrestamo1);
+prestamo1.addClientePrestamo(clientePrestamo1);
+
+clientLoanRepository.save(clientePrestamo1);
 
 
 
+ClientePrestamo clientePrestamo2 = new ClientePrestamo(cliente1, prestamo2,50000.0,Arrays.asList(12));
 
+cliente1.addClientePrestamo(clientePrestamo2);
+prestamo2.addClientePrestamo(clientePrestamo2);
 
-
-
-
+clientLoanRepository.save(clientePrestamo2);
 
 
 
@@ -129,13 +170,39 @@ public class HomebankingApplication {
 
 
 
+/////--------------------- Crear ClientLoan y asociar los préstamos al cliente  Chloe   --------------//
+
+
+ClientePrestamo clientePrestamo3 = new ClientePrestamo(cliente2, prestamo2,10000.0,Arrays.asList(24));
+
+cliente2.addClientePrestamo(clientePrestamo3);
+prestamo3.addClientePrestamo(clientePrestamo3);
+
+
+
+clientLoanRepository.save(clientePrestamo3);
+
+
+
+
+
+ClientePrestamo clientePrestamo4 = new ClientePrestamo(cliente2, prestamo3,200000.0,Arrays.asList(36));
+
+cliente2.addClientePrestamo(clientePrestamo4);
+prestamo3.addClientePrestamo(clientePrestamo4);
+
+
+
+clientLoanRepository.save(clientePrestamo4);
 
 
 
 
 
 
-		//----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------
 			Cliente cliente3 = new Cliente("Kim", "Bauer", "k.bauer@me.com");
 			clientRepository.save(cliente3);
 
