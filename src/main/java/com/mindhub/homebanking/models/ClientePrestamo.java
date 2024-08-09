@@ -29,11 +29,7 @@ public class ClientePrestamo {
 
     private double amount;
 
-
-    @ElementCollection // se utiliza para crear listas de  objetos integrables.Un objeto integrable son datos destinados a usarse únicamente en el objeto que lo contiene.
-    //Esto se hace asi porque trabajamos con datos simples y Spring se encarga de crear esta entidad y configurar la relación uno a muchos automáticamente.
-    @Column(name = "payments")
-    private List<Integer> payments = new ArrayList<>();
+    private Integer payment;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -46,11 +42,12 @@ public class ClientePrestamo {
     private Prestamo prestamo;
 
 
-    public ClientePrestamo(Cliente cliente, Prestamo prestamo, double amount, List<Integer> payments) {
+    public ClientePrestamo( double amount, Integer payment) {
         this.cliente = cliente;
         this.prestamo = prestamo;
         this.amount = amount;
-        this.payments = payments;
+        this.payment = payment;
+
     }
 
 
@@ -76,13 +73,9 @@ public class ClientePrestamo {
         this.amount = amount;
     }
 
-    public List<Integer> getPayments() {
-        return payments;
-    }
 
-    public void setPayments(List<Integer> payments) {
-        this.payments = payments;
-    }
+
+
 
     public Cliente getCliente() {
         return cliente;
@@ -98,5 +91,13 @@ public class ClientePrestamo {
 
     public void setPrestamo(Prestamo prestamo) {
         this.prestamo = prestamo;
+    }
+
+    public Integer getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Integer payment) {
+        this.payment = payment;
     }
 }

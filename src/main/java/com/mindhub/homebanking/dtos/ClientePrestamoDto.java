@@ -14,10 +14,7 @@ public class ClientePrestamoDto {
     private Long prestamoId;
     private String name;
     private double amount;
-
-    @ElementCollection
-    @Column(name = "payments")
-    private List<Integer> payments = new ArrayList<>();
+    private Integer payment;
 
 
     public ClientePrestamoDto(ClientePrestamo clientePrestamo){
@@ -25,7 +22,7 @@ public class ClientePrestamoDto {
         this.prestamoId = clientePrestamo.getPrestamo().getId();
         this.name = clientePrestamo.getPrestamo().getName();
         this.amount = clientePrestamo.getAmount();
-        this.payments = clientePrestamo.getPayments();
+        this.payment = clientePrestamo.getPayment();
 
     }
 
@@ -62,11 +59,12 @@ public class ClientePrestamoDto {
         this.amount = amount;
     }
 
-    public List<Integer> getPayments() {
-        return payments;
+
+    public Integer getPayment() {
+        return payment;
     }
 
-    public void setPayments(List<Integer> payments) {
-        this.payments = payments;
+    public void setPayment(Integer payment) {
+        this.payment = payment;
     }
 }

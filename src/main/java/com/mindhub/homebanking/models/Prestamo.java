@@ -82,6 +82,16 @@ public class Prestamo {
         this.payments = payments;
     }
 
+    public Set<ClientePrestamo> getClientePrestamos() {
+        return clientePrestamos;
+    }
+
+    public void setClientePrestamos(Set<ClientePrestamo> clientePrestamos) {
+        this.clientePrestamos = clientePrestamos;
+    }
+
+
+
 
     public void addClientePrestamo(ClientePrestamo clientePrestamo) {
         clientePrestamo.setPrestamo(this);

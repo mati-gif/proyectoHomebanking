@@ -1,5 +1,7 @@
 package com.mindhub.homebanking;
 
+import com.mindhub.homebanking.dtos.ClienteDto;
+import com.mindhub.homebanking.dtos.CuentaDto;
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
 import org.springframework.boot.CommandLineRunner;//es una interfaz que permite ejecutar código al inicio de la aplicación.
@@ -78,16 +80,23 @@ public class HomebankingApplication {
 
 
 			Cliente cliente1 = new Cliente("Melba", "Morel", "M.morel@me.com");
+//			ClienteDto clienteDto1 = new ClienteDto(cliente1);
 			clientRepository.save(cliente1);//creando y guardando en la base de datos los clientes.
 
 
 			Cuenta cuenta1 = new Cuenta("VIN001", today, 5000);
 			Cuenta cuenta2 = new Cuenta("VIN002", tomorrow, 7500);
+
+//			CuentaDto cuentaDto1 = new CuentaDto(cuenta1);
+//			CuentaDto cuentaDto2 = new CuentaDto(cuenta2);
+
 			cliente1.addCuentas(cuenta1);
 			cliente1.addCuentas(cuenta2);
 
 			countRepository.save(cuenta1);
 			countRepository.save(cuenta2);
+
+
 
 
 			Transaccion transaccion1 = new Transaccion(500,"ingreso",now, TransactionType.CREDITO);
@@ -118,7 +127,7 @@ public class HomebankingApplication {
 /////--------------------- Crear ClientLoan y asociar los préstamos al cliente Melba    --------------//
 
 
-ClientePrestamo clientePrestamo1 = new ClientePrestamo(cliente1, prestamo1,400000.0,Arrays.asList(60));
+ClientePrestamo clientePrestamo1 = new ClientePrestamo(400000.0,60);
 
 cliente1.addClientePrestamo(clientePrestamo1);
 prestamo1.addClientePrestamo(clientePrestamo1);
@@ -127,7 +136,7 @@ clientLoanRepository.save(clientePrestamo1);
 
 
 
-ClientePrestamo clientePrestamo2 = new ClientePrestamo(cliente1, prestamo2,50000.0,Arrays.asList(12));
+ClientePrestamo clientePrestamo2 = new ClientePrestamo(50000.0,12);
 
 cliente1.addClientePrestamo(clientePrestamo2);
 prestamo2.addClientePrestamo(clientePrestamo2);
@@ -173,7 +182,7 @@ clientLoanRepository.save(clientePrestamo2);
 /////--------------------- Crear ClientLoan y asociar los préstamos al cliente  Chloe   --------------//
 
 
-ClientePrestamo clientePrestamo3 = new ClientePrestamo(cliente2, prestamo2,10000.0,Arrays.asList(24));
+ClientePrestamo clientePrestamo3 = new ClientePrestamo(10000.0,24);
 
 cliente2.addClientePrestamo(clientePrestamo3);
 prestamo3.addClientePrestamo(clientePrestamo3);
@@ -186,7 +195,7 @@ clientLoanRepository.save(clientePrestamo3);
 
 
 
-ClientePrestamo clientePrestamo4 = new ClientePrestamo(cliente2, prestamo3,200000.0,Arrays.asList(36));
+ClientePrestamo clientePrestamo4 = new ClientePrestamo(200000.0,36);
 
 cliente2.addClientePrestamo(clientePrestamo4);
 prestamo3.addClientePrestamo(clientePrestamo4);
