@@ -11,16 +11,16 @@ import java.util.stream.Collectors;
 public class ClienteDto {
 
     private Long id;
-    private String name;
+    private String firstName;
     private String lastName;
     private String email;
-    private Set<CuentaDto> cuentas;   // Declara una variable privada de tipo Set<CuentaDto> llamada cuentas.
-    private Set<ClientePrestamoDto> prestamos;
+    private Set<CuentaDto> cuentas;   // Declara una variable privada de tipo Set<CuentaDto> llamada cuentas. Tambien se puede decir : Ceclara un set llamado cuentas que tendra objetos de tipo CuentaDto.
+    private Set<ClientePrestamoDto> prestamos;   // Declara una variable privada de tipo Set<ClientePrestamoDto> llamada prestamos. Tambien se puede decir : Ceclara un set llamado prestamos que tendra objetos de tipo CuentaDto.
 
 
     public ClienteDto(Cliente cliente){
         this.id = cliente.getId(); //Asigna el valor del id del objeto Cliente al id del ClienteDto.
-        this.name = cliente.getName();
+        this.firstName = cliente.getFirstName();
         this.lastName = cliente.getLastName();   // Asigna el valor del lastName del objeto Cliente al lastName del ClienteDto.
         this.email = cliente.getEmail();
 //        this.cuentas = cliente.getCuentas().stream()
@@ -49,8 +49,8 @@ public class ClienteDto {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
     public String getLastName() {

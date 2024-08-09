@@ -20,9 +20,10 @@ public class Cliente {
 
     private Long id; //con @Id le estoy diciendo que la propiedad long id es la clave primaria  de este objeto en la base de datos.
     //es decir va a ser el unico dato que no se ve a repetir en esa tabla. Cada instancia (objeto) de la clase Cliente va a tener un id unico.
-    private String name;
+    private String firstName;
     private String lastName;
     private String email;
+    private boolean active = true;
 
 
 
@@ -45,8 +46,8 @@ public class Cliente {
 
 
 
-    public Cliente(String name, String lastName, String email) {
-        this.name = name;
+    public Cliente(String firstName, String lastName, String email) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
@@ -85,12 +86,12 @@ public class Cliente {
         this.lastName = lastName;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
 
@@ -104,6 +105,14 @@ public class Cliente {
 
     public void setClientePrestamos(Set<ClientePrestamo> clientePrestamos) {
         this.clientePrestamos = clientePrestamos;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void addCuentas(Cuenta cuenta){
@@ -158,10 +167,10 @@ public class Cliente {
 //map(): Es una operación intermedia en los "streams" que transforma cada elemento del flujo de datos.
 // El método map() se utiliza para mapear cada elemento del flujo de datos a un nuevo elemento en el flujo de datos resultante.
 
-//(c -> c.getCliente()): Es una expresión lambda. Para cada elemento "c" del flujo clientePrestamos, la expresión lambda aplica el método getCliente() sobre "c".
+//(c -> c.getCliente()): Es una expresión lambda. Para cada elemento "c" del flujo clientePrestamos, la expresión lambda aplica el método getPrestamo() sobre "c".
 
 //"c": Representa cada elemento de clientePrestamos.
-//c.getCliente(): Extrae el objeto Cliente de cada elemento "c". Ademas "c" es de la clase  ClientePrestamo, que tiene el método getCliente(), y este método retorna un objeto de tipo Cliente.
+//c.getPrestamo(): Extrae el objeto Prestamo de cada elemento "c". Ademas "c" es de la clase  ClientePrestamo, que tiene el método getPrestamo(), y este método retorna un objeto de tipo Cliente.
 
 //Como resultado, map() genera un nuevo flujo de datos donde cada elemento es un objeto Cliente.
 
@@ -171,11 +180,11 @@ public class Cliente {
  //Collectors.toList(): Indica que los elementos del flujo deben ser recolectados y almacenados en una lista.
 
     //Resultado Final:
-    //Se retorna una lista (List<Cliente>) que contiene todos los objetos Cliente extraídos de cada elemento de la lista clientePrestamos.
+    //Se retorna una lista (List<Prestamo>) que contiene todos los objetos Prestamo extraídos de cada elemento de la lista clientePrestamos.
 
 
     //Resumen:
-    //Este método recorre una lista (clientePrestamos), extrae un objeto Cliente de cada elemento en esa lista usando getCliente(), y luego almacena todos estos objetos Cliente en una nueva lista que es devuelta como resultado.
+    //Este método recorre una lista (clientePrestamos), extrae un objeto Prestamo de cada elemento en esa lista usando getPrestamo(), y luego almacena todos estos objetos Prestamo en una nueva lista que es devuelta como resultado.
 
 
 
@@ -192,7 +201,7 @@ public class Cliente {
     public String toString() {
         return "Cliente{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 '}';

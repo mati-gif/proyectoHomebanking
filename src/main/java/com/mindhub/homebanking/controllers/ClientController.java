@@ -54,6 +54,7 @@ public class ClientController {
 
         List<ClienteDto> clientesDto = clientes.stream() //Declara una lista llamada clientesDto que contendrá objetos de tipo ClienteDto.
                 // clientes.stream(): Convierte la colección clientes en un flujo (stream). Un flujo es una secuencia de elementos que se pueden procesar de manera funcional.
+                .filter(cliente -> cliente.isActive() == true) //Filtra los elementos del flujo. En este caso, para cada cliente en el flujo, se filtra si el atributo isActive es true.
                 .map(cliente -> new ClienteDto(cliente)) //Aplica una función a cada elemento del flujo. En este caso, para cada cliente en el flujo, se crea una nueva instancia de ClienteDto usando el constructor ClienteDto(cliente).
                 // La función map transforma cada cliente en un ClienteDto.
 
@@ -67,7 +68,7 @@ public class ClientController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")//@PathVariable definimos que ese parametro recibido es lo que va a variar en la ruta.
     public ResponseEntity<?> getClientById(@PathVariable Long id) {//@PathVariable long id: Vincula el parámetro de ruta {id} al parámetro id del método.
         //Captura el valor del {id} en la URL.
             Cliente cliente = clientRepository.findById(id).orElse(null);
@@ -93,7 +94,7 @@ public class ClientController {
 
 
     @PatchMapping("/nuevoName")//Este metodo respondera a la solicitud de tipo patch en la ruta /api/clients/nuevoName
-    public ResponseEntity<?> updateName(@RequestParam String name, @RequestParam Long id) {
+    public ResponseEntity<?> updateName(@RequestParam String firstName, @RequestParam Long id) {
         //las anotaciones @RequestParam indican que el parámetro name se obtendrá de la solicitud HTTP PATCH.
 //@RequestParam significa que si o si tengo que pasarle esos datos.Si no se lo paso va a devolver un status 400
 
@@ -106,7 +107,7 @@ public class ClientController {
 
         }
 
-        cliente.setName(name);
+        cliente.setFirstName(firstName);
         clientRepository.save(cliente);
 
         ClienteDto clienteDto = new ClienteDto(cliente);
@@ -124,15 +125,15 @@ public class ClientController {
 
     @PostMapping("/new")
 // El meotodo se va a disparar cuando se reciba una solicitud POST en la ruta "/api/clients/new".
-    public ResponseEntity<?> createClient(@RequestParam String name, @RequestParam String lastName, @RequestParam String email) {//las anotaciones @RequestParam indican que los parámetros name, lastName y email se obtendrán de la solicitud HTTP POST.
+    public ResponseEntity<?> createClient(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String email) {//las anotaciones @RequestParam indican que los parámetros name, lastName y email se obtendrán de la solicitud HTTP POST.
         // Específicamente, @RequestParam se usa para extraer los valores de los parámetros de la solicitud y asignarlos a las variables correspondientes en el método.
 
 
-//        clientRepository.save(new Cliente(name, lastName, email));
+//        clientRepository.save(new Cliente(firstName, lastName, email));
 
 
         Cliente cliente = new Cliente();
-        cliente.setName(name);
+        cliente.setFirstName(firstName);
         cliente.setLastName(lastName);
         cliente.setEmail(email);
         clientRepository.save(cliente);
@@ -144,11 +145,11 @@ public class ClientController {
 
 
 
-    @PostMapping("/newCliente")
-    public ResponseEntity<Cliente>crearCliente(@RequestBody Cliente cliente){
-        Cliente savedClient = clientRepository.save(cliente);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
-    }
+//    @PostMapping("/newCliente")
+//    public ResponseEntity<Cliente>crearCliente(@RequestBody Cliente cliente){
+//        Cliente savedClient = clientRepository.save(cliente);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
+//    }
 
 
 
@@ -157,24 +158,32 @@ public class ClientController {
 //El meotodo se va a disparar cuando se reciba una solicitud DELETE en la ruta "/api/clients/{id}"
     public ResponseEntity<?> deleteClient(@PathVariable Long id) {  // @PathVariable long id: Vincula el parámetro de ruta {id} al parámetro id del método. Captura el valor del {id} en la URL.
 
-        if (clientRepository.existsById(id)) {
-            clientRepository.deleteById(id);
-            return new ResponseEntity<>(" ya no esta el cliente con el id: " + id,HttpStatus.OK);
-        }
+        Cliente cliente = clientRepository.findById(id).orElse(null);
+
+        if(cliente == null){
             return new ResponseEntity<>("no se encontro el cliente con el id: " + id,HttpStatus.NO_CONTENT);
 
+        }
 
+        if (cliente.isActive()) {
+            cliente.setActive(false); // Realizamos el borrado lógico marcando como inactivo.
+            clientRepository.save(cliente);  // Guardamos el cliente con el nuevo estado.
+            return new ResponseEntity<>("El cliente con id " + id + " ha sido marcado como inactivo.", HttpStatus.OK);
+        }
+
+
+        return new ResponseEntity<>("El cliente con id " + id + " ya se encuentra inactivo.", HttpStatus.OK);
     }
 
 
     @PutMapping("/modificar/{id}")
 // Que este entre llaves sugnifica que es un parametro dinamico y no estatico porque esta esperando un id que le voy a pasar cuando haga la peticion.
-    public ResponseEntity<?> updateClient(@PathVariable Long id, @RequestParam String name, @RequestParam String lastName, @RequestParam String email) {
+    public ResponseEntity<?> updateClient(@PathVariable Long id, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String email) {
         Cliente clienteAModificar = clientRepository.findById(id).orElse(null); //Estoy buscando el objeto que coicnida con el id que voy a pasar por parametro y para eso uso el metodo findById().
         //Este metodo viene de clienteRepository que a su vez viene de JpaRepository.
 
         if (clientRepository.existsById(id)) {   // Verificamos si el cliente existe.
-            clienteAModificar.setName(name);
+            clienteAModificar.setFirstName(firstName);
             clienteAModificar.setLastName(lastName);
             clienteAModificar.setEmail(email);
             clientRepository.save(clienteAModificar);
@@ -203,7 +212,7 @@ public class ClientController {
     // Este método responderá a la solicitud de tipo PATCH en la ruta /api/clients/modificarCliente.
     public String updateCliente(
             @RequestParam long id,
-            @RequestParam(required = false) String name,  //Si se proporciona en la solicitud, se convertirá en un tipo String. Si no se proporciona, su valor será null.
+            @RequestParam(required = false) String firstName,  //Si se proporciona en la solicitud, se convertirá en un tipo String. Si no se proporciona, su valor será null.
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String lastName) {
 
@@ -216,8 +225,8 @@ public class ClientController {
         }
 
         // Actualiza los atributos solo si se han proporcionado.
-        if (name != null) {
-            cliente.setName(name);
+        if (firstName != null) {
+            cliente.setFirstName(firstName);
         }
         if (email != null) {
             cliente.setEmail(email);

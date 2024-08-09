@@ -27,6 +27,7 @@ public class Cuenta {
 
 
 
+
     @ManyToOne(fetch = FetchType.EAGER) // significa que cuando se carga una instancia de la entidad actual, la instancia asociada de Cliente también se carga inmediatamente. Esto puede ser útil si siempre necesitas acceder a los datos de Cliente junto con la entidad principal.
     //FetchType determina cuándo y cómo se cargan las entidades relacionadas desde la base de datos.
     @JoinColumn(name = "cliente_id") // Esta seria la clave foreana en la tabla Cuenta.

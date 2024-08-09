@@ -12,7 +12,7 @@ public class ClientePrestamoDto {
 
     private Long id;
     private Long prestamoId;
-    private String name;
+    private String firstName;
     private double amount;
     private Integer payment;
 
@@ -20,7 +20,7 @@ public class ClientePrestamoDto {
     public ClientePrestamoDto(ClientePrestamo clientePrestamo){
         this.id = clientePrestamo.getId();
         this.prestamoId = clientePrestamo.getPrestamo().getId();
-        this.name = clientePrestamo.getPrestamo().getName();
+        this.firstName = clientePrestamo.getPrestamo().getFirstName();
         this.amount = clientePrestamo.getAmount();
         this.payment = clientePrestamo.getPayment();
 
@@ -43,12 +43,12 @@ public class ClientePrestamoDto {
         this.prestamoId = prestamoId;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public double getAmount() {

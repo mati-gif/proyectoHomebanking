@@ -149,13 +149,20 @@ clientLoanRepository.save(clientePrestamo2);
 
 
 			Cliente cliente2 = new Cliente("Chloe", "O'Brian", "c.obrian@me.com");
+//			ClienteDto clienteDto2 = new ClienteDto(cliente2);
 			clientRepository.save(cliente2);
 
 
 			Cuenta cuenta3 = new Cuenta("VIN003", today, 10000);
 			Cuenta cuenta4 = new Cuenta("VIN004", tomorrow, 20000);
+
+			//			CuentaDto cuentaDto3 = new CuentaDto(cuenta3);
+			//			CuentaDto cuentaDto4 = new CuentaDto(cuenta4);
+
+
 			cliente2.addCuentas(cuenta3);
 			cliente2.addCuentas(cuenta4);
+
 
 
 			countRepository.save(cuenta3);
