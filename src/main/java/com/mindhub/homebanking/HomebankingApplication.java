@@ -205,7 +205,7 @@ clientLoanRepository.save(clientePrestamo3);
 ClientePrestamo clientePrestamo4 = new ClientePrestamo(200000.0,36);
 
 cliente2.addClientePrestamo(clientePrestamo4);
-prestamo3.addClientePrestamo(clientePrestamo4);
+prestamo2.addClientePrestamo(clientePrestamo4);
 
 
 

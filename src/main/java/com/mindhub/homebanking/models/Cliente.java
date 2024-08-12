@@ -94,6 +94,9 @@ public class Cliente {
         this.firstName = firstName;
     }
 
+    public void setCuentas(Set<Cuenta> cuentas) {
+        this.cuentas = cuentas;
+    }
 
     public Set<Cuenta> getCuentas() {
         return cuentas;
@@ -114,6 +117,9 @@ public class Cliente {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+
+
 
     public void addCuentas(Cuenta cuenta){
 

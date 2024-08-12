@@ -23,7 +23,7 @@ public class Prestamo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstName;
+    private String name;
     private double maxAmount;
 
     @ElementCollection // se utiliza para crear listas de  objetos integrables.Un objeto integrable son datos destinados a usarse únicamente en el objeto que lo contiene.
@@ -37,8 +37,8 @@ public class Prestamo {
     Set<ClientePrestamo> clientePrestamos = new HashSet<>();
 
 
-    public Prestamo(String firstName, double maxAmount, List<Integer> payments) {
-        this.firstName = firstName;
+    public Prestamo(String name, double maxAmount, List<Integer> payments) {
+        this.name = name;
         this.maxAmount = maxAmount;
         this.payments = payments;
 
@@ -58,12 +58,12 @@ public class Prestamo {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getMaxAmount() {

@@ -43,8 +43,8 @@ public class ClientePrestamo {
 
 
     public ClientePrestamo( double amount, Integer payment) {
-        this.cliente = cliente;
-        this.prestamo = prestamo;
+//        this.cliente = cliente;
+//        this.prestamo = prestamo;
         this.amount = amount;
         this.payment = payment;
 
