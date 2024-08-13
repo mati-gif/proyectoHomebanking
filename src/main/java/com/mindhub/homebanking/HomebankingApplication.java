@@ -22,7 +22,7 @@ public class HomebankingApplication {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 	@Bean//un  bean es simplemente una clase Java normal, escrita para seguir algunas reglas importantes. Pedimos que se ejecute esto primero.
-	public CommandLineRunner initData(ClientRepository clientRepository, CountRepository countRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
+	public CommandLineRunner initData(ClientRepository clientRepository, CountRepository countRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository,CardRepository cardRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
 		// initData toma una instancia de ClientRepository como parámetro y utiliza este repositorio para guardar algunos clientes en la base de datos al iniciar la aplicación.
 //Es un singleton que se ejecutan una vez cada vez que se inicia la aplicación.
 
@@ -30,10 +30,14 @@ public class HomebankingApplication {
 			// save a couple of customers
 
 
+		////--------------Creando localDate fromDate y thruDate-------------////
+			LocalDate fromDate = LocalDate.now();
+			LocalDate thruDate = fromDate.plusYears(5);
+			System.out.println(fromDate);
+			System.out.println(thruDate);
 
 
-
-
+/////----------------------------------------------------------------------////
 
 
 
@@ -144,6 +148,22 @@ prestamo2.addClientePrestamo(clientePrestamo2);
 clientLoanRepository.save(clientePrestamo2);
 
 
+////////---------------------------Creando las tarjetas para el cliente Melba-------------------------///////
+
+Tarjeta tarjeta1 = new Tarjeta(CardType.DEBITO,ColorType.GOLD,fromDate,thruDate);
+Tarjeta tarjeta2 = new Tarjeta(CardType.CREDITO,ColorType.PLATINUM,fromDate,thruDate);
+
+
+cliente1.addTarjetas(tarjeta1);
+cliente1.addTarjetas(tarjeta2);
+
+cardRepository.save(tarjeta1);
+cardRepository.save(tarjeta2);
+
+
+
+
+
 
 //--------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -211,6 +231,19 @@ prestamo2.addClientePrestamo(clientePrestamo4);
 
 clientLoanRepository.save(clientePrestamo4);
 
+
+
+////////---------------------------Creando las tarjetas para el cliente Chloe-------------------------///////
+
+			Tarjeta tarjeta3 = new Tarjeta(CardType.DEBITO,ColorType.GOLD,fromDate,thruDate);
+			Tarjeta tarjeta4 = new Tarjeta(CardType.CREDITO,ColorType.PLATINUM,fromDate,thruDate);
+
+
+			cliente2.addTarjetas(tarjeta3);
+			cliente2.addTarjetas(tarjeta4);
+
+			cardRepository.save(tarjeta3);
+			cardRepository.save(tarjeta4);
 
 
 

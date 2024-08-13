@@ -19,7 +19,7 @@ public class Transaccion {
     private String description;
     private LocalDateTime date;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)//se utiliza para especificar cómo se debe almacenar una enumeración en la base de datos.Indica que el valor de los enumo se va a almacenar como un String en la base d e datos.
     private TransactionType type;
 
 

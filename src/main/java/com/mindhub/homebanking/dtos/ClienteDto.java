@@ -3,6 +3,7 @@ package com.mindhub.homebanking.dtos;
 import com.mindhub.homebanking.models.Cliente;
 import com.mindhub.homebanking.models.ClientePrestamo;
 import com.mindhub.homebanking.models.Cuenta;
+import com.mindhub.homebanking.models.Tarjeta;
 
 import java.util.List;
 import java.util.Set;
@@ -15,7 +16,8 @@ public class ClienteDto {
     private String lastName;
     private String email;
     private Set<CuentaDto> cuentas;   // Declara una variable privada de tipo Set<CuentaDto> llamada cuentas. Tambien se puede decir : Ceclara un set llamado cuentas que tendra objetos de tipo CuentaDto.
-    private Set<ClientePrestamoDto> prestamos;   // Declara una variable privada de tipo Set<ClientePrestamoDto> llamada prestamos. Tambien se puede decir : Ceclara un set llamado prestamos que tendra objetos de tipo CuentaDto.
+    private Set<ClientePrestamoDto> prestamos;   // Declara una variable privada de tipo Set<ClientePrestamoDto> llamada prestamos. Tambien se puede decir : Ceclara un set llamado prestamos que tendra objetos de tipo ClientePrestamoDto.
+    private Set<TarjetaDto> tarjetas;   // Declara una variable privada de tipo Set<TarjetaDto> llamada prestamos. Tambien se puede decir : Ceclara un set llamado prestamos que tendra objetos de tipo TarjetaDto.
 
 
     public ClienteDto(Cliente cliente){
@@ -29,6 +31,8 @@ public class ClienteDto {
         this.cuentas = convertCuentasToDto(cliente.getCuentas()); //Convierte el conjunto de Cuenta del objeto Cliente a un conjunto de CuentaDto y lo asigna a la variable cuentas del ClienteDto.
 
         this.prestamos = convertClientePrestamoToDto(cliente.getClientePrestamos());
+
+        this.tarjetas = convertTarjetasToDto(cliente.getTarjetas());
 
     }
 
@@ -44,6 +48,15 @@ public class ClienteDto {
                 .collect(Collectors.toSet());      // Recoge los objetos ClientePrestamoDto en un conjunto y lo devuelve.
 
     }
+
+    private Set<TarjetaDto> convertTarjetasToDto(Set<Tarjeta> tarjetas) {   //Declara un método privado que toma un conjunto de Cuenta y devuelve un conjunto de CuentaDto.
+        return tarjetas.stream()             //Convierte el conjunto de Cuenta en un Stream de CuentaDto.
+                .map(TarjetaDto::new)          //Mapea cada objeto Cuenta a un nuevo objeto CuentaDto.
+                .collect(Collectors.toSet());     // Recoge los objetos CuentaDto en un conjunto y lo devuelve.
+    }
+
+
+
 
     public Long getId() {
         return id;
@@ -68,5 +81,10 @@ public class ClienteDto {
 
     public Set<ClientePrestamoDto> getPrestamos() {
         return prestamos;
+    }
+
+
+    public Set<TarjetaDto> getTarjetas() {
+        return tarjetas;
     }
 }

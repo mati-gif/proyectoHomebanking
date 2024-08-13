@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.models;
 
+import com.mindhub.homebanking.Utils.CardsUtils;
 import com.mindhub.homebanking.dtos.CuentaDto;
 import jakarta.persistence.*;
 //import org.hibernate.annotations.GenericGenerator;
@@ -43,6 +44,9 @@ public class Cliente {
 
     @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
     Set<ClientePrestamo> clientePrestamos = new HashSet<>();
+
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
+    Set<Tarjeta> tarjetas = new HashSet<>();
 
 
 
@@ -118,6 +122,17 @@ public class Cliente {
         this.active = active;
     }
 
+    public Set<Tarjeta> getTarjetas() {
+        return tarjetas;
+    }
+
+    public void setTarjetas(Set<Tarjeta> tarjetas) {
+        this.tarjetas = tarjetas;
+    }
+
+
+
+
 
 
 
@@ -153,6 +168,19 @@ public class Cliente {
 
     //clientePrestamos: Este es el conjunto (Set<ClientePrestamo>) que pertenece a la instancia actual de Cliente.
     //add(clientePrestamo): Este método agrega la instancia de ClientePrestamo al conjunto clientePrestamos.
+
+
+
+    public void addTarjetas(Tarjeta tarjeta){
+
+        tarjeta.setCliente(this);
+        tarjetas.add(tarjeta);
+        tarjeta.setCardHolder(this.getFirstName() + " " + this.getLastName());
+        tarjeta.setNumber(CardsUtils.GenerateCardNumber());
+        tarjeta.setCvv(CardsUtils.generarCodigoSeguridad());
+
+    }
+
 
 
 
