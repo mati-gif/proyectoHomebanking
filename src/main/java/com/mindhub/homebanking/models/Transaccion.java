@@ -22,13 +22,10 @@ public class Transaccion {
     @Enumerated(EnumType.STRING)//se utiliza para especificar cómo se debe almacenar una enumeración en la base de datos.Indica que el valor de los enumo se va a almacenar como un String en la base d e datos.
     private TransactionType type;
 
-
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cuenta_id")
     private Cuenta cuenta;
-
-
+    
     public Transaccion(double amount, String description, LocalDateTime date, TransactionType type) {
         this.amount = amount;
         this.description = description;

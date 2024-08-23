@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:5174") // Configuración CORS para este controlador
+
 @RestController
 
 @RequestMapping("/api/accounts")

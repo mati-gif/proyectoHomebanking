@@ -6,8 +6,8 @@ package com.mindhub.homebanking.controllers;
 import com.mindhub.homebanking.dtos.ClienteDto;
 import com.mindhub.homebanking.models.Cliente; //Estoy importando la clase Cliente desde el paquete models.
 import com.mindhub.homebanking.repositories.ClientRepository;//Estoy importando la interfaz ClientRepository desde el paquete repositories. Esta interfaz extiende una de las interfaces de Spring Data JPA (JpaRepository)
+import org.springframework.web.bind.annotation.CrossOrigin;
 //permitiéndome realizar operaciones CRUD sobre la entidad Cliente.
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@CrossOrigin(origins = "http://localhost:5174") // Configuración CORS para este controlador
 @RestController// ClientController es un controlador de spring. indica que la clase actúa como un controlador y que cada método devuelve un objeto serializado en lugar de una vista.
 //ClientController define varias rutas (endpoints) para interactuar con los datos de los clientes a través de peticiones HTTP:
 

@@ -16,24 +16,16 @@ public class Cuenta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-//    @GenericGenerator(name = "native", strategy = "native")
     private Long id;
 
     private String number;
     private LocalDate creationDate;
     private double balance;
 
-
-
-
-
-    @ManyToOne(fetch = FetchType.EAGER) // significa que cuando se carga una instancia de la entidad actual, la instancia asociada de Cliente también se carga inmediatamente. Esto puede ser útil si siempre necesitas acceder a los datos de Cliente junto con la entidad principal.
     //FetchType determina cuándo y cómo se cargan las entidades relacionadas desde la base de datos.
+    @ManyToOne(fetch = FetchType.EAGER) // significa que cuando se carga una instancia de la entidad actual, la instancia asociada de Cliente también se carga inmediatamente. Esto puede ser útil si siempre necesitas acceder a los datos de Cliente junto con la entidad principal.
     @JoinColumn(name = "cliente_id") // Esta seria la clave foreana en la tabla Cuenta.
     private Cliente cliente;
-
-
 
     @OneToMany(mappedBy = "cuenta", fetch = FetchType.EAGER)
      Set<Transaccion> transacciones = new HashSet<>();

@@ -5,7 +5,6 @@ import com.mindhub.homebanking.models.ClientePrestamo;
 import com.mindhub.homebanking.models.Cuenta;
 import com.mindhub.homebanking.models.Tarjeta;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,13 +24,8 @@ public class ClienteDto {
         this.firstName = cliente.getFirstName();
         this.lastName = cliente.getLastName();   // Asigna el valor del lastName del objeto Cliente al lastName del ClienteDto.
         this.email = cliente.getEmail();
-//        this.cuentas = cliente.getCuentas().stream()
-//                .map(CuentaDto::new)
-//                .collect(Collectors.toSet());
         this.cuentas = convertCuentasToDto(cliente.getCuentas()); //Convierte el conjunto de Cuenta del objeto Cliente a un conjunto de CuentaDto y lo asigna a la variable cuentas del ClienteDto.
-
         this.prestamos = convertClientePrestamoToDto(cliente.getClientePrestamos());
-
         this.tarjetas = convertTarjetasToDto(cliente.getTarjetas());
 
     }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface ClientRepository extends JpaRepository<Cliente, Long> {//me dice que JpaRepository va a usar la clase Cliente y va a trabajar con objetos de tipo Cliente
 //Usando ClientRepository voy a poder acceder a todos los metodos de JpaRepository.
 
-Cliente findByEmail(String email);
+Cliente findByEmail(String email); //tiene que coincidir la palabra clave "Email" con la propiedad email que tien la entidad Cliente .
 
 
 

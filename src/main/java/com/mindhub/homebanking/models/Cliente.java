@@ -1,7 +1,6 @@
 package com.mindhub.homebanking.models;
 
 import com.mindhub.homebanking.Utils.CardsUtils;
-import com.mindhub.homebanking.dtos.CuentaDto;
 import jakarta.persistence.*;
 //import org.hibernate.annotations.GenericGenerator;
 

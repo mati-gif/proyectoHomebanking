@@ -1,7 +1,5 @@
 package com.mindhub.homebanking;
 
-import com.mindhub.homebanking.dtos.ClienteDto;
-import com.mindhub.homebanking.dtos.CuentaDto;
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
 import org.springframework.boot.CommandLineRunner;//es una interfaz que permite ejecutar código al inicio de la aplicación.
@@ -11,9 +9,7 @@ import org.springframework.context.annotation.Bean;//es una anotación para defi
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @SpringBootApplication
 public class HomebankingApplication {
