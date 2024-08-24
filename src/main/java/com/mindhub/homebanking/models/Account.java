@@ -12,7 +12,7 @@ import java.util.Set;
 
 
 @Entity
-public class Cuenta {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,22 +24,22 @@ public class Cuenta {
 
     //FetchType determina cuándo y cómo se cargan las entidades relacionadas desde la base de datos.
     @ManyToOne(fetch = FetchType.EAGER) // significa que cuando se carga una instancia de la entidad actual, la instancia asociada de Cliente también se carga inmediatamente. Esto puede ser útil si siempre necesitas acceder a los datos de Cliente junto con la entidad principal.
-    @JoinColumn(name = "cliente_id") // Esta seria la clave foreana en la tabla Cuenta.
-    private Cliente cliente;
+    @JoinColumn(name = "client_id") // Esta seria la clave foreana en la tabla Cuenta.
+    private Client client;
 
-    @OneToMany(mappedBy = "cuenta", fetch = FetchType.EAGER)
-     Set<Transaccion> transacciones = new HashSet<>();
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+     Set<Transaction> transactions = new HashSet<>();
 //Estoy declarando un Set llamad transacciones que contendra objetos de tipo Transaccion.
 
 
-    public Cuenta(String number, LocalDate creationDate, double balance) {
+    public Account(String number, LocalDate creationDate, double balance) {
         this.number = number;
         this.creationDate = creationDate;
         this.balance = balance;
     }
 
 
-    public Cuenta() {
+    public Account() {
     }
 
 
@@ -75,24 +75,25 @@ public class Cuenta {
         this.balance = balance;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public Client getClient() {
+        return client;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-
-
-    public Set<Transaccion> getTransacciones() {
-        return transacciones;
+    public Set<Transaction> getTransactions() {
+        return transactions;
     }
 
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
+    }
 
-    public void addTransacciones(Transaccion transaccion){
-        transaccion.setCuenta(this);
-        transacciones.add(transaccion);
+    public void addTransactions(Transaction transaction){
+        transaction.setAccount(this);
+        transactions.add(transaction);
     }
 
 

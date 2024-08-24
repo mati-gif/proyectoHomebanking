@@ -1,8 +1,6 @@
 package com.mindhub.homebanking.models;
 
 
-import jakarta.persistence.*;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,16 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-//import javax.persistence.Entity;
-//import javax.persistence.GeneratedValue;
-//import javax.persistence.GenerationType;
-//import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 @Entity
-public class ClientePrestamo {
+public class ClientLoan {
 
 
     @Id
@@ -33,18 +26,16 @@ public class ClientePrestamo {
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="cliente_id")
-    private Cliente cliente;
+    @JoinColumn(name="client_id")
+    private Client client;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="prestamo_id")
-    private Prestamo prestamo;
+    @JoinColumn(name="loan_id")
+    private Loan loan;
 
 
-    public ClientePrestamo( double amount, Integer payment) {
-//        this.cliente = cliente;
-//        this.prestamo = prestamo;
+    public ClientLoan(double amount, Integer payment) {
         this.amount = amount;
         this.payment = payment;
 
@@ -52,7 +43,7 @@ public class ClientePrestamo {
 
 
 
-    public ClientePrestamo(){
+    public ClientLoan(){
 
     }
 
@@ -73,24 +64,20 @@ public class ClientePrestamo {
         this.amount = amount;
     }
 
-
-
-
-
-    public Cliente getCliente() {
-        return cliente;
+    public Client getClient() {
+        return client;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public Prestamo getPrestamo() {
-        return prestamo;
+    public Loan getLoan() {
+        return loan;
     }
 
-    public void setPrestamo(Prestamo prestamo) {
-        this.prestamo = prestamo;
+    public void setLoan(Loan loan) {
+        this.loan = loan;
     }
 
     public Integer getPayment() {

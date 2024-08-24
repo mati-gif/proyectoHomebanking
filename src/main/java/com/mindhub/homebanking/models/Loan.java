@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-public class Prestamo {
+public class Loan {
 
 
 
@@ -33,11 +33,11 @@ public class Prestamo {
 
 
 
-    @OneToMany(mappedBy = "prestamo", fetch = FetchType.EAGER)
-    Set<ClientePrestamo> clientePrestamos = new HashSet<>();
+    @OneToMany(mappedBy = "loan", fetch = FetchType.EAGER)
+    Set<ClientLoan> clientLoans = new HashSet<>();
 
 
-    public Prestamo(String name, double maxAmount, List<Integer> payments) {
+    public Loan(String name, double maxAmount, List<Integer> payments) {
         this.name = name;
         this.maxAmount = maxAmount;
         this.payments = payments;
@@ -46,7 +46,7 @@ public class Prestamo {
 
 
 
-    public Prestamo() {
+    public Loan() {
     }
 
 
@@ -82,22 +82,19 @@ public class Prestamo {
         this.payments = payments;
     }
 
-    public Set<ClientePrestamo> getClientePrestamos() {
-        return clientePrestamos;
+    public Set<ClientLoan> getClientLoans() {
+        return clientLoans;
     }
 
-    public void setClientePrestamos(Set<ClientePrestamo> clientePrestamos) {
-        this.clientePrestamos = clientePrestamos;
+    public void setClientLoans(Set<ClientLoan> clientLoans) {
+        this.clientLoans = clientLoans;
     }
 
+    public void addClientLoan(ClientLoan clientLoan) {
+        clientLoan.setLoan(this);
 
 
- 
-    public void addClientePrestamo(ClientePrestamo clientePrestamo) {
-        clientePrestamo.setPrestamo(this);
-
-
-        clientePrestamos.add(clientePrestamo);
+        clientLoans.add(clientLoan);
 
     }
 
@@ -112,8 +109,8 @@ public class Prestamo {
 
 
 
-    public List<Cliente> getClientes(){
-        return clientePrestamos.stream().map(c -> c.getCliente()).collect( Collectors.toList());
+    public List<Client> getClients(){
+        return clientLoans.stream().map(c -> c.getClient()).collect( Collectors.toList());
     }
 
 

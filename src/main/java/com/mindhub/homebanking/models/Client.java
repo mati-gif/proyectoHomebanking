@@ -1,5 +1,7 @@
 package com.mindhub.homebanking.models;
 
+
+
 import com.mindhub.homebanking.Utils.CardsUtils;
 import jakarta.persistence.*;
 //import org.hibernate.annotations.GenericGenerator;
@@ -12,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Entity//indica que estoy generaqndo una tabla en la base de datos con el nombre de Cliente donde se alamcenaran los objetos como filas en esa tabla.
 //cada columna de la tabla va a representar una de las propiedades de nuestro objeto.
-public class Cliente {
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)// Hace que el valor de ese Id sea generado por la base de datos automáticamente para que no se repita. es decir Genera de manera automatica el id para que no se repita.(Se genera en el sistema de persistencia en la base de datos)
@@ -28,28 +30,28 @@ public class Cliente {
 
 
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)//mappedBy = “cliente”: Esto especifica que la relación es bidireccional y que la entidad Cuenta tiene una propiedad llamada cliente que es la dueña de la relación.
-            //significa que las entidades Cuenta relacionadas se cargarán inmediatamente junto con la entidad actual. Cuando consultas la entidad actual, todas las instancias de Cuenta asociadas se recuperan en la misma consulta.
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)//mappedBy = “cliente”: Esto especifica que la relación es bidireccional y que la entidad Cuenta tiene una propiedad llamada cliente que es la dueña de la relación.
+    //significa que las entidades Cuenta relacionadas se cargarán inmediatamente junto con la entidad actual. Cuando consultas la entidad actual, todas las instancias de Cuenta asociadas se recuperan en la misma consulta.
     //FetchType.EAGER, estoy diciendo que quiero que la entidad con la que esta relacionada la clase Cliente  se cargue inmediatamente junto con la entidad principal. Es como si estuvieras pidiendo que, al obtener la entidad principal de la base de datos, también se obtengan automáticamente todas las entidades relacionadas en la misma operación.
 
 
 
-    Set<Cuenta> cuentas = new HashSet<>(); //new HashSet<>();: Inicializa la variable cuentas como una nueva instancia de HashSet, que es una implementación de Set.
+    Set<Account> accounts = new HashSet<>(); //new HashSet<>();: Inicializa la variable cuentas como una nueva instancia de HashSet, que es una implementación de Set.
 
     //cuentas: Es el nombre de la variable de instancia que representa la colección de Cuenta.
 
 
 
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
-    Set<ClientePrestamo> clientePrestamos = new HashSet<>();
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
+    Set<ClientLoan> clientLoans = new HashSet<>();
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
-    Set<Tarjeta> tarjetas = new HashSet<>();
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
+    Set<Card> cards = new HashSet<>();
 
 
 
-    public Cliente(String firstName, String lastName, String email) {
+    public Client(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -57,7 +59,7 @@ public class Cliente {
 
 
 
-    public Cliente() {//JPA y Hibernate requieren un constructor sin argumentos para crear instancias de la entidad a través de la reflexión.Basicamente para generar un espacio en memoria.
+    public Client() {//JPA y Hibernate requieren un constructor sin argumentos para crear instancias de la entidad a través de la reflexión.Basicamente para generar un espacio en memoria.
         // Esto es necesario para que el framework pueda crear instancias de la entidad sin conocer los detalles de sus constructores.
 
 
@@ -97,20 +99,20 @@ public class Cliente {
         this.firstName = firstName;
     }
 
-    public void setCuentas(Set<Cuenta> cuentas) {
-        this.cuentas = cuentas;
+    public Set<Account> getAccounts() {
+        return accounts;
     }
 
-    public Set<Cuenta> getCuentas() {
-        return cuentas;
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
     }
 
-    public Set<ClientePrestamo> getClientePrestamos() {
-        return clientePrestamos;
+    public Set<ClientLoan> getClientLoans() {
+        return clientLoans;
     }
 
-    public void setClientePrestamos(Set<ClientePrestamo> clientePrestamos) {
-        this.clientePrestamos = clientePrestamos;
+    public void setClientLoans(Set<ClientLoan> clientLoans) {
+        this.clientLoans = clientLoans;
     }
 
     public boolean isActive() {
@@ -121,24 +123,18 @@ public class Cliente {
         this.active = active;
     }
 
-    public Set<Tarjeta> getTarjetas() {
-        return tarjetas;
+    public Set<Card> getCards() {
+        return cards;
     }
 
-    public void setTarjetas(Set<Tarjeta> tarjetas) {
-        this.tarjetas = tarjetas;
+    public void setCards(Set<Card> cards) {
+        this.cards = cards;
     }
 
+    public void addAccounts(Account account){
 
-
-
-
-
-
-    public void addCuentas(Cuenta cuenta){
-
-        cuenta.setCliente(this);
-        cuentas.add(cuenta);
+        account.setClient(this);
+        accounts.add(account);
     }
 
 
@@ -154,10 +150,10 @@ public class Cliente {
 
 
 
-    public void addClientePrestamo(ClientePrestamo clientePrestamo){
-        clientePrestamo.setCliente(this);
+    public void addClientLoan(ClientLoan clientLoan){
+        clientLoan.setClient(this);
 
-        clientePrestamos.add(clientePrestamo);
+        clientLoans.add(clientLoan);
 
 
     }
@@ -170,13 +166,13 @@ public class Cliente {
 
 
 
-    public void addTarjetas(Tarjeta tarjeta){
+    public void addCards(Card card){
 
-        tarjeta.setCliente(this);
-        tarjetas.add(tarjeta);
-        tarjeta.setCardHolder(this.getFirstName() + " " + this.getLastName());
-        tarjeta.setNumber(CardsUtils.GenerateCardNumber());
-        tarjeta.setCvv(CardsUtils.generarCodigoSeguridad());
+        card.setClient(this);
+        cards.add(card);
+        card.setCardHolder(this.getFirstName() + " " + this.getLastName());
+        card.setNumber(CardsUtils.GenerateCardNumber());
+        card.setCvv(CardsUtils.generarCodigoSeguridad());
 
     }
 
@@ -185,8 +181,8 @@ public class Cliente {
 
 
 
-    public List<Prestamo> getPrestamos(){
-        return clientePrestamos.stream().map(c -> c.getPrestamo()).collect(Collectors.toList());
+    public List<Loan> getLoans(){
+        return clientLoans.stream().map(c -> c.getLoan()).collect(Collectors.toList());
     }
 
 //Este metodo devuelve la lista de préstamos de un cliente.
@@ -210,7 +206,7 @@ public class Cliente {
 //.collect(Collectors.toList()):
 
 //collect(): Es una operación terminal en los streams que recopila los elementos transformados en una estructura de datos concreta, en este caso, una lista.
- //Collectors.toList(): Indica que los elementos del flujo deben ser recolectados y almacenados en una lista.
+    //Collectors.toList(): Indica que los elementos del flujo deben ser recolectados y almacenados en una lista.
 
     //Resultado Final:
     //Se retorna una lista (List<Prestamo>) que contiene todos los objetos Prestamo extraídos de cada elemento de la lista clientePrestamos.
@@ -232,7 +228,7 @@ public class Cliente {
     //esto es para que el objeto cliente se pueda mostrar en la consola.
     @Override
     public String toString() {
-        return "Cliente{" +
+        return "Client{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -246,3 +242,4 @@ public class Cliente {
     //Usar Long en lugar de long para el campo id permite que el campo tenga un valor nulo antes de ser asignado por la base de datos y facilita el manejo del campo a través de frameworks como JPA y Hibernate.
     //basicamente porque es útil poder tener un valor nulo para el id antes de que se genere un valor único automáticamente por la base de datos. Esto indica que el id aún no ha sido asignado.
 }
+

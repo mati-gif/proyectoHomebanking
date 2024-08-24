@@ -1,14 +1,14 @@
 package com.mindhub.homebanking.controllers;
 
 
-import com.mindhub.homebanking.dtos.CuentaDto;
-import com.mindhub.homebanking.models.Cuenta;
+import com.mindhub.homebanking.dtos.AccountDto;
+import com.mindhub.homebanking.models.Account;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import com.mindhub.homebanking.repositories.CountRepository;
+import com.mindhub.homebanking.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +28,7 @@ public class AccountController {
 
 
     @Autowired
-    private CountRepository countRepository;
+    private AccountRepository countRepository;
 
 
 
@@ -39,42 +39,42 @@ public class AccountController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<CuentaDto>> getAllAccounts() {
+    public ResponseEntity<List<AccountDto>> getAllAccounts() {
 
-        List<Cuenta>cuentas = countRepository.findAll();
+        List<Account>accounts = countRepository.findAll();
 
-        List<CuentaDto> cuentasDto = cuentas.stream()
-                .map(cuenta -> new CuentaDto(cuenta))
+        List<AccountDto> accountsDto = accounts.stream()
+                .map(account -> new AccountDto(account))
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(cuentasDto, HttpStatus.OK);
+        return new ResponseEntity<>(accountsDto, HttpStatus.OK);
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAccountById(@PathVariable Long id) {
-        Cuenta cuenta = countRepository.findById(id).orElse(null);
+        Account account = countRepository.findById(id).orElse(null);
 
-        if(cuenta == null){
+        if(account == null){
             return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
         }
 
-        CuentaDto cuentaDto = new CuentaDto(cuenta);
-        return new ResponseEntity<>(cuentaDto, HttpStatus.OK);
+        AccountDto accountDto = new AccountDto(account);
+        return new ResponseEntity<>(accountDto, HttpStatus.OK);
     }
 
 
     @PatchMapping("/nuevaCuenta")
     public ResponseEntity<?> updateAccount(@RequestParam double balance,@RequestParam Long id) {
-        Cuenta cuenta = countRepository.findById(id).orElse(null);
-        if(cuenta == null){
+        Account account = countRepository.findById(id).orElse(null);
+        if(account == null){
             return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
         }
-        cuenta.setBalance(balance);
-        countRepository.save(cuenta);
+        account.setBalance(balance);
+        countRepository.save(account);
 
-        CuentaDto cuentaDto = new CuentaDto(cuenta);
-        return new ResponseEntity<>(cuentaDto, HttpStatus.OK);
+        AccountDto accountDto = new AccountDto(account);
+        return new ResponseEntity<>(accountDto, HttpStatus.OK);
 
     }
 
@@ -82,16 +82,16 @@ public class AccountController {
     @PostMapping("/new")
     public ResponseEntity<?> createCount(@RequestParam double balance, @RequestParam String number, @RequestParam LocalDate creationDate) {
 
-        Cuenta cuenta = new Cuenta();
-        cuenta.setBalance(balance);
-        cuenta.setNumber(number);
-        cuenta.setCreationDate(creationDate);
+        Account account = new Account();
+        account.setBalance(balance);
+        account.setNumber(number);
+        account.setCreationDate(creationDate);
 
-        countRepository.save(cuenta);
+        countRepository.save(account);
 
-        CuentaDto cuentaDto = new CuentaDto(cuenta);
+        AccountDto accountDto = new AccountDto(account);
 
-        return new ResponseEntity<>(cuentaDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(accountDto, HttpStatus.CREATED);
     }
 
 
@@ -110,14 +110,14 @@ public class AccountController {
 
     @PutMapping("/modificar/{id}")
     public ResponseEntity<?> updateCount(@PathVariable Long id, @RequestParam double balance, @RequestParam String number, @RequestParam LocalDate creationDate) {
-        Cuenta cuentaAModificar = countRepository.findById(id).orElse(null);
+        Account cuentaAModificar = countRepository.findById(id).orElse(null);
         if(countRepository.existsById(id)){
             cuentaAModificar.setBalance(balance);
             cuentaAModificar.setNumber(number);
             cuentaAModificar.setCreationDate(creationDate);
             countRepository.save(cuentaAModificar);
-            CuentaDto cuentaDto = new CuentaDto(cuentaAModificar);
-            return new ResponseEntity<>(cuentaDto, HttpStatus.OK);
+            AccountDto accountDto = new AccountDto(cuentaAModificar);
+            return new ResponseEntity<>(accountDto, HttpStatus.OK);
         }
             return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
         }

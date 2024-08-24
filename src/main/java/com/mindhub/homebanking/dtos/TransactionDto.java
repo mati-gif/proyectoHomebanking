@@ -1,12 +1,12 @@
 package com.mindhub.homebanking.dtos;
 
 
-import com.mindhub.homebanking.models.Transaccion;
+import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.models.TransactionType;
 
 import java.time.LocalDateTime;
 
-public class TransaccionDto {
+public class TransactionDto {
 
     private Long id;
     private double amount;
@@ -15,12 +15,12 @@ public class TransaccionDto {
     private TransactionType type;
 
 
-    public TransaccionDto(Transaccion transaccion){
-        this.id = transaccion.getId();
-        this.amount = transaccion.getAmount();
-        this.description = transaccion.getDescription();
-        this.date = transaccion.getDate();
-        this.type = transaccion.getType();
+    public TransactionDto(Transaction transaction){
+        this.id = transaction.getId();
+        this.amount = transaction.getAmount();
+        this.description = transaction.getDescription();
+        this.date = transaction.getDate();
+        this.type = transaction.getType();
 
 
     }

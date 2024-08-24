@@ -1,12 +1,12 @@
 package com.mindhub.homebanking.repositories;
 
-import com.mindhub.homebanking.models.Cuenta;
+import com.mindhub.homebanking.models.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface CountRepository extends JpaRepository<Cuenta, Long> {
+public interface AccountRepository extends JpaRepository<Account, Long> {
 
 
 

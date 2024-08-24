@@ -1,13 +1,11 @@
 package com.mindhub.homebanking.models;
 
-import antlr.Utils;
-import com.mindhub.homebanking.Utils.CardsUtils;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
-public class Tarjeta {
+public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +22,11 @@ public class Tarjeta {
 
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
+    @JoinColumn(name = "client_id")
+    private Client client;
 
 
-    public Tarjeta(CardType type, ColorType color, LocalDate fromDate, LocalDate thruDate) {
+    public Card(CardType type, ColorType color, LocalDate fromDate, LocalDate thruDate) {
         this.type = type;
         this.color = color;
 //        this.number = CardsUtils.GenerateCardNumber();
@@ -40,7 +38,7 @@ public class Tarjeta {
 
 
 
-    public Tarjeta() {
+    public Card() {
     }
 
     public String getCardHolder() {
@@ -108,11 +106,11 @@ public class Tarjeta {
     }
 
 
-    public Cliente getCliente() {
-        return cliente;
+    public Client getClient() {
+        return client;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setClient(Client client) {
+        this.client = client;
     }
 }

@@ -2,11 +2,11 @@ package com.mindhub.homebanking.dtos;
 
 import com.mindhub.homebanking.models.CardType;
 import com.mindhub.homebanking.models.ColorType;
-import com.mindhub.homebanking.models.Tarjeta;
+import com.mindhub.homebanking.models.Card;
 
 import java.time.LocalDate;
 
-public class TarjetaDto {
+public class CardsDto {
 
     private Long id;
     private String cardHolder;
@@ -20,15 +20,15 @@ public class TarjetaDto {
 
 
 
-    public TarjetaDto(Tarjeta tarjeta){
-        this.id = tarjeta.getId();
-        this.cardHolder = tarjeta.getCardHolder();
-        this.type = tarjeta.getType();
-        this.color = tarjeta.getColor();
-        this.number = tarjeta.getNumber();
-        this.cvv = tarjeta.getCvv();
-        this.fromDate = tarjeta.getFromDate();
-        this.thruDate = tarjeta.getThruDate();
+    public CardsDto(Card card){
+        this.id = card.getId();
+        this.cardHolder = card.getCardHolder();
+        this.type = card.getType();
+        this.color = card.getColor();
+        this.number = card.getNumber();
+        this.cvv = card.getCvv();
+        this.fromDate = card.getFromDate();
+        this.thruDate = card.getThruDate();
     }
 
 

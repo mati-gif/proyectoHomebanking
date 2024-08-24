@@ -1,8 +1,8 @@
 package com.mindhub.homebanking.repositories;
 
 
-import com.mindhub.homebanking.models.Transaccion;
+import com.mindhub.homebanking.models.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TransactionRepository extends JpaRepository<Transaccion, Long> {
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 }

@@ -3,11 +3,11 @@ package com.mindhub.homebanking.controllers;
 //estoy implementando el controlador que servirá como punto de acceso principal a los datos de nuestra aplicación. Mediante este controlador, definiremos las rutas esenciales para acceder y manipular los datos a través de peticiones HTTP.
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
-import com.mindhub.homebanking.dtos.ClienteDto;
-import com.mindhub.homebanking.models.Cliente; //Estoy importando la clase Cliente desde el paquete models.
+import com.mindhub.homebanking.dtos.ClientDto;
+import com.mindhub.homebanking.models.Client; //Estoy importando la clase Cliente desde el paquete models.
 import com.mindhub.homebanking.repositories.ClientRepository;//Estoy importando la interfaz ClientRepository desde el paquete repositories. Esta interfaz extiende una de las interfaces de Spring Data JPA (JpaRepository)
 import org.springframework.web.bind.annotation.CrossOrigin;
-//permitiéndome realizar operaciones CRUD sobre la entidad Cliente.
+//permitiéndome realizar operaciones CRUD sobre la entidad Client.
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class ClientController {
 
 
     @Autowired
-//Estoy inicializando el repositorio de clientes. Inyecta una instancia de ClientRepository en esta clase. Spring se encarga de inicializar esta dependencia automáticamente.
+//Estoy inicializando el repositorio de client. Inyecta una instancia de ClientRepository en esta clase. Spring se encarga de inicializar esta dependencia automáticamente.
     //se usa para inyectar automáticamente dependencias en las clases, como repositorios o servicios.
     //Estoy inyectando una referencia a la interfaz ClientRepository en esta clase.
     //va a "cablear" clientRepository para evitar la generacion de nuevos objetos cada vez que ejecutenmos la clase controlador
@@ -47,15 +47,15 @@ public class ClientController {
 
     @GetMapping("/all")
 // en locaHhost: 8080/api/clients/all --> aca en esta ruta me va a devolver todos los clientes.// lo que se esta definiendo aca es la ruta y tambein la respuesta que se va a obtener cuando se hace una peticion a esta ruta.
-    public ResponseEntity<List<ClienteDto>>  getAllClients() {
+    public ResponseEntity<List<ClientDto>>  getAllClients() {
 
-        List<Cliente> clientes = clientRepository.findAll();//devuelve una lista de todos los clientes.
+        List<Client> clients = clientRepository.findAll();//devuelve una lista de todos los clientes.
 //Estoy declarando una lista llamada clientes que contendra objetos de tipo Cliente.
 
-        List<ClienteDto> clientesDto = clientes.stream() //Declara una lista llamada clientesDto que contendrá objetos de tipo ClienteDto.
+        List<ClientDto> clientsDto = clients.stream() //Declara una lista llamada clientesDto que contendrá objetos de tipo ClienteDto.
                 // clientes.stream(): Convierte la colección clientes en un flujo (stream). Un flujo es una secuencia de elementos que se pueden procesar de manera funcional.
-                .filter(cliente -> cliente.isActive() == true) //Filtra los elementos del flujo. En este caso, para cada cliente en el flujo, se filtra si el atributo isActive es true.
-                .map(cliente -> new ClienteDto(cliente)) //Aplica una función a cada elemento del flujo. En este caso, para cada cliente en el flujo, se crea una nueva instancia de ClienteDto usando el constructor ClienteDto(cliente).
+                .filter(client -> client.isActive() == true) //Filtra los elementos del flujo. En este caso, para cada cliente en el flujo, se filtra si el atributo isActive es true.
+                .map(client -> new ClientDto(client)) //Aplica una función a cada elemento del flujo. En este caso, para cada cliente en el flujo, se crea una nueva instancia de ClienteDto usando el constructor ClienteDto(cliente).
                 // La función map transforma cada cliente en un ClienteDto.
 
                 .collect(Collectors.toList());   // Recoge los elementos transformados del flujo y los convierte en una lista. Collectors.toList() es un colector que acumula los elementos en una lista.
@@ -63,7 +63,7 @@ public class ClientController {
         //toma una colección de clientes, la convierte en un flujo, transforma cada cliente en un ClienteDto, y finalmente recoge todos los ClienteDto en una lista llamada clientesDto.
 
 
-        return new ResponseEntity<>(clientesDto, HttpStatus.OK);
+        return new ResponseEntity<>(clientsDto, HttpStatus.OK);
 
     }
 
@@ -71,16 +71,16 @@ public class ClientController {
     @GetMapping("/{id}")//@PathVariable definimos que ese parametro recibido es lo que va a variar en la ruta.
     public ResponseEntity<?> getClientById(@PathVariable Long id) {//@PathVariable long id: Vincula el parámetro de ruta {id} al parámetro id del método.
         //Captura el valor del {id} en la URL.
-            Cliente cliente = clientRepository.findById(id).orElse(null);
-            //Cliente cliente => Estoy declarando un objeto cliente de tipo Cliente que contendra los datos del cliente que coincida con el id especificado.
+            Client client = clientRepository.findById(id).orElse(null);
+            //Client client => Estoy declarando un objeto cliente de tipo Cliente que contendra los datos del cliente que coincida con el id especificado.
 
-            if(cliente == null) {
+            if(client == null) {
 
                 return new ResponseEntity<>("Cliente no encontrado", HttpStatus.NOT_FOUND);
             }
 
-            ClienteDto clienteDto = new ClienteDto(cliente);
-            return new ResponseEntity<>(clienteDto, HttpStatus.OK);
+            ClientDto clientDto = new ClientDto(client);
+            return new ResponseEntity<>(clientDto, HttpStatus.OK);
 
 
     }
@@ -98,21 +98,21 @@ public class ClientController {
         //las anotaciones @RequestParam indican que el parámetro name se obtendrá de la solicitud HTTP PATCH.
 //@RequestParam significa que si o si tengo que pasarle esos datos.Si no se lo paso va a devolver un status 400
 
-        Cliente cliente = clientRepository.findById(id).orElse(null);    //Busca en el repositorio clientRepository un cliente con el id especificado. Si no se encuentra un cliente con ese id, retorna null.
+        Client client = clientRepository.findById(id).orElse(null);    //Busca en el repositorio clientRepository un cliente con el id especificado. Si no se encuentra un cliente con ese id, retorna null.
 
-        if(cliente == null) {
+        if(client == null) {
 
 
             return new ResponseEntity<>("No se encontro el cliente", HttpStatus.NOT_FOUND);
 
         }
 
-        cliente.setFirstName(firstName);
-        clientRepository.save(cliente);
+        client.setFirstName(firstName);
+        clientRepository.save(client);
 
-        ClienteDto clienteDto = new ClienteDto(cliente);
+        ClientDto clientDto = new ClientDto(client);
 
-        return new ResponseEntity<>(clienteDto, HttpStatus.OK);
+        return new ResponseEntity<>(clientDto, HttpStatus.OK);
 
 
 
@@ -129,25 +129,25 @@ public class ClientController {
         // Específicamente, @RequestParam se usa para extraer los valores de los parámetros de la solicitud y asignarlos a las variables correspondientes en el método.
 
 
-//        clientRepository.save(new Cliente(firstName, lastName, email));
+//        clientRepository.save(new Client(firstName, lastName, email));
 
 
-        Cliente cliente = new Cliente();
-        cliente.setFirstName(firstName);
-        cliente.setLastName(lastName);
-        cliente.setEmail(email);
-        clientRepository.save(cliente);
+        Client client = new Client();
+        client.setFirstName(firstName);
+        client.setLastName(lastName);
+        client.setEmail(email);
+        clientRepository.save(client);
 
-        ClienteDto clienteDto = new ClienteDto(cliente);
+        ClientDto clientDto = new ClientDto(client);
 
-        return new ResponseEntity<>(clienteDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(clientDto, HttpStatus.CREATED);
     }
 
 
 
 //    @PostMapping("/newCliente")
-//    public ResponseEntity<Cliente>crearCliente(@RequestBody Cliente cliente){
-//        Cliente savedClient = clientRepository.save(cliente);
+//    public ResponseEntity<Client>crearClient(@RequestBody Client client){
+//        Client savedClient = clientRepository.save(client);
 //        return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
 //    }
 
@@ -158,16 +158,16 @@ public class ClientController {
 //El meotodo se va a disparar cuando se reciba una solicitud DELETE en la ruta "/api/clients/{id}"
     public ResponseEntity<?> deleteClient(@PathVariable Long id) {  // @PathVariable long id: Vincula el parámetro de ruta {id} al parámetro id del método. Captura el valor del {id} en la URL.
 
-        Cliente cliente = clientRepository.findById(id).orElse(null);
+        Client client = clientRepository.findById(id).orElse(null);
 
-        if(cliente == null){
+        if(client == null){
             return new ResponseEntity<>("no se encontro el cliente con el id: " + id,HttpStatus.NO_CONTENT);
 
         }
 
-        if (cliente.isActive()) {
-            cliente.setActive(false); // Realizamos el borrado lógico marcando como inactivo.
-            clientRepository.save(cliente);  // Guardamos el cliente con el nuevo estado.
+        if (client.isActive()) {
+            client.setActive(false); // Realizamos el borrado lógico marcando como inactivo.
+            clientRepository.save(client);  // Guardamos el cliente con el nuevo estado.
             return new ResponseEntity<>("El cliente con id " + id + " ha sido marcado como inactivo.", HttpStatus.OK);
         }
 
@@ -179,7 +179,7 @@ public class ClientController {
     @PutMapping("/modificar/{id}")
 // Que este entre llaves sugnifica que es un parametro dinamico y no estatico porque esta esperando un id que le voy a pasar cuando haga la peticion.
     public ResponseEntity<?> updateClient(@PathVariable Long id, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String email) {
-        Cliente clienteAModificar = clientRepository.findById(id).orElse(null); //Estoy buscando el objeto que coicnida con el id que voy a pasar por parametro y para eso uso el metodo findById().
+        Client clienteAModificar = clientRepository.findById(id).orElse(null); //Estoy buscando el objeto que coicnida con el id que voy a pasar por parametro y para eso uso el metodo findById().
         //Este metodo viene de clienteRepository que a su vez viene de JpaRepository.
 
         if (clientRepository.existsById(id)) {   // Verificamos si el cliente existe.
@@ -187,8 +187,8 @@ public class ClientController {
             clienteAModificar.setLastName(lastName);
             clienteAModificar.setEmail(email);
             clientRepository.save(clienteAModificar);
-            ClienteDto clienteDto = new ClienteDto(clienteAModificar);
-            return new ResponseEntity<>(clienteDto, HttpStatus.OK);
+            ClientDto clientDto = new ClientDto(clienteAModificar);
+            return new ResponseEntity<>(clientDto, HttpStatus.OK);
 
         }
             return new ResponseEntity<>("cliente no encontrado",HttpStatus.NOT_FOUND);
@@ -210,33 +210,33 @@ public class ClientController {
 
     @PatchMapping("/modificarCliente")
     // Este método responderá a la solicitud de tipo PATCH en la ruta /api/clients/modificarCliente.
-    public String updateCliente(
+    public String updateClient(
             @RequestParam long id,
             @RequestParam(required = false) String firstName,  //Si se proporciona en la solicitud, se convertirá en un tipo String. Si no se proporciona, su valor será null.
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String lastName) {
 
         // Busca en el repositorio clientRepository un cliente con el id especificado. Si no se encuentra, retorna null.
-        Cliente cliente = clientRepository.findById(id).orElse(null);
+        Client client = clientRepository.findById(id).orElse(null);
 
         // Si el cliente no se encuentra, retorna un mensaje de error.
-        if (cliente == null) {
+        if (client == null) {
             return "Cliente no encontrado con id " + id; // Mensaje de error simple
         }
 
         // Actualiza los atributos solo si se han proporcionado.
         if (firstName != null) {
-            cliente.setFirstName(firstName);
+            client.setFirstName(firstName);
         }
         if (email != null) {
-            cliente.setEmail(email);
+            client.setEmail(email);
         }
         if (lastName != null) {
-            cliente.setLastName(lastName);
+            client.setLastName(lastName);
         }
 
         // Guarda los cambios en el repositorio.
-        clientRepository.save(cliente);
+        clientRepository.save(client);
 
         return "Atributos del cliente actualizados"; // Mensaje de éxito simple
     }

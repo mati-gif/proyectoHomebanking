@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-public class Transaccion {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +23,10 @@ public class Transaccion {
     private TransactionType type;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cuenta_id")
-    private Cuenta cuenta;
-    
-    public Transaccion(double amount, String description, LocalDateTime date, TransactionType type) {
+    @JoinColumn(name = "account_id")
+    private Account account;
+
+    public Transaction(double amount, String description, LocalDateTime date, TransactionType type) {
         this.amount = amount;
         this.description = description;
         this.date = date;
@@ -34,7 +34,7 @@ public class Transaccion {
     }
 
 
-    public Transaccion() {
+    public Transaction() {
     }
 
 
@@ -46,12 +46,12 @@ public class Transaccion {
         this.id = id;
     }
 
-    public Cuenta getCuenta() {
-        return cuenta;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setCuenta(Cuenta cuenta) {
-        this.cuenta = cuenta;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public TransactionType getType() {

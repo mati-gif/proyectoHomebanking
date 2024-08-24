@@ -18,7 +18,7 @@ public class HomebankingApplication {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 	@Bean//un  bean es simplemente una clase Java normal, escrita para seguir algunas reglas importantes. Pedimos que se ejecute esto primero.
-	public CommandLineRunner initData(ClientRepository clientRepository, CountRepository countRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository,CardRepository cardRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository AccountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository,CardRepository cardRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
 		// initData toma una instancia de ClientRepository como parámetro y utiliza este repositorio para guardar algunos clientes en la base de datos al iniciar la aplicación.
 //Es un singleton que se ejecutan una vez cada vez que se inicia la aplicación.
 
@@ -40,19 +40,19 @@ public class HomebankingApplication {
 			////------Creando los prestamos---------////
 
 //			List<Integer> hipotecaPayments = Arrays.asList(12, 24, 36, 48, 60);
-			Prestamo prestamo1 = new Prestamo("Hipoteca",500.000, Arrays.asList(12, 24, 36, 48, 60));
+			Loan loan1 = new Loan("Hipoteca",500.000, Arrays.asList(12, 24, 36, 48, 60));
 
-			loanRepository.save(prestamo1);
+			loanRepository.save(loan1);
 
 //			List<Integer> personalPayments2 = Arrays.asList( 6, 12, 24.);
-			Prestamo prestamo2 = new Prestamo("Personal",100.000, Arrays.asList( 6, 12, 24));
-			loanRepository.save(prestamo2);
+			Loan loan2 = new Loan("Personal",100.000, Arrays.asList( 6, 12, 24));
+			loanRepository.save(loan2);
 
 
 //			List<Integer> automotrizPayments3 = Arrays.asList(6, 12, 24, 36);
-			Prestamo prestamo3 = new Prestamo("Automotriz",300.000, Arrays.asList(6, 12, 24, 36));
+			Loan loan3 = new Loan("Automotriz",300.000, Arrays.asList(6, 12, 24, 36));
 
-			loanRepository.save(prestamo3);
+			loanRepository.save(loan3);
 
 			////-----------------------------------////
 
@@ -79,82 +79,82 @@ public class HomebankingApplication {
 
 
 
-			Cliente cliente1 = new Cliente("Melba", "Morel", "M.morel@me.com");
-//			ClienteDto clienteDto1 = new ClienteDto(cliente1);
-			clientRepository.save(cliente1);//creando y guardando en la base de datos los clientes.
+			Client client1 = new Client("Melba", "Morel", "M.morel@me.com");
+//			ClientDto clientDto1 = new ClientDto(client1);
+			clientRepository.save(client1);//creando y guardando en la base de datos los clientes.
 
 
-			Cuenta cuenta1 = new Cuenta("VIN001", today, 5000);
-			Cuenta cuenta2 = new Cuenta("VIN002", tomorrow, 7500);
+			Account account1 = new Account("VIN001", today, 5000);
+			Account account2 = new Account("VIN002", tomorrow, 7500);
 
 //			CuentaDto cuentaDto1 = new CuentaDto(cuenta1);
 //			CuentaDto cuentaDto2 = new CuentaDto(cuenta2);
 
-			cliente1.addCuentas(cuenta1);
-			cliente1.addCuentas(cuenta2);
+			client1.addAccounts(account1);
+			client1.addAccounts(account2);
 
-			countRepository.save(cuenta1);
-			countRepository.save(cuenta2);
-
-
+			AccountRepository.save(account1);
+			AccountRepository.save(account2);
 
 
-			Transaccion transaccion1 = new Transaccion(500,"ingreso",now, TransactionType.CREDITO);
-			Transaccion transaccion2 = new Transaccion(-700,"egreso",now.plusHours(1), TransactionType.DEBITO);
-			Transaccion transaccion3 = new Transaccion(1000,"ingreso",now.plusHours(2), TransactionType.CREDITO);
-			cuenta1.addTransacciones(transaccion1);
-			cuenta1.addTransacciones(transaccion2);
-			cuenta1.addTransacciones(transaccion3);
-
-			transactionRepository.save(transaccion1);
-			transactionRepository.save(transaccion2);
-			transactionRepository.save(transaccion3);
 
 
-			Transaccion transaccion4 = new Transaccion(350,"ingreso",now, TransactionType.CREDITO);
-			Transaccion transaccion5 = new Transaccion(-920,"egreso",now.plusHours(1), TransactionType.DEBITO);
-			Transaccion transaccion6 = new Transaccion(1300,"ingreso",now.plusHours(2), TransactionType.CREDITO);
-			cuenta2.addTransacciones(transaccion4);
-			cuenta2.addTransacciones(transaccion5);
-			cuenta2.addTransacciones(transaccion6);
+			Transaction transaction1 = new Transaction(500,"ingreso",now, TransactionType.CREDIT);
+			Transaction transaction2 = new Transaction(-700,"egreso",now.plusHours(1), TransactionType.DEBIT);
+			Transaction transaction3 = new Transaction(1000,"ingreso",now.plusHours(2), TransactionType.CREDIT);
+			account1.addTransactions(transaction1);
+			account1.addTransactions(transaction2);
+			account1.addTransactions(transaction3);
 
-			transactionRepository.save(transaccion4);
-			transactionRepository.save(transaccion5);
-			transactionRepository.save(transaccion6);
+			transactionRepository.save(transaction1);
+			transactionRepository.save(transaction2);
+			transactionRepository.save(transaction3);
+
+
+			Transaction transaction4 = new Transaction(350,"ingreso",now, TransactionType.CREDIT);
+			Transaction transaction5 = new Transaction(-920,"egreso",now.plusHours(1), TransactionType.DEBIT);
+			Transaction transaction6 = new Transaction(1300,"ingreso",now.plusHours(2), TransactionType.CREDIT);
+			account2.addTransactions(transaction4);
+			account2.addTransactions(transaction5);
+			account2.addTransactions(transaction6);
+
+			transactionRepository.save(transaction4);
+			transactionRepository.save(transaction5);
+			transactionRepository.save(transaction6);
 
 
 
 /////--------------------- Crear ClientLoan y asociar los préstamos al cliente Melba    --------------//
 
 
-ClientePrestamo clientePrestamo1 = new ClientePrestamo(400000.0,60);
+ClientLoan clientLoan1 = new ClientLoan(400000.0,60);
 
-cliente1.addClientePrestamo(clientePrestamo1);
-prestamo1.addClientePrestamo(clientePrestamo1);
+client1.addClientLoan(clientLoan1);
+loan1.addClientLoan(clientLoan1);
 
-clientLoanRepository.save(clientePrestamo1);
+clientLoanRepository.save(clientLoan1);
 
 
 
-ClientePrestamo clientePrestamo2 = new ClientePrestamo(50000.0,12);
+ClientLoan clientLoan2 = new ClientLoan(50000.0,12);
 
-cliente1.addClientePrestamo(clientePrestamo2);
-prestamo2.addClientePrestamo(clientePrestamo2);
+client1.addClientLoan(clientLoan2);
+loan2.addClientLoan(clientLoan2);
 
-clientLoanRepository.save(clientePrestamo2);
+clientLoanRepository.save(clientLoan2);
 
 
 ////////---------------------------Creando las tarjetas para el cliente Melba-------------------------///////
 
-Tarjeta tarjeta1 = new Tarjeta(CardType.DEBITO,ColorType.GOLD,fromDate,thruDate);
-Tarjeta tarjeta2 = new Tarjeta(CardType.CREDITO,ColorType.PLATINUM,fromDate,thruDate);
+Card card1 = new Card(CardType.DEBIT,ColorType.GOLD,fromDate,thruDate);
+Card card2 = new Card(CardType.CREDIT,ColorType.PLATINUM,fromDate,thruDate);
 
 
-cliente1.addTarjetas(tarjeta1);
-cliente1.addTarjetas(tarjeta2);
+client1.addCards(card1);
+client1.addCards(card2);
 
-cardRepository.save(tarjeta1);
-cardRepository.save(tarjeta2);
+cardRepository.save(card1);
+cardRepository.save(card2);
 
 
 
@@ -164,38 +164,38 @@ cardRepository.save(tarjeta2);
 //--------------------------------------------------------------------------------------------------------------------------------------------
 
 
-			Cliente cliente2 = new Cliente("Chloe", "O'Brian", "c.obrian@me.com");
-//			ClienteDto clienteDto2 = new ClienteDto(cliente2);
-			clientRepository.save(cliente2);
+			Client client2 = new Client("Chloe", "O'Brian", "c.obrian@me.com");
+//			ClientDto clientDto2 = new ClientDto(client2);
+			clientRepository.save(client2);
 
 
-			Cuenta cuenta3 = new Cuenta("VIN003", today, 10000);
-			Cuenta cuenta4 = new Cuenta("VIN004", tomorrow, 20000);
+			Account account3 = new Account("VIN003", today, 10000);
+			Account account4 = new Account("VIN004", tomorrow, 20000);
 
 			//			CuentaDto cuentaDto3 = new CuentaDto(cuenta3);
 			//			CuentaDto cuentaDto4 = new CuentaDto(cuenta4);
 
 
-			cliente2.addCuentas(cuenta3);
-			cliente2.addCuentas(cuenta4);
+			client2.addAccounts(account3);
+			client2.addAccounts(account4);
 
 
 
-			countRepository.save(cuenta3);
-			countRepository.save(cuenta4);
+			AccountRepository.save(account3);
+			AccountRepository.save(account4);
 
 
 
-		Transaccion transaccion7 = new Transaccion(-270,"egreso",now, TransactionType.DEBITO);
-		Transaccion transaccion8 = new Transaccion(1960,"ingreso",now.plusHours(1), TransactionType.CREDITO);
-		Transaccion transaccion9 = new Transaccion(-2000,"egreso",now.plusHours(3), TransactionType.DEBITO);
-		cuenta3.addTransacciones(transaccion7);
-		cuenta3.addTransacciones(transaccion8);
-		cuenta3.addTransacciones(transaccion9);
+		Transaction transaction7 = new Transaction(-270,"egreso",now, TransactionType.DEBIT);
+		Transaction transaction8 = new Transaction(1960,"ingreso",now.plusHours(1), TransactionType.CREDIT);
+		Transaction transaction9 = new Transaction(-2000,"egreso",now.plusHours(3), TransactionType.DEBIT);
+		account3.addTransactions(transaction7);
+		account3.addTransactions(transaction8);
+		account3.addTransactions(transaction9);
 
-		transactionRepository.save(transaccion7);
-		transactionRepository.save(transaccion8);
-		transactionRepository.save(transaccion9);
+		transactionRepository.save(transaction7);
+		transactionRepository.save(transaction8);
+		transactionRepository.save(transaction9);
 
 
 
@@ -205,41 +205,41 @@ cardRepository.save(tarjeta2);
 /////--------------------- Crear ClientLoan y asociar los préstamos al cliente  Chloe   --------------//
 
 
-ClientePrestamo clientePrestamo3 = new ClientePrestamo(10000.0,24);
+ClientLoan clientLoan3 = new ClientLoan(10000.0,24);
 
-cliente2.addClientePrestamo(clientePrestamo3);
-prestamo3.addClientePrestamo(clientePrestamo3);
-
-
-
-clientLoanRepository.save(clientePrestamo3);
+client2.addClientLoan(clientLoan3);
+loan3.addClientLoan(clientLoan3);
 
 
 
-
-
-ClientePrestamo clientePrestamo4 = new ClientePrestamo(200000.0,36);
-
-cliente2.addClientePrestamo(clientePrestamo4);
-prestamo2.addClientePrestamo(clientePrestamo4);
+clientLoanRepository.save(clientLoan3);
 
 
 
-clientLoanRepository.save(clientePrestamo4);
+
+
+ClientLoan clientLoan4 = new ClientLoan(200000.0,36);
+
+client2.addClientLoan(clientLoan4);
+loan2.addClientLoan(clientLoan4);
+
+
+
+clientLoanRepository.save(clientLoan4);
 
 
 
 ////////---------------------------Creando las tarjetas para el cliente Chloe-------------------------///////
 
-			Tarjeta tarjeta3 = new Tarjeta(CardType.DEBITO,ColorType.GOLD,fromDate,thruDate);
-			Tarjeta tarjeta4 = new Tarjeta(CardType.CREDITO,ColorType.PLATINUM,fromDate,thruDate);
+			Card card3 = new Card(CardType.DEBIT,ColorType.GOLD,fromDate,thruDate);
+			Card card4 = new Card(CardType.CREDIT,ColorType.PLATINUM,fromDate,thruDate);
 
 
-			cliente2.addTarjetas(tarjeta3);
-			cliente2.addTarjetas(tarjeta4);
+			client2.addCards(card3);
+			client2.addCards(card4);
 
-			cardRepository.save(tarjeta3);
-			cardRepository.save(tarjeta4);
+			cardRepository.save(card3);
+			cardRepository.save(card4);
 
 
 
@@ -248,26 +248,21 @@ clientLoanRepository.save(clientePrestamo4);
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
-			Cliente cliente3 = new Cliente("Kim", "Bauer", "k.bauer@me.com");
-			clientRepository.save(cliente3);
+			Client client3 = new Client("Kim", "Bauer", "k.bauer@me.com");
+			clientRepository.save(client3);
 
-			Cliente cliente4 = new Cliente("David", "Palmer", "d.palmer@me.com");
-			clientRepository.save(cliente4);
+			Client client4 = new Client("David", "Palmer", "d.palmer@me.com");
+			clientRepository.save(client4);
 
-			Cliente cliente5 = new Cliente("Michelle", "Dessler", "m.dessler@me.com");
-			clientRepository.save(cliente5);
+			Client client5 = new Client("Michelle", "Dessler", "m.dessler@me.com");
+			clientRepository.save(client5);
 
-			Cliente cliente6 = new Cliente("Lionel", "Messi", "l.messi@me.com");
-			clientRepository.save(cliente6);
+			Client client6 = new Client("Lionel", "Messi", "l.messi@me.com");
+			clientRepository.save(client6);
 
-			System.out.println(cliente6);
+			System.out.println(client6);
 
-//			clientRepository.save(new Cliente("Jack", "Bauer", "j.bauer@me.com"));
-//			clientRepository.save(new Cliente("Chloe", "O'Brian", "c.obrian@me.com"));
-//			clientRepository.save(new Cliente("Kim", "Bauer",	"k.bauer@me.com"));
-//			clientRepository.save(new Cliente("David", "Palmer", "d.palmer@me.com"));
-//			clientRepository.save(new Cliente("Michelle", "Dessler", "m.dessler@me.com"));
-//			clientRepository.save(new Cliente("Lionel", "Messi", "l.messi@me.com"));
+
 		};
 	}
 
