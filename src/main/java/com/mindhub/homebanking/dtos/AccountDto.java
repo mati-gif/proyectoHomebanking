@@ -10,12 +10,10 @@ import java.util.stream.Collectors;
 public class AccountDto {
 
     private Long id;
-
     private String number;
     private LocalDate creationDate;
     private double balance;
     private Set<TransactionDto> transactions;
-
 
     public AccountDto(Account account) {
         this.id = account.getId();           //Asigna el valor del id del objeto Cuenta al id del CuentaDto.

@@ -11,7 +11,6 @@ public class ClientLoanDto {
     private double amount;
     private Integer payment;
 
-
     public ClientLoanDto(ClientLoan clientLoan){
         this.id = clientLoan.getId();
         this.loanId = clientLoan.getLoan().getId();
@@ -20,7 +19,6 @@ public class ClientLoanDto {
         this.payment = clientLoan.getPayment();
 
     }
-
 
     public Long getId() {
         return id;
@@ -53,7 +51,6 @@ public class ClientLoanDto {
     public void setAmount(double amount) {
         this.amount = amount;
     }
-
 
     public Integer getPayment() {
         return payment;

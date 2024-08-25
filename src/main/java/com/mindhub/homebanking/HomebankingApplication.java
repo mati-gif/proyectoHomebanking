@@ -2,10 +2,12 @@ package com.mindhub.homebanking;
 
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;//es una interfaz que permite ejecutar código al inicio de la aplicación.
 import org.springframework.boot.SpringApplication;// se usa para arrancar la aplicación Spring Boot.
 import org.springframework.boot.autoconfigure.SpringBootApplication; //es una anotación que indica que esta es una aplicación Spring Boot
 import org.springframework.context.annotation.Bean;//es una anotación para definir un bean de Spring.
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,13 +16,16 @@ import java.util.Arrays;
 @SpringBootApplication
 public class HomebankingApplication {
 
+	@Autowired
+	PasswordEncoder passwordEncoder;
+
 	public static void main(String[] args) {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 	@Bean//un  bean es simplemente una clase Java normal, escrita para seguir algunas reglas importantes. Pedimos que se ejecute esto primero.
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository AccountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository,CardRepository cardRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository,CardRepository cardRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
 		// initData toma una instancia de ClientRepository como parámetro y utiliza este repositorio para guardar algunos clientes en la base de datos al iniciar la aplicación.
-//Es un singleton que se ejecutan una vez cada vez que se inicia la aplicación.
+		//Es un singleton que se ejecutan una vez cada vez que se inicia la aplicación.
 
 		return (args) -> {// Devuelve una implementación de CommandLineRunner que guarda varios objetos Cliente en la base de datos usando clientRepository.save().
 			// save a couple of customers
@@ -41,7 +46,6 @@ public class HomebankingApplication {
 
 //			List<Integer> hipotecaPayments = Arrays.asList(12, 24, 36, 48, 60);
 			Loan loan1 = new Loan("Hipoteca",500.000, Arrays.asList(12, 24, 36, 48, 60));
-
 			loanRepository.save(loan1);
 
 //			List<Integer> personalPayments2 = Arrays.asList( 6, 12, 24.);
@@ -51,7 +55,6 @@ public class HomebankingApplication {
 
 //			List<Integer> automotrizPayments3 = Arrays.asList(6, 12, 24, 36);
 			Loan loan3 = new Loan("Automotriz",300.000, Arrays.asList(6, 12, 24, 36));
-
 			loanRepository.save(loan3);
 
 			////-----------------------------------////
@@ -63,23 +66,15 @@ public class HomebankingApplication {
 			LocalDate tomorrow = today.plusDays(1);
 			System.out.println(tomorrow);
 
-
 			LocalDateTime now = LocalDateTime.now();        //Declaras una variable llamada now de tipo LocalDateTime
 			System.out.println(now);
-
-//			LocalDateTime later = now.plusDays(1);
-//			System.out.println(later);
-
-
-
-
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
-			Client client1 = new Client("Melba", "Morel", "M.morel@me.com");
+			Client client1 = new Client("Melba", "Morel", "M.morel@me.com", passwordEncoder.encode("123"));
 //			ClientDto clientDto1 = new ClientDto(client1);
 			clientRepository.save(client1);//creando y guardando en la base de datos los clientes.
 
@@ -93,10 +88,8 @@ public class HomebankingApplication {
 			client1.addAccounts(account1);
 			client1.addAccounts(account2);
 
-			AccountRepository.save(account1);
-			AccountRepository.save(account2);
-
-
+			accountRepository.save(account1);
+			accountRepository.save(account2);
 
 
 			Transaction transaction1 = new Transaction(500,"ingreso",now, TransactionType.CREDIT);
@@ -164,7 +157,7 @@ cardRepository.save(card2);
 //--------------------------------------------------------------------------------------------------------------------------------------------
 
 
-			Client client2 = new Client("Chloe", "O'Brian", "c.obrian@me.com");
+			Client client2 = new Client("Chloe", "O'Brian", "c.obrian@me.com",passwordEncoder.encode("456"));
 //			ClientDto clientDto2 = new ClientDto(client2);
 			clientRepository.save(client2);
 
@@ -181,8 +174,8 @@ cardRepository.save(card2);
 
 
 
-			AccountRepository.save(account3);
-			AccountRepository.save(account4);
+			accountRepository.save(account3);
+			accountRepository.save(account4);
 
 
 
@@ -248,16 +241,16 @@ clientLoanRepository.save(clientLoan4);
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
-			Client client3 = new Client("Kim", "Bauer", "k.bauer@me.com");
+			Client client3 = new Client("Kim", "Bauer", "k.bauer@me.com",passwordEncoder.encode("789"));
 			clientRepository.save(client3);
 
-			Client client4 = new Client("David", "Palmer", "d.palmer@me.com");
+			Client client4 = new Client("David", "Palmer", "d.palmer@me.com",passwordEncoder.encode("321"));
 			clientRepository.save(client4);
 
-			Client client5 = new Client("Michelle", "Dessler", "m.dessler@me.com");
+			Client client5 = new Client("Michelle", "Dessler", "m.dessler@me.com",passwordEncoder.encode("654"));
 			clientRepository.save(client5);
 
-			Client client6 = new Client("Lionel", "Messi", "l.messi@me.com");
+			Client client6 = new Client("Lionel", "Messi", "l.messi@me.com",passwordEncoder.encode("987"));
 			clientRepository.save(client6);
 
 			System.out.println(client6);

@@ -6,7 +6,7 @@ import com.mindhub.homebanking.models.Card;
 
 import java.time.LocalDate;
 
-public class CardsDto {
+public class CardDto {
 
     private Long id;
     private String cardHolder;
@@ -17,10 +17,7 @@ public class CardsDto {
     private LocalDate fromDate;
     private LocalDate thruDate;
 
-
-
-
-    public CardsDto(Card card){
+    public CardDto(Card card){
         this.id = card.getId();
         this.cardHolder = card.getCardHolder();
         this.type = card.getType();
@@ -31,6 +28,8 @@ public class CardsDto {
         this.thruDate = card.getThruDate();
     }
 
+    public CardDto() {
+    }
 
     public Long getId() {
         return id;

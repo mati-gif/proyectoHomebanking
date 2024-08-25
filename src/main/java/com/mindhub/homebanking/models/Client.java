@@ -4,7 +4,7 @@ package com.mindhub.homebanking.models;
 
 import com.mindhub.homebanking.Utils.CardsUtils;
 import jakarta.persistence.*;
-//import org.hibernate.annotations.GenericGenerator;
+
 
 import java.util.HashSet;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-@Entity//indica que estoy generaqndo una tabla en la base de datos con el nombre de Cliente donde se alamcenaran los objetos como filas en esa tabla.
-//cada columna de la tabla va a representar una de las propiedades de nuestro objeto.
+
+@Entity//indica que estoy generaqndo una tabla en la base de datos con el nombre de Cliente donde se alamcenaran los objetos como filas en esa tabla.Cada columna de la tabla va a representar una de las propiedades de nuestro objeto.
 public class Client {
 
     @Id
@@ -24,6 +24,7 @@ public class Client {
     private String lastName;
     private String email;
     private boolean active = true;
+    private String password;
 
     //FetchType.EAGER, estoy diciendo que quiero que la entidad con la que esta relacionada la clase Cliente  se cargue inmediatamente junto con la entidad principal. Es como si estuvieras pidiendo que, al obtener la entidad principal de la base de datos, también se obtengan automáticamente todas las entidades relacionadas en la misma operación.
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)//mappedBy = “cliente”: Esto especifica que la relación es bidireccional y que la entidad Cuenta tiene una propiedad llamada cliente que es la dueña de la relación.  //significa que las entidades Cuenta relacionadas se cargarán inmediatamente junto con la entidad actual. Cuando consultas la entidad actual, todas las instancias de Cuenta asociadas se recuperan en la misma consulta.
@@ -35,13 +36,19 @@ public class Client {
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     Set<Card> cards = new HashSet<>();
 
-
     public Client(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
+    public Client( String firstName, String lastName, String email, String password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
 
     public Client() {//JPA y Hibernate requieren un constructor sin argumentos para crear instancias de la entidad a través de la reflexión.Basicamente para generar un espacio en memoria.
         // Esto es necesario para que el framework pueda crear instancias de la entidad sin conocer los detalles de sus constructores.
@@ -113,8 +120,16 @@ public class Client {
         this.cards = cards;
     }
 
-    public void addAccounts(Account account){
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+    public void addAccounts(Account account){
         account.setClient(this);
         accounts.add(account);
     }
@@ -127,10 +142,7 @@ public class Client {
 
     public void addClientLoan(ClientLoan clientLoan){
         clientLoan.setClient(this);
-
         clientLoans.add(clientLoan);
-
-
     }
     //clientePrestamo: Este es el parámetro que se pasó al método, que es una instancia de la clase ClientePrestamo.
     //setCliente(this): Aquí se está llamando al método setCliente del objeto clientePrestamo.
@@ -148,6 +160,29 @@ public class Client {
         card.setCvv(CardsUtils.generarCodigoSeguridad());
 
     }
+    //Este metodo devuelve la lista de préstamos de un cliente.
+//List<Prestamo> ==> significa que va a retornar una lista de objetos de tipo Prestamo.
+
+//clientePrestamos  ==> es el conjunto (Set<ClientePrestamo>) que pertenece a la instancia actual de Cliente.
+
+//clientePrestamos.stream() ===> stream() es un metodo que convierte la lista clientePrestamos en un flujo de datos "Stream".
+// Esto permite realizar operaciones funcionales (como mapear, filtrar, etc.) sobre los elementos de la lista de manera secuencial o paralela.
+
+//map(): Es una operación intermedia en los "streams" que transforma cada elemento del flujo de datos.
+// El método map() se utiliza para mapear cada elemento del flujo de datos a un nuevo elemento en el flujo de datos resultante.
+
+//(c -> c.getCliente()): Es una expresión lambda. Para cada elemento "c" del flujo clientePrestamos, la expresión lambda aplica el método getPrestamo() sobre "c".
+
+//"c": Representa cada elemento de clientePrestamos.
+//c.getPrestamo(): Extrae el objeto Prestamo de cada elemento "c". Ademas "c" es de la clase  ClientePrestamo, que tiene el método getPrestamo(), y este método retorna un objeto de tipo Cliente.
+
+//Como resultado, map() genera un nuevo flujo de datos donde cada elemento es un objeto Cliente.
+
+//.collect(Collectors.toList()):
+
+//collect(): Es una operación terminal en los streams que recopila los elementos transformados en una estructura de datos concreta, en este caso, una lista.
+    //Collectors.toList(): Indica que los elementos del flujo deben ser recolectados y almacenados en una lista.
+
     //Resultado Final:
     //Se retorna una lista (List<Prestamo>) que contiene todos los objetos Prestamo extraídos de cada elemento de la lista clientePrestamos.
     //Resumen:
@@ -156,7 +191,6 @@ public class Client {
     public List<Loan> getLoans(){
         return clientLoans.stream().map(c -> c.getLoan()).collect(Collectors.toList());
     }
-
 
     //esto es para que el objeto cliente se pueda mostrar en la consola.
     @Override

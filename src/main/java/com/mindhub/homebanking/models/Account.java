@@ -2,10 +2,6 @@ package com.mindhub.homebanking.models;
 
 
 import jakarta.persistence.*;
-//import org.hibernate.annotations.GenericGenerator;
-
-//import javax.persistence.Entity;
-//import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,9 +24,7 @@ public class Account {
     private Client client;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
-     Set<Transaction> transactions = new HashSet<>();
-//Estoy declarando un Set llamad transacciones que contendra objetos de tipo Transaccion.
-
+     Set<Transaction> transactions = new HashSet<>();//Estoy declarando un Set llamad transacciones que contendra objetos de tipo Transaccion.
 
     public Account(String number, LocalDate creationDate, double balance) {
         this.number = number;
@@ -38,10 +32,8 @@ public class Account {
         this.balance = balance;
     }
 
-
     public Account() {
     }
-
 
     public Long getId() {
         return id;
@@ -95,6 +87,5 @@ public class Account {
         transaction.setAccount(this);
         transactions.add(transaction);
     }
-
 
 }

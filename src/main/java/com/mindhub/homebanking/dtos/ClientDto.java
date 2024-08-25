@@ -16,8 +16,7 @@ public class ClientDto {
     private String email;
     private Set<AccountDto> accounts;   // Declara una variable privada de tipo Set<CuentaDto> llamada cuentas. Tambien se puede decir : Ceclara un set llamado cuentas que tendra objetos de tipo CuentaDto.
     private Set<ClientLoanDto> loans;   // Declara una variable privada de tipo Set<ClientePrestamoDto> llamada prestamos. Tambien se puede decir : Ceclara un set llamado prestamos que tendra objetos de tipo ClientePrestamoDto.
-    private Set<CardsDto> cards;   // Declara una variable privada de tipo Set<TarjetaDto> llamada prestamos. Tambien se puede decir : Ceclara un set llamado prestamos que tendra objetos de tipo TarjetaDto.
-
+    private Set<CardDto> cards;   // Declara una variable privada de tipo Set<TarjetaDto> llamada prestamos. Tambien se puede decir : Ceclara un set llamado prestamos que tendra objetos de tipo TarjetaDto.
 
     public ClientDto(Client client){
         this.id = client.getId(); //Asigna el valor del id del objeto Cliente al id del ClienteDto.
@@ -43,14 +42,11 @@ public class ClientDto {
 
     }
 
-    private Set<CardsDto> convertCardsToDto(Set<Card> cards) {   //Declara un método privado que toma un conjunto de Cuenta y devuelve un conjunto de CuentaDto.
+    private Set<CardDto> convertCardsToDto(Set<Card> cards) {   //Declara un método privado que toma un conjunto de Cuenta y devuelve un conjunto de CuentaDto.
         return cards.stream()             //Convierte el conjunto de Cuenta en un Stream de CuentaDto.
-                .map(CardsDto::new)          //Mapea cada objeto Cuenta a un nuevo objeto CuentaDto.
+                .map(CardDto::new)          //Mapea cada objeto Cuenta a un nuevo objeto CuentaDto.
                 .collect(Collectors.toSet());     // Recoge los objetos CuentaDto en un conjunto y lo devuelve.
     }
-
-
-
 
     public Long getId() {
         return id;
@@ -72,13 +68,11 @@ public class ClientDto {
         return accounts;
     }
 
-
     public Set<ClientLoanDto> getLoans() {
         return loans;
     }
 
-
-    public Set<CardsDto> getCards() {
+    public Set<CardDto> getCards() {
         return cards;
     }
 }

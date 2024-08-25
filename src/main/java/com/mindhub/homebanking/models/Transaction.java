@@ -33,10 +33,8 @@ public class Transaction {
         this.type = type;
     }
 
-
     public Transaction() {
     }
-
 
     public Long getId() {
         return id;
@@ -85,8 +83,5 @@ public class Transaction {
     public void setAmount(double amount) {
         this.amount = amount;
     }
-
-
-
 
 }

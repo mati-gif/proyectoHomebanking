@@ -11,7 +11,6 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String cardHolder;
     private CardType type;
     private ColorType color;
@@ -20,11 +19,9 @@ public class Card {
     private LocalDate fromDate;
     private LocalDate thruDate;
 
-
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
-
 
     public Card(CardType type, ColorType color, LocalDate fromDate, LocalDate thruDate) {
         this.type = type;
@@ -34,9 +31,6 @@ public class Card {
         this.fromDate = fromDate;
         this.thruDate = thruDate;
     }
-
-
-
 
     public Card() {
     }
@@ -104,7 +98,6 @@ public class Card {
     public void setThruDate(LocalDate thruDate) {
         this.thruDate = thruDate;
     }
-
 
     public Client getClient() {
         return client;

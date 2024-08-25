@@ -14,39 +14,29 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class ClientLoan {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private double amount;
-
     private Integer payment;
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_id")
     private Client client;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="loan_id")
     private Loan loan;
 
-
     public ClientLoan(double amount, Integer payment) {
         this.amount = amount;
         this.payment = payment;
-
     }
-
-
 
     public ClientLoan(){
 
     }
-
 
     public Long getId() {
         return id;
