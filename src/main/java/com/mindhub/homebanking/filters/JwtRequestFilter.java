@@ -18,8 +18,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
-public class JwtRequestFilter extends OncePerRequestFilter {
+
+@Component//indica que es un componente de Spring.Spring administrara como un @Bean lo que esta anotando y lo agregara al contexto de la aplicacion
+public class JwtRequestFilter extends OncePerRequestFilter {//filtro que nos va a permitir la autenticacion de los usuarios a travez del token.Se va a ejecutar una vez por cada peticion http que se haga.
 
     @Autowired
     private UserDetailsService userDetailsService;

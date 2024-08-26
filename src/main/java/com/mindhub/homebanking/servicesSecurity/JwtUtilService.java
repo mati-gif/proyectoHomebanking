@@ -13,17 +13,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
+@Service//Servicio para generar el token firmado con la clave secreta.
 public class JwtUtilService {
 
-    private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
+    private static  final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
     private static  final long EXPIRATION_TOKEN = 1000 * 60 * 60;
 
-    public Claims extractAllClaims(String token) {
+    //Este metodo va a verificar un token usando una clave secreta y luego va a extraer y devolver las claims del token verificado.
+    public Claims extractAllClaims(String token) { //Claims = lo que se detalla en el payload, este metodo extrae todos los claims.
         return Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token).getPayload();
     }
 
+    //Este metodo sirve para devolver un claim en particular pero al tener <T> es una clase generica y por lo tanto no se que me puede devovler
     public <T> T extractClaim(String token, Function<Claims, T> claimsTFunction) {
         final Claims claims = extractAllClaims(token);
         return claimsTFunction.apply(claims);
@@ -37,7 +39,7 @@ public class JwtUtilService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -54,7 +56,7 @@ public class JwtUtilService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>();//Estructura para asociar una clave a un valor.
         String rol = userDetails.getAuthorities().iterator().next().getAuthority();
         claims.put("rol", rol);
         return createToken(claims, userDetails.getUsername());

@@ -9,13 +9,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service//Servicio parar crear una instancia de User en nuestra aplicacion.
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private ClientRepository clientRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { //retorna un UserDetails que es el usuario que queremos tener en el contextHolder
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { //retorna un UserDetails que es el usuario que queremos tener en el contextHolder.
 
         Client client = clientRepository.findByEmail(username);
 
@@ -23,10 +23,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-        return User
+        return User //retorna un UserDetails que es el usuario que queremos tener en el contextHolder.
                 .withUsername(username)
                 .password(client.getPassword())
                 .roles("CLIENT")
                 .build();
+        //una vez que lo tenemos ahi queremos crearle un token.
     }
 }
