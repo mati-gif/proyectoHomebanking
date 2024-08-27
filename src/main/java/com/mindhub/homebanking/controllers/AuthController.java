@@ -1,9 +1,11 @@
 package com.mindhub.homebanking.controllers;
 
 
+import com.mindhub.homebanking.dtos.AccountDto;
 import com.mindhub.homebanking.dtos.ClientDto;
 import com.mindhub.homebanking.dtos.LoginDto;
 import com.mindhub.homebanking.dtos.RegisterDto;
+import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
@@ -18,6 +20,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")//todas las rutas que empiecen por /api/auth van a ser manejadas por este controlador.
@@ -41,7 +48,7 @@ public class AuthController {
     @Autowired
     private JwtUtilService jwtUtilService;
 
-    @PostMapping("/login")
+    @PostMapping("/login")//
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
     try{
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.email(),loginDto.password()));
@@ -71,6 +78,11 @@ public class AuthController {
             return new ResponseEntity<>("the password field must not be empty",HttpStatus.FORBIDDEN);
         }
 
+        // Verifica si la contraseña cumple con el requisito mínimo de longitud.
+        if (registerDto.password().length() < 8) {
+            return new ResponseEntity<>("Password must be at least 8 characters long", HttpStatus.BAD_REQUEST);
+        }
+
         // Verificar si el correo electrónico ya está registrado
         if (clientRepository.findByEmail(registerDto.email()) != null) {
             return new ResponseEntity<>("Email is already in use", HttpStatus.CONFLICT);
@@ -83,16 +95,52 @@ public class AuthController {
                 passwordEncoder.encode(registerDto.password()));
 
         clientRepository.save(client);
-        return new ResponseEntity<>("Client created",HttpStatus.CREATED);
+
+        // Genera un número de cuenta único con el prefijo "VIN".
+        String accountNumber = "VIN-" + String.format("%03d", generateAccountNumber());
+
+
+        // Crea una nueva cuenta para el cliente.
+        Account newAccount = new Account(accountNumber, LocalDate.now(), 0.0);
+        newAccount.setClient(client); // Asegúrate de establecer la relación bidireccional
+
+        // Asocia la cuenta al cliente.
+        client.addAccounts(newAccount);
+
+        // Guarda la cuenta en la base de datos.
+        accountRepository.save(newAccount);
+
+        // Guarda el cliente en la base de datos.
+        clientRepository.save(client);
+
+
+        // Crea una instancia de ClientDto para el cliente con las cuentas.
+        ClientDto clientDto = new ClientDto(client);
+        // Aunque ClientDto no tiene un método setAccounts, ya incluye cuentas gracias a la conversión en el constructor
+
+
+
+        return new ResponseEntity<>(clientDto,HttpStatus.CREATED);
     }
 
 
-@GetMapping("/current")
+    private int generateAccountNumber() {
+
+        int randomNumber = (int) (100 + Math.random() * 900); // Genera un número aleatorio de 3 dígitos
+        return  randomNumber;
+    }
+
+
+
+    @GetMapping("/current")//metodo para obtener el usuario logueado.
     public ResponseEntity<?> getClient(Authentication authentication){
 
         Client client = clientRepository.findByEmail(authentication.getName());
         return new ResponseEntity<>(new ClientDto(client),HttpStatus.OK);
 
 }
+
+
+
 
 }

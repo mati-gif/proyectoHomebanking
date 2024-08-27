@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service//Servicio parar crear una instancia de User en nuestra aplicacion.
-public class UserDetailsServiceImpl implements UserDetailsService {
+@Service//Servicio parar crear una instancia de User en nuestra aplicacion. Marca la clase como un servicio de Spring. Esto significa que Spring va a gestionar la instancia de esta clase y la inyectará donde sea necesario.
+public class UserDetailsServiceImpl implements UserDetailsService {//UserDetailsServiceImpl: Implementa la interfaz UserDetailsService, que es utilizada por Spring Security para cargar datos específicos del usuario en el proceso de autenticación.
     @Autowired
     private ClientRepository clientRepository;
 
