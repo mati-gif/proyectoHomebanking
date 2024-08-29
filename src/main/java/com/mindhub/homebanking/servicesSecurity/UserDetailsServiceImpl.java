@@ -23,11 +23,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {//UserDetails
             throw new UsernameNotFoundException(username);
         }
 
+        if(client.getEmail().contains("ADMIN")){
+
+            return User
+                    .withUsername(username)
+                    .password(client.getPassword())
+                    .roles("ADMIN")
+                    .build();
+
+        }
+
+
         return User //retorna un UserDetails que es el usuario que queremos tener en el contextHolder.
                 .withUsername(username)
                 .password(client.getPassword())
                 .roles("CLIENT")
                 .build();
         //una vez que lo tenemos ahi queremos crearle un token.
+
     }
 }

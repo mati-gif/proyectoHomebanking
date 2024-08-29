@@ -96,39 +96,10 @@ public class AuthController {
 
         clientRepository.save(client);
 
-        // Genera un número de cuenta único con el prefijo "VIN".
-        String accountNumber = "VIN-" + String.format("%03d", generateAccountNumber());
-
-
-        // Crea una nueva cuenta para el cliente.
-        Account newAccount = new Account(accountNumber, LocalDate.now(), 0.0);
-        newAccount.setClient(client); // Asegúrate de establecer la relación bidireccional
-
-        // Asocia la cuenta al cliente.
-        client.addAccounts(newAccount);
-
-        // Guarda la cuenta en la base de datos.
-        accountRepository.save(newAccount);
-
-        // Guarda el cliente en la base de datos.
-        clientRepository.save(client);
-
-
-        // Crea una instancia de ClientDto para el cliente con las cuentas.
-        ClientDto clientDto = new ClientDto(client);
-        // Aunque ClientDto no tiene un método setAccounts, ya incluye cuentas gracias a la conversión en el constructor
-
-
-
-        return new ResponseEntity<>(clientDto,HttpStatus.CREATED);
+        return new ResponseEntity<>("the user has been created",HttpStatus.CREATED);
     }
 
 
-    private int generateAccountNumber() {
-
-        int randomNumber = (int) (100 + Math.random() * 900); // Genera un número aleatorio de 3 dígitos
-        return  randomNumber;
-    }
 
 
 

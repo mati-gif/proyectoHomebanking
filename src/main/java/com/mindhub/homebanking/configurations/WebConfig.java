@@ -19,7 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 
 
-
+//Define la configuración de seguridad para tu aplicación.
 @Configuration
 public class WebConfig {
 
@@ -43,6 +43,8 @@ public class WebConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                .requestMatchers("/api/clients/all","/api/clients/**","/api/accounts/**","/api/accounts/all").hasRole("ADMIN")
+                                .requestMatchers("/api/current").hasRole("CLIENT")
                                 .requestMatchers("/api/auth/login","/api/auth/register", "h2-console/**").permitAll()
                                 .anyRequest().authenticated()
                         )
