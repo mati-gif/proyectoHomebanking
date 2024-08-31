@@ -33,7 +33,7 @@ public class ClientController {
     // Esto significa que cuando recibimos una solicitud GET en la ruta "/hello" (la ruta completa sería http://localhost:8080/api/clients/hello),
     // se invocará este método.
 
-    @GetMapping("/all")// en locaHhost: 8080/api/clients/all --> aca en esta ruta me va a devolver todos los clientes.// lo que se esta definiendo aca es la ruta y tambein la respuesta que se va a obtener cuando se hace una peticion a esta ruta.
+    @GetMapping("/")// en locaHhost: 8080/api/clients/all --> aca en esta ruta me va a devolver todos los clientes.// lo que se esta definiendo aca es la ruta y tambein la respuesta que se va a obtener cuando se hace una peticion a esta ruta.
     public ResponseEntity<List<ClientDto>>  getAllClients() {
 
         List<Client> clients = clientRepository.findAll();//devuelve una lista de todos los clientes.//Estoy declarando una lista llamada clientes que contendra objetos de tipo Cliente.

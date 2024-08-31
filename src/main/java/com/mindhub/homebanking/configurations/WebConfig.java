@@ -43,16 +43,15 @@ public class WebConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/clients/all","/api/clients/**","/api/accounts/**","/api/accounts/all").hasRole("ADMIN")
-                                .requestMatchers("/api/current").hasRole("CLIENT")
-                                .requestMatchers("/api/auth/login","/api/auth/register", "h2-console/**").permitAll()
+                                .requestMatchers("/api/current","/api/accounts/clients/current/accounts").hasRole("CLIENT")
+                                .requestMatchers("/api/clients/","/api/clients/**","/api/accounts/**","/api/accounts/all").hasRole("ADMIN")
+                                .requestMatchers("/api/auth/login","/api/auth/register", "/h2-console/**").permitAll()
                                 .anyRequest().authenticated()
                         )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         );
-
 
         return httpSecurity.build();
 

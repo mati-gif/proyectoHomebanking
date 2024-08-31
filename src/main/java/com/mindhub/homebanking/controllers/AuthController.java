@@ -1,6 +1,7 @@
 package com.mindhub.homebanking.controllers;
 
 
+import com.mindhub.homebanking.Utils.AccountUtils;
 import com.mindhub.homebanking.dtos.AccountDto;
 import com.mindhub.homebanking.dtos.ClientDto;
 import com.mindhub.homebanking.dtos.LoginDto;
@@ -96,14 +97,32 @@ public class AuthController {
 
         clientRepository.save(client);
 
-        return new ResponseEntity<>("the user has been created",HttpStatus.CREATED);
+
+// Generar un número de cuenta utilizando la clase utilitaria
+        String accountNumber = AccountUtils.generateAccountNumber();
+
+        // Crear una nueva cuenta para el cliente
+//        Account newAccount = new Account(accountNumber, LocalDate.now(),0.0,  client);
+
+        Account newAccount = new Account();
+        newAccount.setNumber(accountNumber);
+        newAccount.setCreationDate(LocalDate.now());
+        newAccount.setBalance(0.0);
+        newAccount.setClient(client);
+
+
+        // Guardar la cuenta en el repositorio
+        accountRepository.save(newAccount);
+
+        return new ResponseEntity<>("the user has been created and account added", HttpStatus.CREATED);
+
     }
 
 
 
 
 
-    @GetMapping("/current")//metodo para obtener el usuario logueado.
+    @GetMapping("/current")//metodo para obtener el usuario logueado(es decir autenticado).
     public ResponseEntity<?> getClient(Authentication authentication){
 
         Client client = clientRepository.findByEmail(authentication.getName());
