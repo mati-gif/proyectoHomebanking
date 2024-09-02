@@ -1,8 +1,13 @@
 package com.mindhub.homebanking.Utils;
 
 
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Random;
 
+@Component
 public class CardsUtils {
 
     public static String GenerateCardNumber(){
@@ -27,5 +32,16 @@ public class CardsUtils {
     public static int generarCodigoSeguridad() {
         Random random = new Random();
         return 100 + random.nextInt(900); // Genera un número entre 0 y 900
+    }
+
+    public static LocalDate generateExpirationDate() {
+        LocalDate thruDate = LocalDate.now().plusYears(5);
+        return thruDate;
+
+    }
+
+    public static LocalDate generateFromDate() {
+        LocalDate fromDate = LocalDate.now();
+        return fromDate;
     }
 }
