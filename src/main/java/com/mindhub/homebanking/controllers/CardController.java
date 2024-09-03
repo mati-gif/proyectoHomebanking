@@ -4,6 +4,7 @@ package com.mindhub.homebanking.controllers;
 import antlr.Utils;
 import com.mindhub.homebanking.Utils.CardsUtils;
 import com.mindhub.homebanking.dtos.CardDto;
+import com.mindhub.homebanking.dtos.CreateCardDto;
 import com.mindhub.homebanking.models.Card;
 import com.mindhub.homebanking.models.CardType;
 import com.mindhub.homebanking.models.Client;
@@ -37,40 +38,39 @@ public class CardController {
     private ClientRepository clientRepository;
 
     @PostMapping("/clients/current/cards")
-    public ResponseEntity<?> createCardForCurrentClient(Authentication authentication, @RequestBody Map<String, String> cardDetails){
+    public ResponseEntity<?> createCardForCurrentClient(Authentication authentication, @RequestBody CreateCardDto createCardDto){
 
 
-        String stringType = cardDetails.get("type");
-        String stringColor = cardDetails.get("color");
+//        String stringType = cardDetails.get("type");
+//        String stringColor = cardDetails.get("color");
 
 
         //Estoy valindo las entradas de datos que vienen por parametro.
         //Si alguno de los dos campos es nulo, devuelvo un error.
-        if (stringType == null || stringType.trim().isEmpty()) {
+
+        if (createCardDto.type() == null ) {
             return new ResponseEntity<>("Card type must be specified", HttpStatus.FORBIDDEN);
         }
-        if (stringColor == null || stringColor.trim().isEmpty()) {
+        if (createCardDto.color() == null ) {
+            System.out.println(createCardDto.color());
             return new ResponseEntity<>("Card color must be specified", HttpStatus.FORBIDDEN);
         }
 
-
-        CardType type = CardType.valueOf(stringType.toUpperCase());
-        ColorType color = ColorType.valueOf(stringColor.toUpperCase());
 
         // Obtener el cliente autenticado
         Client client = clientRepository.findByEmail(authentication.getName());
 
 
-        long countCardsByType = cardRepository.countByClientAndColorAndType(client,color, type);
+        long countCardsByType = cardRepository.countByClientAndColorAndType(client,createCardDto.color(), createCardDto.type());
         if (countCardsByType == 1 ) {
-            return new ResponseEntity<>("You can't have more than one " + type + " " + color , HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("You can't have more than one " + createCardDto.type() + " " + createCardDto.color() , HttpStatus.FORBIDDEN);
         }
 
         // Crear la tarjeta
         Card card = new Card();
         card.setClient(client);
-        card.setType(type);
-        card.setColor(color);
+        card.setType(createCardDto.type());
+        card.setColor(createCardDto.color());
         card.setNumber(cardsUtils.GenerateCardNumber());
         card.setCvv(cardsUtils.generarCodigoSeguridad());
         card.setFromDate(cardsUtils.generateFromDate());
@@ -80,9 +80,7 @@ public class CardController {
         cardRepository.save(card);
 
 
-        return new ResponseEntity<>("The card has been created, you have one new  " + "tipo: " + type + " color: " + color,HttpStatus.CREATED);
-
-
+        return new ResponseEntity<>("The card has been created, you have one new card " + "type: " + createCardDto.type() + " color: " + createCardDto.color(),HttpStatus.CREATED);
 
     }
 

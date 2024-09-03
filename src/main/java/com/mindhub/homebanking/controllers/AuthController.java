@@ -120,8 +120,6 @@ public class AuthController {
 
 
 
-
-
     @GetMapping("/current")//metodo para obtener el usuario logueado(es decir autenticado).
     public ResponseEntity<?> getClient(Authentication authentication){
 
