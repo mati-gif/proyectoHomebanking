@@ -73,7 +73,7 @@ public class TransactionController {
 
             // Verificar que la cuenta de destino exista
             Account destinationAccount = accountRepository.findByNumber(createTransactionDto.destinationAccountNumber());
-            if (!accountRepository.existsByNumber(createTransactionDto.destinationAccountNumber())) {
+            if (destinationAccount == null) {
                 return new ResponseEntity<>("La cuenta de destino no existe.", HttpStatus.FORBIDDEN);
             }
 
