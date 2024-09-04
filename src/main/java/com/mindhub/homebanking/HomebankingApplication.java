@@ -45,16 +45,16 @@ public class HomebankingApplication {
 			////------Creando los prestamos---------////
 
 //			List<Integer> hipotecaPayments = Arrays.asList(12, 24, 36, 48, 60);
-			Loan loan1 = new Loan("Hipoteca",500.000, Arrays.asList(12, 24, 36, 48, 60));
+			Loan loan1 = new Loan("Hipoteca",500000.000, Arrays.asList(12, 24, 36, 48, 60));
 			loanRepository.save(loan1);
 
 //			List<Integer> personalPayments2 = Arrays.asList( 6, 12, 24.);
-			Loan loan2 = new Loan("Personal",100.000, Arrays.asList( 6, 12, 24));
+			Loan loan2 = new Loan("Personal",100000.000, Arrays.asList( 6, 12, 24));
 			loanRepository.save(loan2);
 
 
 //			List<Integer> automotrizPayments3 = Arrays.asList(6, 12, 24, 36);
-			Loan loan3 = new Loan("Automotriz",300.000, Arrays.asList(6, 12, 24, 36));
+			Loan loan3 = new Loan("Automotriz",300000.000, Arrays.asList(6, 12, 24, 36));
 			loanRepository.save(loan3);
 
 			////-----------------------------------////

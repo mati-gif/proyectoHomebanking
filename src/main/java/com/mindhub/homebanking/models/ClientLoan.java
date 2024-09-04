@@ -34,6 +34,8 @@ public class ClientLoan {
         this.payment = payment;
     }
 
+
+
     public ClientLoan(){
 
     }

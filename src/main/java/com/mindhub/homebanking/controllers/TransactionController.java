@@ -38,9 +38,9 @@ public class TransactionController {
     public ResponseEntity<?> createTransaction(@RequestBody CreateTransactionDto createTransactionDto,
                                                 Authentication authentication) {
 
+        Client client = clientRepository.findByEmail(authentication.getName());
 
         try {
-            Client client = clientRepository.findByEmail(authentication.getName());
 
             // Verificar que amount no sea nulo o esté vacío
             if (createTransactionDto.amount() == null || createTransactionDto.amount() <= 0 || createTransactionDto.amount().isNaN()) {
