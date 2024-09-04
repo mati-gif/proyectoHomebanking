@@ -44,7 +44,6 @@ public class TransactionController {
 
             // Verificar que amount no sea nulo o esté vacío
             if (createTransactionDto.amount() == null || createTransactionDto.amount() <= 0 || createTransactionDto.amount().isNaN()) {
-                System.out.println("Error: Monto inválido.");
                 return new ResponseEntity<>("El monto es obligatorio y debe ser mayor a cero.", HttpStatus.FORBIDDEN);
             }
 
@@ -65,18 +64,16 @@ public class TransactionController {
                return new ResponseEntity<> ( "La cuenta de origen no existe.",HttpStatus.FORBIDDEN);
             }
 
-            // Verificar (por el Id) que la cuenta de origen pertenece al cliente autenticado
+            // Verificar (por el Id) que la cuenta de origen pertenece al cliente autenticado.
             if (!sourceAccount.getClient().getId().equals(client.getId())) {
                 return new ResponseEntity<>("La cuenta de origen no pertenece al cliente autenticado.", HttpStatus.FORBIDDEN);
 
             }
 
 
-
-
             // Verificar que la cuenta de destino exista
             Account destinationAccount = accountRepository.findByNumber(createTransactionDto.destinationAccountNumber());
-            if (destinationAccount == null) {
+            if (!accountRepository.existsByNumber(createTransactionDto.destinationAccountNumber())) {
                 return new ResponseEntity<>("La cuenta de destino no existe.", HttpStatus.FORBIDDEN);
             }
 
@@ -88,7 +85,7 @@ public class TransactionController {
             // Crear la transacción de débito para la cuenta de origen
             Transaction debitTransaction = new Transaction(
                     - createTransactionDto.amount(),
-                    createTransactionDto.description() + " " + createTransactionDto.sourceAccountNumber(),
+                    createTransactionDto.description() + " " + "para la cuenta" + " " +  createTransactionDto.destinationAccountNumber(),
                     LocalDateTime.now(),
                     TransactionType.DEBIT
             );
@@ -96,7 +93,7 @@ public class TransactionController {
             // Crear la transacción de crédito para la cuenta de destino
             Transaction creditTransaction = new Transaction(
                     createTransactionDto.amount(),
-                    createTransactionDto.description() + " " + createTransactionDto.destinationAccountNumber(),
+                    createTransactionDto.description() + " " + " desde la cuenta " + " " + createTransactionDto.sourceAccountNumber(),
                     LocalDateTime.now(),
                     TransactionType.CREDIT
             );
@@ -105,7 +102,7 @@ public class TransactionController {
             sourceAccount.addTransactions(debitTransaction);
             destinationAccount.addTransactions(creditTransaction);
 
-            // Guardar las transacciones en el repositorio
+            // Guardar las transacciones en la base de datos.
             transactionRepository.save(debitTransaction);
             transactionRepository.save(creditTransaction);
 
@@ -119,7 +116,7 @@ public class TransactionController {
 
             return new ResponseEntity<>("Transferencia realizada con éxito", HttpStatus.OK);
 
-        } catch ( SecurityException e) {
+        } catch ( Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

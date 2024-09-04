@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Account findByNumber(String number);
+    Boolean existsByNumber(String number);
 
 }
