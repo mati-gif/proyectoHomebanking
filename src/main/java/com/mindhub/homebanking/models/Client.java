@@ -130,8 +130,8 @@ public class Client {
 
 
     public void addAccounts(Account account){
-        account.setClient(this);
-        accounts.add(account);
+        account.setClient(this); // Asocia la cuenta al cliente
+        accounts.add(account); // Agrega la cuenta al conjunto de cuentas del cliente
     }
     //cuenta: Este es el parámetro que se pasó al método, que es una instancia de la clase Cuenta.
     //setCliente(this): Aquí se está llamando al método setCliente del objeto cuenta.

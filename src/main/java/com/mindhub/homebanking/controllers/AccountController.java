@@ -6,6 +6,8 @@ import com.mindhub.homebanking.dtos.AccountDto;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.service.AccountService;
+import com.mindhub.homebanking.service.ClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -29,12 +31,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/accounts")
 public class AccountController {
 
-    @Autowired
-    private AccountRepository accountRepository;
-
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
+
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping("/hello")
     public String hello() {
@@ -43,87 +45,74 @@ public class AccountController {
 
     @GetMapping("/")
     public ResponseEntity<List<AccountDto>> getAllAccounts() {
-        List<Account>accounts = accountRepository.findAll();
-        List<AccountDto> accountsDto = accounts.stream()
-                .map(account -> new AccountDto(account))
-                .collect(Collectors.toList());
 
-        return new ResponseEntity<>(accountsDto, HttpStatus.OK);
+        return new ResponseEntity<>(accountService.getAllAccountsDto(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAccountById(@PathVariable Long id) {
-        Account account = accountRepository.findById(id).orElse(null);
-        if(account == null){
-            return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
+
+        if(accountService.getAccountById(id) == null) {
+            return new ResponseEntity<>("Account not found", HttpStatus.NOT_FOUND);
         }
 
-        AccountDto accountDto = new AccountDto(account);
-        return new ResponseEntity<>(accountDto, HttpStatus.OK);
+        return new ResponseEntity<>(accountService.getAccountDto(accountService.getAccountById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/newAccount")
     public ResponseEntity<?> updateAccount(@RequestParam double balance,@RequestParam Long id) {
-        Account account = accountRepository.findById(id).orElse(null);
+        Account account = accountService.getAccountById(id);
         if(account == null){
-            return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Account not found", HttpStatus.NOT_FOUND);
         }
         account.setBalance(balance);
-        accountRepository.save(account);
 
-        AccountDto accountDto = new AccountDto(account);
-        return new ResponseEntity<>(accountDto, HttpStatus.OK);
-    }
+        //guarda la cuenta actualizada usando el servicio accountService
+        AccountDto updatedAccountDto = accountService.saveUpdatedAccount(account);
 
-    @PostMapping("/new")
-    public ResponseEntity<?> createAccountt(@RequestParam double balance, @RequestParam String number, @RequestParam LocalDate creationDate) {
 
-        Account account = new Account();
-        account.setBalance(balance);
-        account.setNumber(number);
-        account.setCreationDate(creationDate);
-        accountRepository.save(account);
-
-        AccountDto accountDto = new AccountDto(account);
-        return new ResponseEntity<>(accountDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(updatedAccountDto, HttpStatus.OK);
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
-        if (accountRepository.existsById(id)) {
-            accountRepository.deleteById(id);
-            return new ResponseEntity<>("Cuenta eliminada", HttpStatus.OK);
+
+        Account account = accountService.getAccountById(id);
+        if (account == null) {
+            return new ResponseEntity<>("not found the account with id " + id,HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
+            accountService.saveAccount(account);
+            return new ResponseEntity<>("The account with id " + id + " was successfully deleted.", HttpStatus.OK);
         }
     }
 
 
     @PutMapping("/modify/{id}")
     public ResponseEntity<?> updateAccount(@PathVariable Long id, @RequestParam double balance, @RequestParam String number, @RequestParam LocalDate creationDate) {
-        Account cuentaAModificar = accountRepository.findById(id).orElse(null);
-        if(accountRepository.existsById(id)){
+        Account cuentaAModificar = accountService.getAccountById(id);
+        if(accountService.accountExistsById(id)) {
             cuentaAModificar.setBalance(balance);
             cuentaAModificar.setNumber(number);
             cuentaAModificar.setCreationDate(creationDate);
-            accountRepository.save(cuentaAModificar);
-            AccountDto accountDto = new AccountDto(cuentaAModificar);
+            accountService.saveUpdatedAccount(cuentaAModificar);
+            AccountDto accountDto = accountService.getAccountDto(cuentaAModificar);
             return new ResponseEntity<>(accountDto, HttpStatus.OK);
         }
             return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
         }
 
 
+
         @PostMapping("/clients/current/accounts")
         public ResponseEntity<?> createAccount(Authentication authentication) {
 
             // Obtener el cliente autenticado
-            Client client = clientRepository.findByEmail(authentication.getName());
+            Client client = clientService.findClientByEmail(authentication.getName());
 
             // Verificar si el cliente tiene 3 cuentas o más
             if (client.getAccounts().size() >= 3) {
-                return new ResponseEntity<>("El cliente ya tiene 3 cuentas", HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>("the client already has 3 accounts", HttpStatus.FORBIDDEN);
             }
 
             // Generar un número de cuenta utilizando la clase utilitaria
@@ -136,13 +125,12 @@ public class AccountController {
             newAccount.setNumber(accountNumber);
             newAccount.setCreationDate(LocalDate.now());
             newAccount.setBalance(0.0);
-            newAccount.setClient(client);
+            client.addAccounts(newAccount); // Usamos el método addAccounts para agregar la cuenta al cliente y establecer la relación bidireccional
 
             // Guardar la cuenta en el repositorio
-            accountRepository.save(newAccount);
+            accountService.saveAccount(newAccount);
 
-
-            return new ResponseEntity<>(new AccountDto(newAccount), HttpStatus.CREATED);
+            return new ResponseEntity<>(accountService.getAccountDto(newAccount), HttpStatus.CREATED);
         }
 
 
@@ -151,18 +139,10 @@ public class AccountController {
     public ResponseEntity<List<AccountDto>> getAccounts(Authentication authentication) {
 
         // Obtener el cliente autenticado
-        Client client = clientRepository.findByEmail(authentication.getName());
-
-        // Obtener las cuentas del cliente
-        Set<Account> accounts = client.getAccounts();
-
-        // Convertir las cuentas a DTOs
-        List<AccountDto> accountsDto = accounts.stream()
-                .map(account -> new AccountDto(account))
-                .collect(Collectors.toList());
+        Client client = clientService.findClientByEmail(authentication.getName());
 
         // Devolver la lista de cuentas del cliente
-        return new ResponseEntity<>(accountsDto, HttpStatus.OK);
+        return new ResponseEntity<>(accountService.getAccountsDtoByClient(client), HttpStatus.OK);
     }
 
 

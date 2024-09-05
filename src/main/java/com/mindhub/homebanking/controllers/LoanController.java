@@ -40,6 +40,8 @@ public class LoanController {
     private TransactionRepository transactionRepository;
 
 
+
+
     @PostMapping("/loans")
     @Transactional
     public ResponseEntity<?> createLoan(@RequestBody CreateLoanDto createLoanDto,Authentication authentication){
@@ -48,8 +50,6 @@ public class LoanController {
         Client client = clientRepository.findByEmail(authentication.getName());
 
         try{
-
-
 
             // Verificar que los datos no estén vacíos
             if(createLoanDto.amount() == null || createLoanDto.amount() <= 0 ){
@@ -70,8 +70,6 @@ public class LoanController {
             if(loan == null){
                 return new ResponseEntity<>("the loan does not exist", HttpStatus.FORBIDDEN);
             }
-
-
 
 
             // Verificar si el cliente ya tiene un préstamo del mismo tipo
@@ -122,9 +120,12 @@ public class LoanController {
             ClientLoan clientLoan = new ClientLoan();
             clientLoan.setAmount(totalAmount);
             clientLoan.setPayment(createLoanDto.payments());
-            clientLoan.setClient(client);
-            clientLoan.setLoan(loan);
+            clientLoan.setLoan(loan); // Asociamos el préstamo al ClientLoan
+            clientLoan.setClient(client); // Asociamos el cliente al ClientLoan -
+            client.addClientLoan(clientLoan);//estoy agregando el objeto ClientLoan a la lista de préstamos del cliente. Esto establece la relación desde el cliente hacia el ClientLoan.
             clientLoanRepository.save(clientLoan);
+            clientRepository.save(client);
+
 
             // Crear la transacción de "CRÉDITO"
             Transaction creditTransaction = new Transaction(
@@ -152,12 +153,21 @@ public class LoanController {
     }
 
     @GetMapping("/loans")
-    public ResponseEntity<List<LoanDto>> getLoans() {
-        // Obtener todos los préstamos de la base de datos
-        List<Loan> loans = loanRepository.findAll();
+    public ResponseEntity<?> getLoansAvaliable(Authentication authentication) {
+        // Obtener al cliente autenticado
+        Client client = clientRepository.findByEmail(authentication.getName());
 
-        // Convertir los préstamos en DTOs
-        List<LoanDto> loanDTOs = loans.stream()
+        // Obtener todos los préstamos disponibles en la base de datos
+        List<Loan> allLoans = loanRepository.findAll();
+
+        // Obtener los préstamos que ya ha solicitado el cliente
+        List<Loan> loansRequestedByClient = client.getClientLoans().stream()
+                .map(ClientLoan::getLoan) // Obtener los préstamos de las relaciones de préstamos del cliente
+                .collect(Collectors.toList());
+
+        // Filtrar los préstamos que el cliente aún no ha solicitado
+        List<LoanDto> availableLoans = allLoans.stream()
+                .filter(loan -> !loansRequestedByClient.contains(loan)) // Excluir los préstamos que el cliente ya solicitó
                 .map(loan -> new LoanDto(
                         loan.getId(),
                         loan.getName(),
@@ -166,9 +176,15 @@ public class LoanController {
                 ))
                 .collect(Collectors.toList());
 
-        // Devolver la lista de DTOs
-        return new ResponseEntity<>(loanDTOs, HttpStatus.OK);
+        // Si no hay préstamos disponibles (ya solicitó todos), devolver un mensaje apropiado
+        if (availableLoans.isEmpty()) {
+            return new ResponseEntity<>("No hay más préstamos disponibles.", HttpStatus.OK);
+        }
+
+        // Devolver la lista de préstamos disponibles que el cliente aún no ha solicitado
+        return new ResponseEntity<>(availableLoans, HttpStatus.OK);
     }
+
 
 
 }
