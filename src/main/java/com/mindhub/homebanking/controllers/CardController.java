@@ -45,37 +45,67 @@ public class CardController {
         //Estoy valindo las entradas de datos que vienen por parametro.
         //Si alguno de los dos campos es nulo, devuelvo un error.
 
-        if (createCardDto.type() == null ) {
-            return new ResponseEntity<>("Card type must be specified", HttpStatus.FORBIDDEN);
+//        if (createCardDto.type() == null ) {
+//            return new ResponseEntity<>("Card type must be specified", HttpStatus.FORBIDDEN);
+//        }
+//        if (createCardDto.color() == null ) {
+//            System.out.println(createCardDto.color());
+//            return new ResponseEntity<>("Card color must be specified", HttpStatus.FORBIDDEN);
+//        }
+//
+//        // Obtener el cliente autenticado
+//        Client client = clientService.findClientByEmail(authentication.getName());
+//
+//        long countCardsByType = cardService.countCardsByClientAndColorAndType(client, createCardDto.color(), createCardDto.type());
+//        if (countCardsByType == 1 ) {
+//            return new ResponseEntity<>("You can't have more than one " + createCardDto.type() + " " + createCardDto.color() , HttpStatus.FORBIDDEN);
+//        }
+//
+//        // Crear la tarjeta
+//        Card card = cardService.buildCard(client, createCardDto);
+//        cardService.saveCard(card);
+//
+//        return new ResponseEntity<>("The card has been created, you have one new card " + "type: " + createCardDto.type() + " color: " + createCardDto.color(),HttpStatus.CREATED);
+
+        try {
+            // Obtener el cliente autenticado
+            Client client = clientService.findClientByEmail(authentication.getName());
+
+            // Validar la entrada de datos y verificar el límite de tarjetas
+            cardService.validateCardCreation(createCardDto);
+            cardService.checkCardLimit(client, createCardDto);
+
+            // Crear y guardar la tarjeta
+            Card card = cardService.buildCard(client, createCardDto);
+            cardService.saveCard(card);
+
+            return new ResponseEntity<>("The card has been created, you have one new card " +
+                    "type: " + createCardDto.type() + " color: " + createCardDto.color(), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
-        if (createCardDto.color() == null ) {
-            System.out.println(createCardDto.color());
-            return new ResponseEntity<>("Card color must be specified", HttpStatus.FORBIDDEN);
-        }
-
-        // Obtener el cliente autenticado
-        Client client = clientService.findClientByEmail(authentication.getName());
-
-        long countCardsByType = cardService.countCardsByClientAndColorAndType(client, createCardDto.color(), createCardDto.type());
-        if (countCardsByType == 1 ) {
-            return new ResponseEntity<>("You can't have more than one " + createCardDto.type() + " " + createCardDto.color() , HttpStatus.FORBIDDEN);
-        }
-
-        // Crear la tarjeta
-        Card card = cardService.buildCard(client, createCardDto);
-        cardService.saveCard(card);
-
-        return new ResponseEntity<>("The card has been created, you have one new card " + "type: " + createCardDto.type() + " color: " + createCardDto.color(),HttpStatus.CREATED);
     }
+
 
     @GetMapping("/clients/current/cards")
     public ResponseEntity<?> getClientCards(Authentication authentication){
 
-        Client client = clientService.findClientByEmail(authentication.getName());
-        Set<Card> clientCards = client.getCards();
-        Set<CardDto> cardDto = clientCards.stream().map(CardDto::new).collect(Collectors.toSet());
-
-        return new ResponseEntity<>(cardDto, HttpStatus.OK);
+//        Client client = clientService.findClientByEmail(authentication.getName());
+//        Set<Card> clientCards = client.getCards();
+//        Set<CardDto> cardDto = clientCards.stream().map(CardDto::new).collect(Collectors.toSet());
+//
+//        return new ResponseEntity<>(cardDto, HttpStatus.OK);
+        try {
+            // Obtener las tarjetas del cliente
+            Set<CardDto> cardDtos = cardService.getClientCardsForCurrentClient(authentication.getName());
+            return new ResponseEntity<>(cardDtos, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-}
+
+
+    }
+
+
