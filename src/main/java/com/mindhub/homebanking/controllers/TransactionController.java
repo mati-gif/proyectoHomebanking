@@ -24,16 +24,6 @@ import java.time.LocalDateTime;
 @RequestMapping("/api")
 public class TransactionController {
 
-
-//    @Autowired
-//    private ClientRepository clientRepository;
-
-//    @Autowired
-//    AccountRepository accountRepository;
-
-//    @Autowired
-//    TransactionRepository transactionRepository;
-
     @Autowired
     private TransactionService transactionService;
 

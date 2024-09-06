@@ -44,40 +44,40 @@ public class TransactionServiceImplement implements TransactionService {
         validateOthersFields(createTransactionDto);
         validateNumbersAccountsNotSame(createTransactionDto);
         Account sourceAccount = validateSourceAccount(createTransactionDto, client);
-        Account destinationAccount = validateDestinationAccount(createTransactionDto, client);
+        Account destinationAccount = validateDestinationAccount(createTransactionDto, client);//probar en borrar el client
         validateAmountAvaliable(sourceAccount,createTransactionDto.amount() );
         executeTransaction(createTransactionDto, sourceAccount, destinationAccount);
 
     }
 
     @Override
-    public ResponseEntity<?> validateTransactionAmount(CreateTransactionDto createTransactionDto){
+    public void validateTransactionAmount(CreateTransactionDto createTransactionDto){
 
         // Verificar que amount no sea nulo o esté vacío
         if (createTransactionDto.amount() == null || createTransactionDto.amount() <= 0 ) {
-            return new ResponseEntity<>("El monto es obligatorio y debe ser mayor a cero.", HttpStatus.FORBIDDEN);
+            throw new IllegalArgumentException("El monto es obligatorio y debe ser mayor a cero.");
         }
 
-        return null;
+
     }
 
     @Override
-    public ResponseEntity<?> validateOthersFields(CreateTransactionDto createTransactionDto) {
+    public void validateOthersFields(CreateTransactionDto createTransactionDto) {
 
         // Verificar que los parámetros no estén vacíos
         if (createTransactionDto.description().isBlank() || createTransactionDto.sourceAccountNumber().isBlank() || createTransactionDto.destinationAccountNumber().isBlank()) {
-            return new ResponseEntity<>("Todos los campos son obligatorios.", HttpStatus.FORBIDDEN);
+            throw new IllegalArgumentException("Todos los campos son obligatorios.");
         }
-        return null;
+
     }
 
     @Override
-    public ResponseEntity<?> validateNumbersAccountsNotSame(CreateTransactionDto createTransactionDto) {
+    public void validateNumbersAccountsNotSame(CreateTransactionDto createTransactionDto) {
         // Verificar que los números de cuenta no sean los mismos
         if (createTransactionDto.sourceAccountNumber().equals(createTransactionDto.destinationAccountNumber())) {
-            return new ResponseEntity<>("La cuenta de origen y destino no pueden ser la misma.", HttpStatus.FORBIDDEN);
+            throw new IllegalArgumentException("La cuenta de origen y destino no pueden ser la misma.");
         }
-        return null;
+
     }
 
     public Account validateSourceAccount(CreateTransactionDto createTransactionDto, Client client) {
@@ -107,13 +107,13 @@ public class TransactionServiceImplement implements TransactionService {
     }
 
     @Override
-    public ResponseEntity<?> validateAmountAvaliable(Account sourceAccount, Double amount ) {
+    public void validateAmountAvaliable(Account sourceAccount, Double amount ) {
 
         // Verificar que la cuenta de origen tenga el monto disponible
         if (sourceAccount.getBalance() < amount) {
-        return new ResponseEntity<>("Saldo insuficiente en la cuenta de origen.", HttpStatus.FORBIDDEN);
+            throw new IllegalArgumentException("Saldo insuficiente en la cuenta de origen.");
         }
-        return null;
+
     }
 
     public void executeTransaction(CreateTransactionDto createTransactionDto, Account sourceAccount, Account destinationAccount) {

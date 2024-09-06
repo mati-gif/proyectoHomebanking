@@ -9,11 +9,11 @@ import org.springframework.security.core.Authentication;
 public interface TransactionService {
 
    void createTransaction(CreateTransactionDto createTransactionDto, Authentication authentication);
-   ResponseEntity<?> validateTransactionAmount(CreateTransactionDto createTransactionDto);
-   ResponseEntity<?> validateOthersFields(CreateTransactionDto createTransactionDto);
-   ResponseEntity<?> validateNumbersAccountsNotSame(CreateTransactionDto createTransactionDto);
+   void validateTransactionAmount(CreateTransactionDto createTransactionDto);
+  void validateOthersFields(CreateTransactionDto createTransactionDto);
+   void validateNumbersAccountsNotSame(CreateTransactionDto createTransactionDto);
    Account validateSourceAccount(CreateTransactionDto createTransactionDto, Client client);
    Account validateDestinationAccount(CreateTransactionDto createTransactionDto, Client client);
-   ResponseEntity<?> validateAmountAvaliable(Account sourceAccount, Double amount );
+  void validateAmountAvaliable(Account sourceAccount, Double amount );
    void executeTransaction(CreateTransactionDto createTransactionDto, Account sourceAccount,Account destinationAccount);
 }
