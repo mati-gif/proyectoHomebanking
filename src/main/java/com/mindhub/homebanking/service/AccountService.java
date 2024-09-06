@@ -4,6 +4,7 @@ import com.mindhub.homebanking.dtos.AccountDto;
 import com.mindhub.homebanking.dtos.ClientDto;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -16,4 +17,8 @@ public interface AccountService {
     boolean accountExistsById(Long id);  // Método que devolverá true si la cuenta existe por su ID
     List<AccountDto> getAccountsDtoByClient(Client client);// metodo para comvertir la cuentas de un cliente en una lista de cuentasDto
     Account saveAccount(Account account); //metodo para guardar una cuenta en la base de datos a traves del metodo .save()
+
+    AccountDto createAccountForClient(Authentication authentication);
+   void validateClientAccountLimit(Client client);
+    Account createNewAccount(Client client);
 }

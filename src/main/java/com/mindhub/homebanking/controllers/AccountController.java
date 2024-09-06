@@ -59,6 +59,65 @@ public class AccountController {
         return new ResponseEntity<>(accountService.getAccountDto(accountService.getAccountById(id)), HttpStatus.OK);
     }
 
+
+        @PostMapping("/clients/current/accounts")
+        public ResponseEntity<?> createAccount(Authentication authentication) {
+//
+//            // Obtener el cliente autenticado
+//            Client client = clientService.findClientByEmail(authentication.getName());
+//
+//            // Verificar si el cliente tiene 3 cuentas o más
+//            if (client.getAccounts().size() >= 3) {
+//                return new ResponseEntity<>("the client already has 3 accounts", HttpStatus.FORBIDDEN);
+//            }
+//
+//            // Generar un número de cuenta utilizando la clase utilitaria
+//            String accountNumber = AccountUtils.generateAccountNumber();
+//
+//            // Crear la nueva cuenta
+////            Account newAccount = new Account(accountNumber, LocalDate.now(),0.0 , client);
+//
+//            Account newAccount = new Account();
+//            newAccount.setNumber(accountNumber);
+//            newAccount.setCreationDate(LocalDate.now());
+//            newAccount.setBalance(0.0);
+//            client.addAccounts(newAccount); // Usamos el método addAccounts para agregar la cuenta al cliente y establecer la relación bidireccional
+//
+//            // Guardar la cuenta en el repositorio
+//            accountService.saveAccount(newAccount);
+//
+//            return new ResponseEntity<>(accountService.getAccountDto(newAccount), HttpStatus.CREATED);
+
+            try{
+                accountService.createAccountForClient(authentication);
+                return new ResponseEntity<>("Account created",HttpStatus.CREATED);
+
+            } catch (IllegalArgumentException  e){
+
+                // Manejar el error en caso de que el cliente tenga ya el máximo de cuentas
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+
+            } catch ( Exception e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+            }
+
+        }
+
+
+
+    @GetMapping("/clients/current/accounts")
+    public ResponseEntity<List<AccountDto>> getAccounts(Authentication authentication) {
+
+        // Obtener el cliente autenticado
+        Client client = clientService.findClientByEmail(authentication.getName());
+
+        // Devolver la lista de cuentas del cliente
+        return new ResponseEntity<>(accountService.getAccountsDtoByClient(client), HttpStatus.OK);
+    }
+
+
+
+
     @PatchMapping("/newAccount")
     public ResponseEntity<?> updateAccount(@RequestParam double balance,@RequestParam Long id) {
         Account account = accountService.getAccountById(id);
@@ -99,50 +158,7 @@ public class AccountController {
             AccountDto accountDto = accountService.getAccountDto(cuentaAModificar);
             return new ResponseEntity<>(accountDto, HttpStatus.OK);
         }
-            return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
-        }
-
-
-
-        @PostMapping("/clients/current/accounts")
-        public ResponseEntity<?> createAccount(Authentication authentication) {
-
-            // Obtener el cliente autenticado
-            Client client = clientService.findClientByEmail(authentication.getName());
-
-            // Verificar si el cliente tiene 3 cuentas o más
-            if (client.getAccounts().size() >= 3) {
-                return new ResponseEntity<>("the client already has 3 accounts", HttpStatus.FORBIDDEN);
-            }
-
-            // Generar un número de cuenta utilizando la clase utilitaria
-            String accountNumber = AccountUtils.generateAccountNumber();
-
-            // Crear la nueva cuenta
-//            Account newAccount = new Account(accountNumber, LocalDate.now(),0.0 , client);
-
-            Account newAccount = new Account();
-            newAccount.setNumber(accountNumber);
-            newAccount.setCreationDate(LocalDate.now());
-            newAccount.setBalance(0.0);
-            client.addAccounts(newAccount); // Usamos el método addAccounts para agregar la cuenta al cliente y establecer la relación bidireccional
-
-            // Guardar la cuenta en el repositorio
-            accountService.saveAccount(newAccount);
-
-            return new ResponseEntity<>(accountService.getAccountDto(newAccount), HttpStatus.CREATED);
-        }
-
-
-
-    @GetMapping("/clients/current/accounts")
-    public ResponseEntity<List<AccountDto>> getAccounts(Authentication authentication) {
-
-        // Obtener el cliente autenticado
-        Client client = clientService.findClientByEmail(authentication.getName());
-
-        // Devolver la lista de cuentas del cliente
-        return new ResponseEntity<>(accountService.getAccountsDtoByClient(client), HttpStatus.OK);
+        return new ResponseEntity<>("Cuenta no encontrada", HttpStatus.NOT_FOUND);
     }
 
 
