@@ -7,6 +7,7 @@ import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.service.AccountService;
+import com.mindhub.homebanking.service.AuthService;
 import com.mindhub.homebanking.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,8 +17,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.mindhub.homebanking.Utils.AccountUtils.generateAccountNumber;
 
-@Service
+
+@Service//Esto significa que Spring va a gestionar la instancia de esta clase y la inyectará donde sea necesario.// Lo ponemos dentro del contexto de spring como un componente de nuestra aplicacion.
 public class AccountServiceImplement implements AccountService {
 
 
@@ -29,6 +32,7 @@ public class AccountServiceImplement implements AccountService {
 
     @Autowired
     public AccountUtils accountUtils;
+
 
 
     @Override
@@ -78,6 +82,11 @@ public class AccountServiceImplement implements AccountService {
     }
 
     @Override
+    public Account getAccountByNumber(String number) {
+        return accountRepository.findByNumber(number);
+    }
+
+    @Override
     public  AccountDto createAccountForClient(Authentication authentication){
 
         // Obtener el cliente autenticado
@@ -97,7 +106,8 @@ public class AccountServiceImplement implements AccountService {
 
     @Override
     public Account createNewAccount(Client client) {
-        String accountNumber = accountUtils.generateAccountNumber();
+        String accountNumber = generateUniqueAccountNumber();
+
         Account newAccount = new Account();
         newAccount.setNumber(accountNumber);
         newAccount.setCreationDate(LocalDate.now());
@@ -106,6 +116,19 @@ public class AccountServiceImplement implements AccountService {
         return newAccount;
     }
 
+    @Override
+    public Boolean existsAccountByNumber(String number) {
+        return accountRepository.existsByNumber(number);
+    }
+
+    @Override
+    public String generateUniqueAccountNumber() {
+        String accountNumber; //declaro la variable pero no la inicializo.
+        do{
+            accountNumber = generateAccountNumber();
+        }while(existsAccountByNumber(accountNumber));// // Verificar si ya existe
+        return accountNumber;
+    }
 
 
 }

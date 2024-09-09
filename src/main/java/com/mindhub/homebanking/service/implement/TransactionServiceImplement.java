@@ -8,6 +8,7 @@ import com.mindhub.homebanking.models.TransactionType;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.service.AccountService;
 import com.mindhub.homebanking.service.ClientService;
 import com.mindhub.homebanking.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +23,16 @@ import java.time.LocalDateTime;
 @Service
 public class TransactionServiceImplement implements TransactionService {
 
-    @Autowired
-    private ClientRepository clientRepository;
+
 
     @Autowired
-    private AccountRepository accountRepository;
+    public TransactionRepository transactionRepository;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    public ClientService clientService;
 
     @Autowired
-   private ClientService clientService;
+    public AccountService accountService;
 
 
 
@@ -55,10 +55,8 @@ public class TransactionServiceImplement implements TransactionService {
 
         // Verificar que amount no sea nulo o esté vacío
         if (createTransactionDto.amount() == null || createTransactionDto.amount() <= 0 ) {
-            throw new IllegalArgumentException("El monto es obligatorio y debe ser mayor a cero.");
+            throw new IllegalArgumentException("the amount is obligatory and must be greater than 0.");
         }
-
-
     }
 
     @Override
@@ -66,41 +64,39 @@ public class TransactionServiceImplement implements TransactionService {
 
         // Verificar que los parámetros no estén vacíos
         if (createTransactionDto.description().isBlank() || createTransactionDto.sourceAccountNumber().isBlank() || createTransactionDto.destinationAccountNumber().isBlank()) {
-            throw new IllegalArgumentException("Todos los campos son obligatorios.");
+            throw new IllegalArgumentException("All fields are obligatory.");
         }
-
     }
 
     @Override
     public void validateNumbersAccountsNotSame(CreateTransactionDto createTransactionDto) {
         // Verificar que los números de cuenta no sean los mismos
         if (createTransactionDto.sourceAccountNumber().equals(createTransactionDto.destinationAccountNumber())) {
-            throw new IllegalArgumentException("La cuenta de origen y destino no pueden ser la misma.");
+            throw new IllegalArgumentException("The source and destination accounts must be different.");
         }
 
     }
 
     public Account validateSourceAccount(CreateTransactionDto createTransactionDto, Client client) {
-        Account sourceAccount = accountRepository.findByNumber(createTransactionDto.sourceAccountNumber());
+        Account sourceAccount = accountService.getAccountByNumber(createTransactionDto.sourceAccountNumber());
 
         // Verificar que la cuenta de origen exista
         if (sourceAccount == null) {
-            throw new IllegalArgumentException("La cuenta de origen no existe.");
+            throw new IllegalArgumentException("The source account does not exist.");
         }
 
         // Verificar (por el Id) que la cuenta de origen pertenece al cliente autenticado.
         if (!sourceAccount.getClient().getId().equals(client.getId())) {
-            throw new IllegalArgumentException("La cuenta de origen no pertenece al cliente autenticado.");
-
+            throw new IllegalArgumentException("The source account does not belong to the authenticated client.");
         }
         return sourceAccount;
     }
 
     @Override
     public Account validateDestinationAccount(CreateTransactionDto createTransactionDto, Client client) {
-        Account destinationAccount = accountRepository.findByNumber(createTransactionDto.destinationAccountNumber());
+        Account destinationAccount = accountService.getAccountByNumber(createTransactionDto.destinationAccountNumber());
         if (destinationAccount == null) {
-            throw new IllegalArgumentException("La cuenta de destino no existe.");
+            throw new IllegalArgumentException("the destination account does not exist");
         }
 
         return destinationAccount;
@@ -111,7 +107,7 @@ public class TransactionServiceImplement implements TransactionService {
 
         // Verificar que la cuenta de origen tenga el monto disponible
         if (sourceAccount.getBalance() < amount) {
-            throw new IllegalArgumentException("Saldo insuficiente en la cuenta de origen.");
+            throw new IllegalArgumentException("The source account does not have enough balance.");
         }
 
     }
@@ -138,16 +134,20 @@ public class TransactionServiceImplement implements TransactionService {
         destinationAccount.addTransactions(creditTransaction);
 
         // Guardar las transacciones en la base de datos.
-        transactionRepository.save(debitTransaction);
-        transactionRepository.save(creditTransaction);
+        saveTransaction(debitTransaction);
+        saveTransaction(creditTransaction);
 
         // Actualizar los saldos de las cuentas
         sourceAccount.setBalance(sourceAccount.getBalance() - createTransactionDto.amount());
         destinationAccount.setBalance(destinationAccount.getBalance() + createTransactionDto.amount());
 
         // Guardar las cuentas actualizadas en el repositorio
-        accountRepository.save(sourceAccount);
-        accountRepository.save(destinationAccount);
+        accountService.saveAccount(sourceAccount);
+        accountService.saveAccount(destinationAccount);
     }
 
+    @Override
+    public Transaction saveTransaction(Transaction transaction) {
+        return transactionRepository.save(transaction);
+    }
 }

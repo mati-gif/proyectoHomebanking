@@ -23,9 +23,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/clients")//  especifica la URL base para todas las solicitudes manejadas por este controlador. En este caso, cualquier solicitud que comience con "/api/clients" será manejada por este controlador.// Todas las solicitudes que comiencen con /api serán manejadas por este controlador.
 public class ClientController {
 
-//    @Autowired//Estoy inyectando una referencia a la interfaz ClientRepository en esta clase.//va a "cablear" clientRepository para evitar la generacion de nuevos objetos cada vez que ejecutenmos la clase controlador
-//    private ClientRepository clientRepository;
-
     @Autowired
     private ClientService clientService;
 

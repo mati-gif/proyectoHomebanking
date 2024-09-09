@@ -43,7 +43,6 @@ public class Client {
     }
 
     public Client( String firstName, String lastName, String email, String password) {
-        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -135,7 +134,8 @@ public class Client {
     }
     //cuenta: Este es el parámetro que se pasó al método, que es una instancia de la clase Cuenta.
     //setCliente(this): Aquí se está llamando al método setCliente del objeto cuenta.
-    // El argumento this se refiere a la instancia actual de Cliente. Esto establece la relación bidireccional, asegurando que la cuenta sepa a qué cliente pertenece.
+    // El argumento this se refiere a la instancia actual de Cliente.
+    // Esto establece la relación bidireccional, asegurando que la cuenta sepa a qué cliente pertenece.
 
     //cuentas: Este es el conjunto (Set<Cuenta>) que pertenece a la instancia actual de Cliente.
     //add(cuenta): Este método agrega la instancia de Cuenta al conjunto cuentas.

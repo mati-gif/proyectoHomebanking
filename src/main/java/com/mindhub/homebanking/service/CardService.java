@@ -18,4 +18,9 @@ public interface CardService {
     Set<CardDto> getClientCardDtos(Client client);
 //    Client findClientByEmail(String email);
     Set<CardDto> getClientCardsForCurrentClient(String email);
+    String generateUniqueCardNumber();
+    Boolean exitsCardNumber(String number);
+    int generateUniqueCvv();
+    Boolean exitsCvv(int cvv);
+
 }

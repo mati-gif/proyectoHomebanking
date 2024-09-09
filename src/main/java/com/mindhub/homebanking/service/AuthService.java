@@ -13,8 +13,13 @@ public interface AuthService {
     Client createClient(RegisterDto registerDto);
     Client saveClient(Client client);
     Account createAndSaveAccountForClient(Client client);
+//    Boolean existsByNumber(String number);
+//    String generateUniqueAccountNumber();
 
     String generateJwtForUser(String email);
     void authenticateUser(LoginDto loginDto);
     String loginAndGenerateToken(LoginDto loginDto);
+
+
+
 }

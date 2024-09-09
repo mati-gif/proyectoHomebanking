@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClientLoanRepository extends JpaRepository<ClientLoan, Long> {
-    boolean existsByClientAndLoan(Client client, Loan loan);
+//    boolean existsByClientAndLoan(Client client, Loan loan);
     boolean existsByClientAndLoanId(Client client, Long loanId);
 
 

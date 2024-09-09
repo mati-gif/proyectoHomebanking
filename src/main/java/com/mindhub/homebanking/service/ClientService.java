@@ -13,5 +13,6 @@ public interface ClientService {
     ClientDto saveUpdatedClient(Client client);  // Método para guardar actualizaciones en un cliente
     boolean clientExistsById(Long id);  // Método que devolverá true si el cliente existe por su ID
     Client findClientByEmail(String email);
+    Client saveClient(Client client);
 
 }

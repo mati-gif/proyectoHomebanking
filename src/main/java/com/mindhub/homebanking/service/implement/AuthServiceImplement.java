@@ -29,28 +29,28 @@ public class AuthServiceImplement implements AuthService {
     @Autowired
     public ClientRepository clientRepository;
 
-    @Autowired
-    public AccountService accountService;
 
     @Autowired
     public PasswordEncoder passwordEncoder;
 
+
+    @Autowired
+    public AccountService accountService;
+
+    @Autowired
+    public AuthenticationManager authenticationManager;
+
+    @Autowired
+    public JwtUtilService jwtUtilService;
+
+    @Autowired
+    public UserDetailsService userDetailsService;
+
     @Autowired
     public AccountRepository accountRepository;
 
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtilService jwtUtilService;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-
-    // Método principal que gestiona todo el flujo de creación de cliente y cuenta
-
+//------------------------------------------------------------------------------------
+    // Método principal que gestiona todo el flujo de creación de cliente y cuenta.
     @Override
     public void registerClientWithAccount(RegisterDto registerDto) {
 
@@ -64,8 +64,10 @@ public class AuthServiceImplement implements AuthService {
         createAndSaveAccountForClient( client);
 
     }
+//------------------------------------------------------------------------------------
 
-
+//------------------------------------------------------------------------------------
+//    Metodo que valida los campos FirstName, LastName, Email y Password usando el record RegisterDto.
     @Override
     public void validateRegisterDto(RegisterDto registerDto) {
         if (registerDto.firstName().isBlank()) {
@@ -85,13 +87,17 @@ public class AuthServiceImplement implements AuthService {
         }
     }
 
+//Metodo que valida si ya hay un email en la base de datos.
     @Override
     public void validateEmail(RegisterDto registerDto) {
         if (clientRepository.findByEmail(registerDto.email()) != null) {
             throw new IllegalArgumentException("Email is already in use");
         }
     }
+//-------------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------------
+//metodo para crear un nuevo cliente.
     @Override
     public Client createClient(RegisterDto registerDto) {
         Client client = new Client(
@@ -100,55 +106,63 @@ public class AuthServiceImplement implements AuthService {
                 registerDto.email(),
                 passwordEncoder.encode(registerDto.password()));
         return client;
-
     }
-
+//-------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//metodo que usa el metodo save() para guardar en la base de datos un cliente.
     @Override
     public Client saveClient(Client client) {
         return clientRepository.save(client);
     }
+//---------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------
+//metodo que crea una nueva cuenta para un cliente.
     @Override
     public Account createAndSaveAccountForClient(Client client) {
-        //4.declaro una varibale pasar usar el metodo que genera un numero de cuenta aleatorio
-        String accountNumber = AccountUtils.generateAccountNumber();
+        // Llamar al método que genera un número de cuenta único
+        String accountNumber = accountService.generateUniqueAccountNumber();
 
-          Account newAccount = new Account();
+        Account newAccount = new Account();
         newAccount.setNumber(accountNumber);
         newAccount.setCreationDate(LocalDate.now());
         newAccount.setBalance(0.0);
         newAccount.setClient(client);
         client.addAccounts(newAccount);
 
-
         // Guardar la cuenta en el repositorio
-        accountRepository.save(newAccount);;
-
+//        accountRepository.save(newAccount);
+        accountService.saveAccount(newAccount);
         return newAccount;
     }
+//-------------------------------------------------------------------------------
 
-
-// Método principal que autentica al usuario y genera el JWT
+//-------------------------------------------------------------------------------
+// Método principal que autentica al usuario y genera el JWT.
+@Override
 public String loginAndGenerateToken(LoginDto loginDto) {
     authenticateUser(loginDto);
     return generateJwtForUser(loginDto.email());
 }
-
+//-------------------------------------------------------------------------------
 // Autenticar al usuario
-public void authenticateUser(LoginDto loginDto) {
-    try {
-        authenticationManager.authenticate(
+    @Override
+    public void authenticateUser(LoginDto loginDto) {
+        try {
+            authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.password())
         );
     } catch (Exception e) {
         throw new IllegalArgumentException("Email or Password invalid");
     }
 }
-
+//-------------------------------------------------------------------------------
 // Generar el JWT para el usuario autenticado
+@Override
 public String generateJwtForUser(String email) {
     UserDetails userDetails = userDetailsService.loadUserByUsername(email);
     return jwtUtilService.generateToken(userDetails);
 }
+
 
 }

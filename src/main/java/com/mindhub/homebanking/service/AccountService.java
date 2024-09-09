@@ -21,4 +21,8 @@ public interface AccountService {
     AccountDto createAccountForClient(Authentication authentication);
    void validateClientAccountLimit(Client client);
     Account createNewAccount(Client client);
+
+    Boolean existsAccountByNumber(String number);
+    String generateUniqueAccountNumber();
+    Account getAccountByNumber(String number);
 }

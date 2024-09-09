@@ -62,4 +62,9 @@ public class ClientServiceImplement implements ClientService {
     public Client findClientByEmail(String email) {
         return clientRepository.findByEmail(email);
     }
+
+    @Override
+    public Client saveClient(Client client) {
+        return clientRepository.save(client);
+    }
 }
