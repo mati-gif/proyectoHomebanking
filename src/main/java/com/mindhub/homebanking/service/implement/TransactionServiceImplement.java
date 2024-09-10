@@ -116,7 +116,7 @@ public class TransactionServiceImplement implements TransactionService {
         // Crear la transacción de débito para la cuenta de origen
         Transaction debitTransaction = new Transaction(
                 - createTransactionDto.amount(),
-                createTransactionDto.description() + " " + "para la cuenta" + " " +  createTransactionDto.destinationAccountNumber(),
+                createTransactionDto.description() + " " + " to account " + " " +  createTransactionDto.destinationAccountNumber(),
                 LocalDateTime.now(),
                 TransactionType.DEBIT
         );
@@ -124,7 +124,7 @@ public class TransactionServiceImplement implements TransactionService {
         // Crear la transacción de crédito para la cuenta de destino
         Transaction creditTransaction = new Transaction(
                 createTransactionDto.amount(),
-                createTransactionDto.description() + " " + " desde la cuenta " + " " + createTransactionDto.sourceAccountNumber(),
+                createTransactionDto.description() + " " + " from account " + " " + createTransactionDto.sourceAccountNumber(),
                 LocalDateTime.now(),
                 TransactionType.CREDIT
         );
@@ -141,7 +141,7 @@ public class TransactionServiceImplement implements TransactionService {
         sourceAccount.setBalance(sourceAccount.getBalance() - createTransactionDto.amount());
         destinationAccount.setBalance(destinationAccount.getBalance() + createTransactionDto.amount());
 
-        // Guardar las cuentas actualizadas en el repositorio
+        // Guardar las cuentas actualizadas en la base de datos .
         accountService.saveAccount(sourceAccount);
         accountService.saveAccount(destinationAccount);
     }

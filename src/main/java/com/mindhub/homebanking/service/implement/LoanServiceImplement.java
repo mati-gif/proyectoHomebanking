@@ -37,7 +37,8 @@ public class LoanServiceImplement implements LoanService {
     @Autowired
     public AccountService accountService;
 
-
+//------------------------------------------------------------------------------
+    //Metodo para crear un prestamo.
     @Override
     public void createLoan(CreateLoanDto createLoanDto, Authentication authentication) {
         // Obtener el cliente autenticado
@@ -54,7 +55,9 @@ public class LoanServiceImplement implements LoanService {
         createAndSaveLoanAndTransaction(createLoanDto, client, loan, destinationAccount, totalLoanAmountWithInterest);
 
     }
-
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//Metodos para validar  el monto del prestamo,los payments,y si existe el prestamo.
     @Override
     public void validateLoanAmount(CreateLoanDto createLoanDto) {
         // Verificar que amount no sea nulo o esté vacío
@@ -84,7 +87,10 @@ public class LoanServiceImplement implements LoanService {
         }
         return loan;
     }
+//------------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+    //metodo que verifica si el cliente ya tiene un prestamo del mismo tipo.
     @Override
     public void verifySameType(Client client, Loan loan) {
 
@@ -93,7 +99,9 @@ public class LoanServiceImplement implements LoanService {
             throw new IllegalArgumentException("the client already has a loan of this type");
         }
     }
+//---------------------------------------------------------------------------------
 
+//Metodo que verifica que el monto solicitado no exceda el monto máximo del prestamo.
     @Override
     public void validateLoanAmount(CreateLoanDto createLoanDto, Loan loan) {
         // Verificar que el monto solicitado no exceda el monto máximo del préstamo.
@@ -101,7 +109,9 @@ public class LoanServiceImplement implements LoanService {
             throw new IllegalArgumentException("the amount requested exceeds the maximum loan amount");
         }
     }
+//---------------------------------------------------------------------------------
 
+    //Metodo que verifica que el numero de cuotas esté entre las disponibles en el préstamo.
     @Override
     public void validateLoanPayments(CreateLoanDto createLoanDto,Loan loan) {
         // Verificar que el número de cuotas esté entre las disponibles en el préstamo.
@@ -109,7 +119,8 @@ public class LoanServiceImplement implements LoanService {
             throw new IllegalArgumentException("the number of payments requested is not available");
         }
     }
-
+//---------------------------------------------------------------------------------
+    //Metodo que verifica que la cuenta de destino exista y pertenece al cliente autenticado.
     @Override
     public Account validateDestinationAccount(CreateLoanDto createLoanDto, Client client) {
         // Verificar que la cuenta de destino exista
@@ -124,7 +135,10 @@ public class LoanServiceImplement implements LoanService {
         }
         return destinationAccount;
     }
+//---------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------
+    //Metodo que calcula el monto total + interes basado en el número de cuotas.
     @Override
     public double calculateTotalLoanAmountWithInterest(CreateLoanDto createLoanDto) {
 
@@ -145,7 +159,10 @@ public class LoanServiceImplement implements LoanService {
         totalAmount = Math.round(totalAmount * 100.0) / 100.0;
         return totalAmount;
     }
+//---------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------
+   //Metodo que crea una instancia de un prestamo y una instancia de una transacción.
     @Override
     public void createAndSaveLoanAndTransaction(CreateLoanDto createLoanDto, Client client, Loan loan, Account destinationAccount, double totalAmount){
         // Crear la solicitud de préstamo (ClientLoan).Es la entidad que registrará la solicitud de préstamo específica del cliente.
@@ -155,6 +172,7 @@ public class LoanServiceImplement implements LoanService {
         clientLoan.setLoan(loan);//Asocia el tipo de préstamo (Loan) con el ClientLoan. Esto indica que este ClientLoan está basado en el tipo de préstamo especificado.
         clientLoan.setClient(client); //Establece el cliente (Client) que está solicitando el préstamo. Este es el cliente que ha hecho la solicitud.
         client.addClientLoan(clientLoan);//estoy agregando el objeto ClientLoan a la lista de préstamos del cliente. Esto actualiza la relación entre el cliente y sus préstamos en memoria. Esto establece la relación desde el cliente hacia el ClientLoan.
+        loan.addClientLoan(clientLoan);
         clientLoanRepository.save(clientLoan);//Guarda la instancia de ClientLoan en la base de datos a través del repositorio clientLoanRepository.
         clientService.saveClient(client);//Guarda el cliente actualizado (que ahora incluye la nueva relación de ClientLoan) en la base de datos a través del repositorio clientRepository.
 
@@ -165,7 +183,7 @@ public class LoanServiceImplement implements LoanService {
                 LocalDateTime.now(),
                 TransactionType.CREDIT
         );
-
+        //lo que hace es Asociar la transaccion de credito con la cuenta de destino,El método addTransactions  añade la nueva transaccion de credito (creditTransaction) a esa lista.Tambien genera una relacion bidireccional asi la nueva transaccion de credito sabe a que cuenta le pertenece
         destinationAccount.addTransactions(creditTransaction);//Añade la transacción de crédito a la lista de transacciones de la cuenta de destino (destinationAccount). Esto actualiza el historial de transacciones de la cuenta.
         transactionService.saveTransaction(creditTransaction);
 
@@ -173,8 +191,10 @@ public class LoanServiceImplement implements LoanService {
         destinationAccount.setBalance(destinationAccount.getBalance() + totalAmount);
         accountService.saveAccount(destinationAccount);
     }
+//---------------------------------------------------------------------------------
 
-
+//---------------------------------------------------------------------------------
+    //Metodo que obtiene los prestamos disponibles.
     @Override
     public List<LoanDto> getAvailableLoans(Authentication authentication) {
         // Obtener el cliente autenticado
@@ -197,15 +217,17 @@ public class LoanServiceImplement implements LoanService {
 
     @Override
     public List<Loan> getLoansRequestedByClient(Client client){
+        //Se llama al método getClientLoans() del objeto Client el cual devuelve una lista de objetos ClientLoan
+        // que representan los préstamos que el cliente ha solicitado.
         return client.getClientLoans().stream()
-                .map(ClientLoan::getLoan)
+                .map(ClientLoan::getLoan) //devuelve el objeto loan asociado a ese clientLoan
                 .collect(Collectors.toList());
     }
     @Override
     public List<LoanDto> getLoansNotRequestedByClient(List<Loan> allLoans, List<Loan> loansRequestedByClient) {
         return allLoans.stream()
-                .filter(loan -> !loansRequestedByClient.contains(loan)) //// Excluir los préstamos que el cliente ya solicitó.(loan) no debe estar en la lista de préstamos solicitados por el cliente
-                .map(loan -> new LoanDto(
+                .filter(loan -> !loansRequestedByClient.contains(loan)) // Excluir los préstamos que el cliente ya solicitó. (loan) no debe estar en la lista de préstamos solicitados por el cliente
+                .map(loan -> new LoanDto(//va a filtar los prestamos disponibles (allLoans) y se va a quedar con aquellos prestamos que no esten en la lista de prestamos que ya solicito.
                         loan.getId(),
                         loan.getName(),
                         loan.getMaxAmount(),

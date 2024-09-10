@@ -30,9 +30,8 @@ public class AccountServiceImplement implements AccountService {
     @Autowired
     public ClientService clientService;
 
-    @Autowired
-    public AccountUtils accountUtils;
-
+//    @Autowired
+//    public AccountUtils accountUtils;
 
 
     @Override
@@ -47,11 +46,13 @@ public class AccountServiceImplement implements AccountService {
                 .collect(Collectors.toList());
     }
 
+    //Toma un objeto Account y lo convierte en un objeto AccountDto.
     @Override
     public AccountDto getAccountDto(Account account) {
         return new AccountDto(account);
     }
 
+    //Busca una cuenta por su ID usando el método findById(). Si no la encuentra, devuelve null.
     @Override
     public Account getAccountById(Long id) {
         return accountRepository.findById(id).orElse(null);
@@ -63,12 +64,14 @@ public class AccountServiceImplement implements AccountService {
         return new AccountDto(updateAccount);
     }
 
+    //Verifica si una cuenta existe por su ID utilizando el método existsById() del repositorio.
     @Override
     public boolean accountExistsById(Long id) {
         // Usa el método existsById de JpaRepository para verificar si el cliente existe
         return accountRepository.existsById(id);
     }
 
+    //Obtiene todas las cuentas de un cliente, las convierte en objetos AccountDto y las devuelve como una lista.
     @Override
     public List<AccountDto> getAccountsDtoByClient(Client client) {
         return client.getAccounts().stream()
@@ -81,10 +84,15 @@ public class AccountServiceImplement implements AccountService {
         return accountRepository.save(account);
     }
 
+    //Busca una cuenta por su número de cuenta usando el método findByNumber() del repositorio.
     @Override
     public Account getAccountByNumber(String number) {
         return accountRepository.findByNumber(number);
     }
+
+    //----------------------------------------------------------------------
+
+    //Metodo para crear una cuenta para un cliente.
 
     @Override
     public  AccountDto createAccountForClient(Authentication authentication){
@@ -96,7 +104,9 @@ public class AccountServiceImplement implements AccountService {
         saveAccount(newAccount);
         return  getAccountDto(newAccount);
     }
-
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+    //Verifica que un cliente no tenga más de 3 cuentas; si las tiene, lanza una excepción.
     @Override
     public void validateClientAccountLimit(Client client) {
         if (client.getAccounts().size() >= 3) {
@@ -112,15 +122,20 @@ public class AccountServiceImplement implements AccountService {
         newAccount.setNumber(accountNumber);
         newAccount.setCreationDate(LocalDate.now());
         newAccount.setBalance(0.0);
-        client.addAccounts(newAccount);
+        client.addAccounts(newAccount); //lo que hace es Asociar la cuenta con el cliente,El método addAccounts probablemente añade la nueva cuenta (newAccount) a esa lista.Tambien genera una relacion bidireccional asi la nueva cuenta sabe a que cliente le pertenece
         return newAccount;
     }
+//-------------------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------------------
+//Verifica si ya existe una cuenta con el número proporcionado usando existsByNumber().
     @Override
     public Boolean existsAccountByNumber(String number) {
         return accountRepository.existsByNumber(number);
     }
 
+    //Genera un número de cuenta y verifica que no exista en la base de datos mediante un bucle do-while.
+    // Si existe, sigue generando hasta encontrar uno único. Luego lo devuelve.
     @Override
     public String generateUniqueAccountNumber() {
         String accountNumber; //declaro la variable pero no la inicializo.

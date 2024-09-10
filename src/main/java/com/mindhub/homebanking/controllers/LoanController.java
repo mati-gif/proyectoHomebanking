@@ -45,36 +45,6 @@ public class LoanController {
 
     @GetMapping("/loans")
     public ResponseEntity<?> getLoansAvaliable(Authentication authentication) {
-//        // Obtener al cliente autenticado
-//        Client client = clientRepository.findByEmail(authentication.getName());
-//
-//        // Obtener todos los préstamos disponibles en la base de datos
-//        List<Loan> allLoans = loanRepository.findAll();
-//
-//        // Obtener los préstamos que ya ha solicitado el cliente
-//        List<Loan> loansRequestedByClient = client.getClientLoans().stream()
-//                .map(ClientLoan::getLoan) // Obtener los préstamos de las relaciones de préstamos del cliente
-//                .collect(Collectors.toList());
-//
-//        // Filtrar los préstamos que el cliente aún no ha solicitado
-//        List<LoanDto> availableLoans = allLoans.stream()
-//                .filter(loan -> !loansRequestedByClient.contains(loan)) // Excluir los préstamos que el cliente ya solicitó
-//                .map(loan -> new LoanDto(
-//                        loan.getId(),
-//                        loan.getName(),
-//                        loan.getMaxAmount(),
-//                        loan.getPayments()
-//                ))
-//                .collect(Collectors.toList());
-//
-//        // Si no hay préstamos disponibles (ya solicitó todos), devolver un mensaje apropiado
-//        if (availableLoans.isEmpty()) {
-//            return new ResponseEntity<>("No hay más préstamos disponibles.", HttpStatus.OK);
-//        }
-//
-//        // Devolver la lista de préstamos disponibles que el cliente aún no ha solicitado
-//        return new ResponseEntity<>(availableLoans, HttpStatus.OK);
-
         try {
             List<LoanDto> availableLoans = loanService.getAvailableLoans(authentication);
             if (availableLoans.isEmpty()) {

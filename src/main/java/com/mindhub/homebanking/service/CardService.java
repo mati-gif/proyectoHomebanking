@@ -6,11 +6,13 @@ import com.mindhub.homebanking.models.Card;
 import com.mindhub.homebanking.models.CardType;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.ColorType;
+import org.springframework.security.core.Authentication;
 
+import java.util.List;
 import java.util.Set;
 
 public interface CardService {
-    long countCardsByClientAndColorAndType(Client client, ColorType color, CardType type);
+    Boolean exitsCardByClientAndColorAndType(Client client, ColorType color, CardType type);
     Card saveCard(Card card);
     Card buildCard(Client client, CreateCardDto createCardDto);//metodo para crear una instancia de una tarjeta.
     void checkCardLimit(Client client, CreateCardDto createCardDto);
@@ -22,5 +24,8 @@ public interface CardService {
     Boolean exitsCardNumber(String number);
     int generateUniqueCvv();
     Boolean exitsCvv(int cvv);
+    void createCardForClient(Authentication authentication, CreateCardDto createCardDto);
+
+    List<String> getAvailableCardsForUser(Client client);
 
 }

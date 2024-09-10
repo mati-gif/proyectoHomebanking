@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -22,30 +23,23 @@ import java.util.Set;
 public class CardController {
 
     @Autowired
-    private ClientService clientService;
+    public ClientService clientService;
 
     @Autowired
-    private CardService cardService;
+    public CardService cardService;
 
 
     @PostMapping("/clients/current/cards")
     public ResponseEntity<?> createCardForCurrentClient(Authentication authentication, @RequestBody CreateCardDto createCardDto){
 
         try {
-            // Obtener el cliente autenticado
-            Client client = clientService.findClientByEmail(authentication.getName());
 
-            // Validar la entrada de datos y verificar el límite de tarjetas
-            cardService.validateCardCreation(createCardDto);
-            cardService.checkCardLimit(client, createCardDto);
-
-            // Crear y guardar la tarjeta
-            Card card = cardService.buildCard(client, createCardDto);
-            cardService.saveCard(card);
-
+            cardService.createCardForClient(authentication, createCardDto);
             return new ResponseEntity<>("The card has been created, you have one new card " +
                     "type: " + createCardDto.type() + " color: " + createCardDto.color(), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
@@ -64,6 +58,25 @@ public class CardController {
     }
 
 
+
+    //metodo para obtener las tarjetas disponibles para el cliente. es de prueba ,no esta en el reqerimiento.(borrar si hace falta)
+    @GetMapping("/clients/current/availables")
+    public ResponseEntity<?> getAvailableCardsToChoose(Authentication authentication) {
+        // Obtener el cliente autenticado
+        Client client = clientService.findClientByEmail(authentication.getName());
+
+        // Obtener las tarjetas que todavía puede solicitar
+        List<String> availableCards = cardService.getAvailableCardsForUser(client);
+
+        if (availableCards.isEmpty()) {
+            return new ResponseEntity<>("No more cards available.", HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(availableCards, HttpStatus.OK);
     }
+
+
+
+}
 
 
