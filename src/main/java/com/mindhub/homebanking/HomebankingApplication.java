@@ -16,8 +16,8 @@ import java.util.Arrays;
 @SpringBootApplication
 public class HomebankingApplication {
 
-	@Autowired
-	PasswordEncoder passwordEncoder;
+//	@Autowired
+//	PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HomebankingApplication.class, args);

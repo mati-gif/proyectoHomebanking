@@ -30,9 +30,6 @@ public class AccountServiceImplement implements AccountService {
     @Autowired
     public ClientService clientService;
 
-//    @Autowired
-//    public AccountUtils accountUtils;
-
 
     @Override
     public List<Account> getAllAccounts() {

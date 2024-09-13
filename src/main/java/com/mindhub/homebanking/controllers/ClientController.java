@@ -47,6 +47,7 @@ public class ClientController {
         if(clientService.getClientById(id) == null) {
             return new ResponseEntity<>("Client not found", HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(clientService.getClientDto(clientService.getClientById(id)), HttpStatus.OK);
     }
 

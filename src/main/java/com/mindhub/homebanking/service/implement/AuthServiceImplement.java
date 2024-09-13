@@ -9,6 +9,7 @@ import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.service.AccountService;
 import com.mindhub.homebanking.service.AuthService;
+import com.mindhub.homebanking.service.ClientService;
 import com.mindhub.homebanking.servicesSecurity.JwtUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ import java.time.LocalDate;
 public class AuthServiceImplement implements AuthService {
 
     @Autowired
-    public ClientRepository clientRepository;
+    public ClientService clientService;
 
 
     @Autowired
@@ -90,7 +91,7 @@ public class AuthServiceImplement implements AuthService {
 //Metodo que valida si ya hay un email en la base de datos.
     @Override
     public void validateEmail(RegisterDto registerDto) {
-        if (clientRepository.findByEmail(registerDto.email()) != null) {
+        if (clientService.findClientByEmail(registerDto.email()) != null) {
             throw new IllegalArgumentException("Email is already in use");
         }
     }
@@ -112,7 +113,7 @@ public class AuthServiceImplement implements AuthService {
 //metodo que usa el metodo save() para guardar en la base de datos un cliente.
     @Override
     public Client saveClient(Client client) {
-        return clientRepository.save(client);
+        return clientService.saveClient(client);
     }
 //---------------------------------------------------------------------------------
 

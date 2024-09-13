@@ -55,6 +55,7 @@ public class TransactionServiceImplement implements TransactionService {
 
         // Verificar que amount no sea nulo o esté vacío
         if (createTransactionDto.amount() == null || createTransactionDto.amount() <= 0 ) {
+            System.out.println(createTransactionDto.amount());
             throw new IllegalArgumentException("the amount is obligatory and must be greater than 0.");
         }
     }
@@ -62,8 +63,10 @@ public class TransactionServiceImplement implements TransactionService {
     @Override
     public void validateOthersFields(CreateTransactionDto createTransactionDto) {
 
-        // Verificar que los parámetros no estén vacíos
-        if (createTransactionDto.description().isBlank() || createTransactionDto.sourceAccountNumber().isBlank() || createTransactionDto.destinationAccountNumber().isBlank()) {
+        // Verificar si algún campo es nulo o está vacío
+        if (createTransactionDto.description() == null || createTransactionDto.description().isBlank() ||
+                createTransactionDto.sourceAccountNumber() == null || createTransactionDto.sourceAccountNumber().isBlank() ||
+                createTransactionDto.destinationAccountNumber() == null || createTransactionDto.destinationAccountNumber().isBlank()) {
             throw new IllegalArgumentException("All fields are obligatory.");
         }
     }

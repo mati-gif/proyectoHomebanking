@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.mindhub.homebanking.Utils.CardsUtils.GenerateCardNumber;
-import static com.mindhub.homebanking.Utils.CardsUtils.generarCodigoSeguridad;
+import static com.mindhub.homebanking.Utils.CardsUtils.*;
 
 @Service
 public class CardServiceImplement implements CardService {
@@ -83,7 +82,6 @@ public class CardServiceImplement implements CardService {
     public Card buildCard(Client client, CreateCardDto createCardDto) {
 
         String cardNumber = generateUniqueCardNumber();
-        int cvv = generateUniqueCvv();
 
 
         Card card = new Card();
@@ -91,9 +89,9 @@ public class CardServiceImplement implements CardService {
         card.setType(CardType.valueOf(createCardDto.type()));
         card.setColor(ColorType.valueOf(createCardDto.color()));
         card.setNumber(cardNumber);
-        card.setCvv(cvv);
-        card.setFromDate(cardsUtils.generateFromDate());
-        card.setThruDate(cardsUtils.generateExpirationDate());
+        card.setCvv(generarCodigoSeguridad());
+        card.setFromDate(generateFromDate());
+        card.setThruDate(generateExpirationDate());
         card.setCardHolder(client.getFirstName() + " " + client.getLastName()); // Establecer el nombre del titular de la tarjeta
         client.addCards(card);
         return card;
@@ -117,27 +115,9 @@ public class CardServiceImplement implements CardService {
         return cardRepository.existsCardNumberByNumber(number);
     }
 
-    //-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
 
-    //----------------------------------------------------------------------------------
-    //Verifica que el cvv no exista en la base de datos.
-
-    @Override
-    public int generateUniqueCvv() {
-        int cvv; // Estoy declarando una variable pero no inicializandola.
-        do {
-            cvv = generarCodigoSeguridad(); //metodo de cardUtils.
-        } while (exitsCvv(cvv));
-        return cvv;
-    }
-
-    @Override
-    public Boolean exitsCvv(int cvv) {
-        return cardRepository.existsByCvv(cvv);
-    }
-
-    //---------------------------------------------------------------
-//---------------------------------------------------------------
+//-----------------------------------------------------------------------------------
 //Metodo que valida que los datos de la tarjeta sean correctos.
     @Override
     public void validateCardCreation(CreateCardDto createCardDto) {
@@ -153,6 +133,7 @@ public class CardServiceImplement implements CardService {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid card type: " + createCardDto.type());
         }
+
         // Verificar que el color no sea nulo ni esté vacío
         if (createCardDto.color() == null || createCardDto.color().isBlank()) {
             throw new IllegalArgumentException("Card color must be specified");
@@ -167,7 +148,7 @@ public class CardServiceImplement implements CardService {
     }
 //---------------------------------------------------------------
 
-    //---------------------------------------------------------------
+//---------------------------------------------------------------
 //Metodo que valida que el cliente no tenga mas de una tarjeta de credito con el mismo color y tipo.
     @Override
     public void checkCardLimit(Client client, CreateCardDto createCardDto) {
@@ -195,6 +176,12 @@ public class CardServiceImplement implements CardService {
                 .map(CardDto::new)
                 .collect(Collectors.toSet());
     }
+
+
+
+
+
+
 
 
     //-------------------------------------------------------------------

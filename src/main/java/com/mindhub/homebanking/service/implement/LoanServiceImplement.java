@@ -64,6 +64,7 @@ public class LoanServiceImplement implements LoanService {
         if (createLoanDto.amount() == null || createLoanDto.amount() <= 0 ) {
             throw new IllegalArgumentException("The amount is obligatory and must be greater than 0");
         }
+
     }
 
     @Override
@@ -72,7 +73,7 @@ public class LoanServiceImplement implements LoanService {
             throw new IllegalArgumentException("the payments must be obligatory and must be greater than 0");
         }
 
-        if(createLoanDto.destinationAccountNumber().isBlank()){
+        if(createLoanDto.destinationAccountNumber() == null || createLoanDto.destinationAccountNumber().isBlank() ){
             throw new IllegalArgumentException("the destination account number must not be empty");
         }
     }

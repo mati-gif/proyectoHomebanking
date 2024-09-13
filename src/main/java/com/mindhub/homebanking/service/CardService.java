@@ -22,8 +22,8 @@ public interface CardService {
     Set<CardDto> getClientCardsForCurrentClient(String email);
     String generateUniqueCardNumber();
     Boolean exitsCardNumber(String number);
-    int generateUniqueCvv();
-    Boolean exitsCvv(int cvv);
+
+
     void createCardForClient(Authentication authentication, CreateCardDto createCardDto);
 
     List<String> getAvailableCardsForUser(Client client);
