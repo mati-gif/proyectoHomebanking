@@ -12,10 +12,7 @@ import com.mindhub.homebanking.service.AccountService;
 import com.mindhub.homebanking.service.ClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -138,6 +136,23 @@ public class AccountServiceTests {
 
     }
 
+   //Test 3 para el metodo getAllAccountsDto()
+
+    @Test
+    public void testGetAllAccountsDto3() {
+        Account account1 = new Account("123456", LocalDate.now(), 5000);
+        Account account2 = new Account("654321", LocalDate.now(), 3000);
+
+        Mockito.when(accountRepository.findAll()).thenReturn(List.of(account1, account2));
+
+        List<AccountDto> accountDtos = accountService.getAllAccountsDto();
+
+        assertThat(accountDtos, hasSize(2));
+        assertThat(accountDtos.get(0).getNumber(), is("123456"));
+        assertThat(accountDtos.get(1).getNumber(), is("654321"));
+    }
+
+
 
 //-----------------------   test para el metodo getAccountById()   -------------------------//
 
@@ -155,6 +170,7 @@ public class AccountServiceTests {
 
         // Verificamos el resultado
         assertThat(account, equalTo(newAccount));
+        assertThat(account, is(notNullValue()));
 
         // Ejecutamos el método que estamos probando con un ID no existente
         Account noAccount = accountService.getAccountById(2L);
@@ -228,6 +244,25 @@ public class AccountServiceTests {
 
     }
 
+    //Test 2 para el metodo getAccountsDtoByClient()
+    @Test
+    public void testGetAccountsDtoByClient2() {
+        Client client = new Client();
+        Account account1 = new Account("123456", LocalDate.now(), 5000);
+//        Account account2 = new Account("654321", LocalDate.now(), 3000);
+        client.addAccounts(account1);
+//        client.addAccounts(account2);
+
+        when(clientService.findClientByEmail(any())).thenReturn(client);
+
+        List<AccountDto> accountDtos = accountService.getAccountsDtoByClient(client);
+
+        assertThat(accountDtos, hasSize(1));
+        assertThat(accountDtos.get(0).getNumber(), is("123456"));
+//        assertThat(accountDtos.get(1).getNumber(), is("654321"));
+    }
+
+
 //-----------------------   test para el metodo saveAccount()   -------------------------//
     @Test
     public void testSaveAccount() {
@@ -242,6 +277,7 @@ public class AccountServiceTests {
 
         // Verificamos el resultado
         assertThat(savedAccount, equalTo(account)); // Verifica que el objeto devuelto es el esperado
+        assertThat(savedAccount.getNumber(), is("VIN-008")); // Verifica que el número de cuenta sea el esperado
     }
 
 
@@ -260,6 +296,7 @@ public class AccountServiceTests {
 
         // Verificamos el resultado
         assertThat(foundAccount, equalTo(account)); // Verifica que el objeto devuelto es el esperado
+        assertThat(foundAccount.getNumber(), is("VIN-009")); // Verifica que el número de cuenta sea el esperado
     }
 
 
@@ -288,6 +325,27 @@ public class AccountServiceTests {
 //    // Verificamos el resultado
 //    assertThat(resultDto, equalTo(accountDto));
 //}
+
+
+    //Test 2 para el metodo createAccountForClient()
+    @Test
+    public void testCreateAccountForClient() {
+        Client client = new Client();
+        client.setEmail("client@example.com");
+
+        Account newAccount = new Account("12345678", LocalDate.now(), 0.0);
+        Authentication authentication = Mockito.mock(Authentication.class);
+
+        Mockito.when(authentication.getName()).thenReturn("client@example.com");
+        Mockito.when(clientService.findClientByEmail("client@example.com")).thenReturn(client);
+//        Mockito.when(accountRepository.save(any(Account.class))).thenReturn(newAccount);
+        when(accountRepository.save(ArgumentMatchers.any(Account.class))).thenReturn(newAccount);
+
+        AccountDto accountDto = accountService.createAccountForClient(authentication);
+
+        assertThat(accountDto, is(notNullValue()));
+//        assertThat(accountDto.getNumber(), is("12345678"));
+    }
 
 //-----------------------   test para el metodo existsAccountByNumber()   -------------------------//
     @Test
@@ -335,4 +393,43 @@ public class AccountServiceTests {
         assertThat(newAccount.getBalance(),equalTo(0.0));
         assertThat(newAccount.getCreationDate(),equalTo(LocalDate.now()));
     }
+
+    //test 2 para el metodo createNewAccount()
+    @Test
+    public void testCreateNewAccount2() {
+        Client client = new Client();
+        Account newAccount = accountService.createNewAccount(client);
+
+        assertThat(newAccount, is(notNullValue()));
+        assertThat(newAccount.getNumber(), is(notNullValue())); // El número de cuenta generado debe existir
+        assertThat(newAccount.getBalance(), is(0.0));           // El balance inicial debe ser 0
+        assertThat(newAccount.getClient(), is(client));         // La cuenta debe estar asociada al cliente
+    }
+
+    //-----------------------   test para el metodo existsAccountByNumber()   -------------------------//
+
+    @Test
+    public void testExistsAccountByNumber() {
+        Mockito.when(accountRepository.existsByNumber("123456")).thenReturn(true);
+
+        boolean exists = accountService.existsAccountByNumber("123456");
+
+        assertThat(exists, is(true));
+    }
+
+
+
+    //-------------------------   test para el metodo generateUniqueAccountNumber()   -------------------------//
+
+    @Test
+    public void testGenerateUniqueAccountNumber() {
+
+        Mockito.when(accountRepository.existsByNumber(anyString())).thenReturn(false);// Simulamos que no existe
+
+        String accountNumber = accountService.generateUniqueAccountNumber();
+
+        assertThat(accountNumber, is(notNullValue()));
+//        assertThat(accountNumber, matchesPattern("VIN\\d{8}")); // Debe ser un número
+    }
+
 }

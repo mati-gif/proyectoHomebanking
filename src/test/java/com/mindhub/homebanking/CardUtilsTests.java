@@ -77,13 +77,13 @@ public class CardUtilsTests {
         assertThat(codigo, allOf(greaterThanOrEqualTo(100), lessThanOrEqualTo(999)));
     }
 
-    @Test
-    public void codigoSeguridadNoEsNuloNiNegativo() {
-        int codigo = generarCodigoSeguridad();
-
-        // Verifica que el código esté dentro del rango permitido
-        assertThat(codigo, is(greaterThanOrEqualTo(100)));
-    }
+//    @Test
+//    public void codigoSeguridadNoEsNuloNiNegativo() {
+//        int codigo = generarCodigoSeguridad();
+//
+//        // Verifica que el código esté dentro del rango permitido
+//        assertThat(codigo, is(greaterThanOrEqualTo(100)));
+//    }
 
 //-----------------------  Test GenerateExpirationDate ---------------------------//
 

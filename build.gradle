@@ -18,18 +18,28 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.postgresql:postgresql'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	runtimeOnly 'com.h2database:h2'
+	implementation 'org.postgresql:postgresql' //incluye el controlador JDBC para PostgreSQL. Permite a tu aplicación conectarse a una base de datos PostgreSQL.
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'org.hibernate:hibernate-entitymanager:5.6.3.Final'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'//proporciona todas las dependencias necesarias para usar Spring Data JPA, que es una biblioteca para la integración de Spring con JPA (Java Persistence API). Facilita la implementación de repositorios y la gestión de entidades en la base de datos
+
+	implementation 'org.springframework.boot:spring-boot-starter-web' //incluye las dependencias necesarias para desarrollar aplicaciones web con Spring Boot. Incluye soporte para Spring MVC, Tomcat como servidor embebido, y otras bibliotecas necesarias para construir aplicaciones web RESTful o basadas en JSP.
+
+//	runtimeOnly 'com.h2database:h2'     //Esta dependencia incluye la base de datos en memoria H2.runtimeOnly indica que solo se necesita en tiempo de ejecución).
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test' //proporciona todas las dependencias necesarias para escribir y ejecutar pruebas en una aplicación Spring Boot. Incluye bibliotecas como JUnit, Hamcrest y AssertJ, y soporte para pruebas de integración con Spring Test.
+
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'// es necesaria para ejecutar pruebas que usan JUnit 5
+
+	implementation 'org.hibernate:hibernate-entitymanager:5.6.3.Final' //Esta dependencia incluye Hibernate EntityManager, que es una implementación de JPA.
+
+	implementation 'org.springframework.boot:spring-boot-starter-security' //proporciona soporte para la seguridad en aplicaciones Spring Boot. Incluye configuraciones básicas y dependencias para autenticación y autorización.
+
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.5' //Esta dependencia proporciona la API de JJWT (JSON Web Token).JJWT es una biblioteca para crear y validar tokens JWT
+
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5' //Esta dependencia es la implementación concreta de JJWT. Se utiliza en tiempo de ejecución para procesar los tokens JWT.
+
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'//Esta dependencia proporciona el soporte de serialización/deserialización de JSON usando Jackson para los tokens JWT.
+	// Permite convertir objetos Java a JSON y viceversa en el contexto de JJWT
 
 
 }

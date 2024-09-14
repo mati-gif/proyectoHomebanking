@@ -15,13 +15,14 @@ import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;        //me va a permitir usar el aserThat con el hamcrest para validar que el resultado sea el esperado.
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
 @SpringBootTest//va a ser una clase de testeos por eso lleva esta anotacion para que este en el contexto de spring cuando se ejecuten los testeos
 public class ClientServiceTests {
 
-    @MockBean//va a simular que existe un clientService
+    @Autowired //va a simular que existe un clientService
      ClientService clientService;
 
     @MockBean
@@ -31,6 +32,7 @@ public class ClientServiceTests {
 //    private ClientRepository clientRepository;
 
 
+//------------------------    test del metodo findClientByEmail()       --------------------------//
 
     //Vamos a testear un metodo de la clase ClientService,es un testeo unitario
     @Test//con esta anotacion indico que vot a generar un nuevo testeo y se va a asegurar que el metodo devuelva algo.
@@ -43,40 +45,46 @@ public class ClientServiceTests {
         assertThat(client, is(notNullValue()));
         assertThat(client.getEmail(),equalTo("M.morel@me.com"));
     }
+//-------------------------------------------------------------------------------------------//
+
+//------------------------    test del metodo saveClient()     --------------------------//
 
     @Test
     public void saveClient(){
 
         //Creo un nuevo cliente de prueba
-        Client newClient = new Client("John","Doe","J.doe@me.com","123456789");
+        Client client = new Client("John", "Doe", "john.doe@gmail.com", "123456789");
 
         // Simulamos el comportamiento del repositorio para el método saveClient()
-        when(clientService.saveClient(newClient)).thenReturn(newClient);
+        when(clientRepository.save(client)).thenReturn(client);
+
 
         // Ejecutamos el método que queremos probar
-        Client savedClient = clientService.saveClient(newClient);
+        Client savedClient = clientService.saveClient(client);
 
         // Validamos que el cliente no sea nulo
         assertThat(savedClient, is(notNullValue()));
 
         // Verificamos que el cliente guardado tenga los mismos atributos que el original
-        assertThat(savedClient.getEmail(), equalTo("J.doe@me.com"));
+        assertThat(savedClient.getEmail(), equalTo("john.doe@gmail.com"));
         assertThat(savedClient.getFirstName(), equalTo("John"));
         assertThat(savedClient.getLastName(), equalTo("Doe"));
         assertThat(savedClient.getPassword(), equalTo("123456789"));
 
     }
 //-------------------------------------------------------------------------------------------//
+
+//------------------------    test del metodo clientExistsById()     --------------------------//
     @Test
-    public void clientExistsById(){
+    public void testClientExistsById() {
+        // Arrange
+        when(clientRepository.existsById(1L)).thenReturn(true);
 
-        // Simulamos que el cliente con ID 1 existe en la base de datos
-        when(clientService.clientExistsById(1L)).thenReturn(true);
+        // Act
+        boolean exists = clientService.clientExistsById(1L);
 
-        // Llamamos al método que queremos probar
-        boolean result = clientService.clientExistsById(1L);
-        // Verificamos que el resultado sea verdadero
-        assertThat(result,is(equalTo(true)));
+        // Assert
+        assertThat(exists, equalTo(true));
     }
 
     @Test
@@ -93,53 +101,40 @@ public class ClientServiceTests {
 
 //-------------------------------------------------------------------------------------------//
 
-    @Test
-    public void  getClientById() {
-
-        // Creamos un cliente de prueba
-        Client newClient = new Client("John","Doe","J.doe@me.com","123456789");
-
-        // Simulamos que el cliente con ID 1 existe en el repositorio
-        when(clientService.getClientById(1L)).thenReturn(newClient);
-
-        // Llamamos al método que queremos probar
-        Client client = clientService.getClientById(1L);
-
-        // Verificamos que el cliente no sea nulo
-        assertThat(client, is(notNullValue()));
-
-        // Verificamos que el cliente devuelto tenga los mismos atributos que el original
-        assertThat(client.getEmail(), equalTo("J.doe@me.com"));
-        assertThat(client.getFirstName(), equalTo("John"));
-        assertThat(client.getLastName(), equalTo("Doe"));
-        assertThat(client.getPassword(), equalTo("123456789"));
-    }
+//------------------------    test del metodo getClientById()     --------------------------//
 
     @Test
-    public void shouldReturnNullWhenClientDoesNotExist() {
-        // Simulamos que no hay un cliente con ID 99 en el repositorio
-        when(clientService.getClientById(99L)).thenReturn(null);
+    public void testGetClientById() {
+        // Arrange
+        Client client = new Client("John", "Doe", "john.doe@gmail.com", "123456789");
+        when(clientRepository.findById(1L)).thenReturn(java.util.Optional.of(client));
 
-        // Llamamos al método que queremos probar
-        Client client = clientService.getClientById(99L);
+        // Act
+        Client foundClient = clientService.getClientById(1L);
 
-        // Verificamos que el resultado sea nulo
-        assertThat(client, is(nullValue()));
+        // Assert
+        assertThat(foundClient, is(notNullValue()));
+        assertThat(foundClient.getEmail(), equalTo("john.doe@gmail.com"));
+        assertThat(foundClient.getFirstName(), equalTo("John"));
+        assertThat(foundClient.getLastName(), equalTo("Doe"));
+        assertThat(foundClient.getPassword(), equalTo("123456789"));
     }
+
+
 
 //-------------------------------------------------------------------------------------------//
+
+//------------------------    test del metodo getAllClient()     --------------------------//
 
     @Test
     public void  testClientsIsDatabase() {
 
 // Creamos una lista de clientes de prueba
-        List<Client> mockClients = Arrays.asList(
-                new Client("John", "Doe", "john.doe@example.com", "123456789"),
-                new Client("Jane", "Doe", "jane.doe@example.com", "987654321")
-        );
+        Client client1 = new Client("John", "Doe", "john.doe@gmail.com");
+        Client client2 = new Client("Jane", "Smith", "jane.smith@gmail.com");
+        List<Client> mockClients = Arrays.asList(client1, client2);
 
-        // Simulamos que el método devuelve la lista de clientes
-        when(clientService.getAllClient()).thenReturn(mockClients);
+        when(clientRepository.findAll()).thenReturn(mockClients);
 
         // Llamamos al método que queremos probar
         List<Client> clients = clientService.getAllClient();
@@ -149,8 +144,9 @@ public class ClientServiceTests {
         // Verificamos que la lista tiene 2 elementos
         assertThat(clients.size(), is(2));
         // Verificamos los detalles de los clientes
-        assertThat(clients.get(0).getEmail(), equalTo("john.doe@example.com"));
-        assertThat(clients.get(1).getEmail(), equalTo("jane.doe@example.com"));
+        assertThat(client1.getEmail(), equalTo("john.doe@gmail.com"));
+        assertThat(client2.getEmail(), equalTo("jane.smith@gmail.com"));
+        assertThat(clients, contains(client1, client2));
     }
     @Test
     public void shouldReturnEmptyListWhenNoClientsExist() {
@@ -167,31 +163,33 @@ public class ClientServiceTests {
     }
 //-------------------------------------------------------------------------------------------//
 
-//Chequear por que no esta retornando solo los activos.(Esta mal)
+//------------------------    test del metodo getAllClientDto()     --------------------------//
+
     @Test
-    public void shouldReturnOnlyActiveClientsAsClientDto() {
-        // Crear clientes de prueba
-        Client activeClient = new Client("John", "Doe", "john.doe@example.com", "123456789");
-        activeClient.setActive(true);
-        Client inactiveClient = new Client("Jane", "Doe", "jane.doe@example.com", "987654321");
-        inactiveClient.setActive(false);
+    public void testGetAllClientDto() {
+        // Arrange
+        Client client1 = mock(Client.class);
+        Client client2 = mock(Client.class);
+        when(client1.isActive()).thenReturn(true);
+        when(client2.isActive()).thenReturn(false);
+        when(clientRepository.findAll()).thenReturn(Arrays.asList(client1, client2));
 
-        // Simular el método getAllClient() para devolver los clientes de prueba
-        when(clientRepository.findAll()).thenReturn(Arrays.asList(activeClient, inactiveClient));
-
-        // Ejecutar el método que queremos probar
+        // Act
         List<ClientDto> clientDtos = clientService.getAllClientDto();
 
-        // Verificar que la lista de ClientDto no sea nula
-        assertThat(clientDtos, is(notNullValue()));
-        System.out.println(clientDtos);
-//        // Verificar que la lista contenga solo clientes activos
-//        assertThat(clientDtos.size(), is(1));
-//        assertThat(clientDtos.get(0).getEmail(), is(equalTo("john.doe@example.com")));
+        // Assert
+        assertThat(clientDtos, hasSize(1));
+        assertThat(clientDtos.get(0), is(instanceOf(ClientDto.class)));
     }
+
+
+
+
+
 
 //-------------------------------------------------------------------------------------------//
 
+    //------------------------    test del metodo getClientDto()     --------------------------//
     @Test
     public void shouldConvertClientToClientDto() {
         // Crear un cliente de prueba con cuentas, préstamos y tarjetas
@@ -242,6 +240,22 @@ public class ClientServiceTests {
         assertThat(clientDto.getLoans(), contains(hasProperty("name", is(equalTo("Loan1")))));
         assertThat(clientDto.getCards(), contains(hasProperty("number", is(equalTo("1234-5678-9876-5432")))));
     }
+
+//------------------------    test 2 del metodo getClientDto()     --------------------------//
+    @Test
+    public void testGetClientDto() {
+        // Arrange
+        Client client = mock(Client.class);
+
+        // Act
+        ClientDto clientDto = clientService.getClientDto(client);
+
+        // Assert
+        assertThat(clientDto, is(notNullValue()));
+        assertThat(clientDto.getId(), is(client.getId()));
+    }
+
+
 
 
 

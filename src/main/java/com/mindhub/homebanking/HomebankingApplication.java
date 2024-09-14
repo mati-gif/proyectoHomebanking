@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-@SpringBootApplication
+@SpringBootApplication //facilita la configuración inicial de una aplicación Spring Boot. Permite que Spring Boot maneje la configuración automática y el escaneo de componentes
 public class HomebankingApplication {
 
 //	@Autowired
@@ -21,7 +21,7 @@ public class HomebankingApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(HomebankingApplication.class, args);
-	}
+	} //ste método main es el punto de entrada de la aplicación Spring Boot y se encarga de iniciar el contexto de la aplicación, lo que hace que todos los componentes, servicios y configuraciones definidas en la aplicación estén disponibles y activos.
 	@Bean//un  bean es simplemente una clase Java normal, escrita para seguir algunas reglas importantes. Pedimos que se ejecute esto primero.
 	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository,CardRepository cardRepository) { // Define un bean de tipo CommandLineRunner que recibe un ClientRepository como parámetro.
 		// initData toma una instancia de ClientRepository como parámetro y utiliza este repositorio para guardar algunos clientes en la base de datos al iniciar la aplicación.

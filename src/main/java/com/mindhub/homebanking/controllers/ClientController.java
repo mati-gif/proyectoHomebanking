@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class ClientController {
 
     @Autowired
-    private ClientService clientService;
+ ClientService clientService;
 
     @GetMapping("/hello")//es una estencion de @RequestMapping. Indica que este método responderá a las solicitudes HTTP GET en la ruta "/hello".
     public String hello() {//
