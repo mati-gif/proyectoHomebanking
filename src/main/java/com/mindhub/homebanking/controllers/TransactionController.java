@@ -33,7 +33,7 @@ public class TransactionController {
                                                 Authentication authentication) {
         try {
             transactionService.createTransaction(createTransactionDto, authentication);
-            return new ResponseEntity<>("Transferencia realizada con éxito", HttpStatus.OK);
+            return new ResponseEntity<>("Transaction created successfully", HttpStatus.OK);
         }catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }  catch ( Exception e) {

@@ -61,7 +61,7 @@ public class AuthController {
         String jwt = authService.loginAndGenerateToken(loginDto);
         return ResponseEntity.ok(jwt);
     } catch (Exception e){
-        return new ResponseEntity<>("Email o Password invalid" , HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Email o Password invalid" , HttpStatus.UNAUTHORIZED);
     }
 
 

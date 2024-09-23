@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -17,12 +18,15 @@ import com.mindhub.homebanking.service.AccountService;
 import com.mindhub.homebanking.service.ClientService;
 import com.mindhub.homebanking.service.LoanService;
 import com.mindhub.homebanking.service.TransactionService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -46,7 +50,22 @@ public class LoanServiceTests {
     @Autowired
     LoanService loanService;
 
+    private Client client;
+    private Loan loan;
 
+    @BeforeEach
+    public void setUp() {
+        client = new Client();
+        client.setEmail("test@test.com");
+
+        loan = new Loan();
+        loan.setId(1L);
+        loan.setMaxAmount(50000.00);
+        loan.setPayments(Arrays.asList(12, 24, 36));
+
+        Mockito.when(clientService.findClientByEmail("test@test.com")).thenReturn(client);
+        Mockito.when(loanRepository.findById(1L)).thenReturn(Optional.of(loan));
+    }
 //    @Test
 //    public void testCreateLoan_Success() {
 //        // Arrange
@@ -76,6 +95,7 @@ public class LoanServiceTests {
 
 
 //-----------------------------------------------------------------------------
+        //test para el metodo validateLoanAmount()
 
     @Test
     public void testValidateLoanAmount_InvalidAmount() {
@@ -88,6 +108,7 @@ public class LoanServiceTests {
                 .hasMessageContaining("The amount is obligatory and must be greater than 0");
     }
 //-----------------------------------------------------------------------------
+    //test para el metodo validateOthersFields()
     @Test
     public void testValidateOthersFields_MissingFields() {
         // Arrange
@@ -100,6 +121,7 @@ public class LoanServiceTests {
 //                .hasMessageContaining("The payments must be obligatory and must be greater than 0");
     }
 //-----------------------------------------------------------------------------
+    //test para el metodo validateExistsLoan()
 @Test
 public void testValidateExistsLoan_LoanNotFound() {
     // Arrange
@@ -167,6 +189,18 @@ public void testValidateExistsLoan_LoanNotFound() {
         assertThatThrownBy(() -> loanService.validateDestinationAccount(createLoanDto, client))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("the destination account does not exist");
+    }
+
+    @Test
+    public void testValidateDestinationAccount_invalidAccount() {
+        CreateLoanDto createLoanDto = new CreateLoanDto(1L, 30000.00, 12, "invalidNumber");
+
+        Mockito.when(accountService.getAccountByNumber("invalidNumber")).thenReturn(null);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                loanService.validateDestinationAccount(createLoanDto, client));
+
+        assertThat(exception.getMessage(), is("the destination account does not exist"));
     }
 
 

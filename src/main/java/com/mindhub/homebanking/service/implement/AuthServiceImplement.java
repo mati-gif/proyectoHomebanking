@@ -71,16 +71,16 @@ public class AuthServiceImplement implements AuthService {
 //    Metodo que valida los campos FirstName, LastName, Email y Password usando el record RegisterDto.
     @Override
     public void validateRegisterDto(RegisterDto registerDto) {
-        if (registerDto.firstName().isBlank()) {
+        if (registerDto.firstName().isBlank() || registerDto.firstName().isEmpty() ) {
             throw new IllegalArgumentException("The name field must not be empty");
         }
-        if (registerDto.lastName().isBlank()) {
+        if (registerDto.lastName().isBlank()  ) {
             throw new IllegalArgumentException("The last name field must not be empty");
         }
-        if (registerDto.email().isBlank()) {
+        if (registerDto.email().isBlank()  || registerDto.email().isEmpty() || !registerDto.email().contains("@") || registerDto.email().trim().isEmpty()) {
             throw new IllegalArgumentException("The email field must not be empty");
         }
-        if (registerDto.password().isBlank()) {
+        if (registerDto.password().isBlank()  || registerDto.password().isEmpty() || registerDto.password().trim().isEmpty()) {
             throw new IllegalArgumentException("The password field must not be empty");
         }
         if (registerDto.password().length() < 8) {
