@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication; //es una an
 import org.springframework.context.annotation.Bean;//es una anotación para definir un bean de Spring.
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
