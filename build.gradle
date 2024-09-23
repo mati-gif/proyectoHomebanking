@@ -18,13 +18,13 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.postgresql:postgresql' //incluye el controlador JDBC para PostgreSQL. Permite a tu aplicación conectarse a una base de datos PostgreSQL.
+	//implementation 'org.postgresql:postgresql' //incluye el controlador JDBC para PostgreSQL. Permite a tu aplicación conectarse a una base de datos PostgreSQL.
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'//proporciona todas las dependencias necesarias para usar Spring Data JPA, que es una biblioteca para la integración de Spring con JPA (Java Persistence API). Facilita la implementación de repositorios y la gestión de entidades en la base de datos
 
 	implementation 'org.springframework.boot:spring-boot-starter-web' //incluye las dependencias necesarias para desarrollar aplicaciones web con Spring Boot. Incluye soporte para Spring MVC, Tomcat como servidor embebido, y otras bibliotecas necesarias para construir aplicaciones web RESTful o basadas en JSP.
 
-//	runtimeOnly 'com.h2database:h2'     //Esta dependencia incluye la base de datos en memoria H2.runtimeOnly indica que solo se necesita en tiempo de ejecución).
+	runtimeOnly 'com.h2database:h2'     //Esta dependencia incluye la base de datos en memoria H2.runtimeOnly indica que solo se necesita en tiempo de ejecución).
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' //proporciona todas las dependencias necesarias para escribir y ejecutar pruebas en una aplicación Spring Boot. Incluye bibliotecas como JUnit, Hamcrest y AssertJ, y soporte para pruebas de integración con Spring Test.
 
