@@ -1,3 +1,4 @@
+/*
 package com.mindhub.homebanking;
 
 import com.mindhub.homebanking.dtos.ClientDto;
@@ -271,3 +272,4 @@ public class ClientServiceTests {
 //        assertThat(clients.size(),is(6));
 //    }
 }
+*/

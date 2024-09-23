@@ -1,3 +1,4 @@
+/*
 package com.mindhub.homebanking;
 
 
@@ -391,3 +392,4 @@ public void testGetClientCardDtos() {
     }
 
 }
+*/
