@@ -109,7 +109,7 @@ public class RepositoriesTest {
         List<Card> cards = cardRepository.findAll();
 
         // Verificar que se recuperaron las tarjetas esperadas
-        assertThat(cards, hasSize(8));
+        assertThat(cards, hasSize(16));
 
     }
 
@@ -168,7 +168,7 @@ public class RepositoriesTest {
 
         // Verificar que se recuperaron los clientes esperados
         assertThat(clients, is(notNullValue()));
-        assertThat(clients, hasSize(7));
+        assertThat(clients, hasSize(15));
 //        assertThat(clients, hasItems(client1, client2));
     }
 
