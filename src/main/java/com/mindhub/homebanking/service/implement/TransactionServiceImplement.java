@@ -18,7 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Service
 public class TransactionServiceImplement implements TransactionService {
@@ -64,10 +67,19 @@ public class TransactionServiceImplement implements TransactionService {
     public void validateOthersFields(CreateTransactionDto createTransactionDto) {
 
         // Verificar si algún campo es nulo o está vacío
-        if (createTransactionDto.description() == null || createTransactionDto.description().isBlank() ||
-                createTransactionDto.sourceAccountNumber() == null || createTransactionDto.sourceAccountNumber().isBlank() ||
-                createTransactionDto.destinationAccountNumber() == null || createTransactionDto.destinationAccountNumber().isBlank()) {
-            throw new IllegalArgumentException("All fields are obligatory.");
+//        if (createTransactionDto.description() == null || createTransactionDto.description().isBlank() ||
+//                createTransactionDto.sourceAccountNumber() == null || createTransactionDto.sourceAccountNumber().isBlank() ||
+//                createTransactionDto.destinationAccountNumber() == null || createTransactionDto.destinationAccountNumber().isBlank()) {
+//            throw new IllegalArgumentException("All fields are obligatory.");
+//        }
+        if(createTransactionDto.description() == null || createTransactionDto.description().isBlank()){
+            throw new IllegalArgumentException("Description  must not be empty");
+        }
+        if(createTransactionDto.sourceAccountNumber() == null || createTransactionDto.sourceAccountNumber().isBlank()){
+            throw new IllegalArgumentException("Source account number must not be empty");
+        }
+        if(createTransactionDto.destinationAccountNumber() == null || createTransactionDto.destinationAccountNumber().isBlank()){
+            throw new IllegalArgumentException("Destination account number must not be empty");
         }
     }
 
@@ -116,13 +128,16 @@ public class TransactionServiceImplement implements TransactionService {
     }
 
     public void executeTransaction(CreateTransactionDto createTransactionDto, Account sourceAccount, Account destinationAccount) {
-        // Crear la transacción de débito para la cuenta de origen
+
+
+//        // Crear la transacción de débito para la cuenta de origen
         Transaction debitTransaction = new Transaction(
                 - createTransactionDto.amount(),
                 createTransactionDto.description() + " " + " to account " + " " +  createTransactionDto.destinationAccountNumber(),
                 LocalDateTime.now(),
                 TransactionType.DEBIT
         );
+
 
         // Crear la transacción de crédito para la cuenta de destino
         Transaction creditTransaction = new Transaction(

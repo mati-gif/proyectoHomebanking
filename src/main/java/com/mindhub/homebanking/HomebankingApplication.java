@@ -46,7 +46,7 @@ public class HomebankingApplication {
 			////------Creando los prestamos---------////
 
 //			List<Integer> hipotecaPayments = Arrays.asList(12, 24, 36, 48, 60);
-			Loan loan1 = new Loan("Hipoteca",500000.000, Arrays.asList(12, 24, 36, 48, 60));
+			Loan loan1 = new Loan("Mortgage",500000.000, Arrays.asList(12, 24, 36, 48, 60));
 			loanRepository.save(loan1);
 
 //			List<Integer> personalPayments2 = Arrays.asList( 6, 12, 24.);
@@ -55,7 +55,7 @@ public class HomebankingApplication {
 
 
 //			List<Integer> automotrizPayments3 = Arrays.asList(6, 12, 24, 36);
-			Loan loan3 = new Loan("Automotriz",300000.000, Arrays.asList(6, 12, 24, 36));
+			Loan loan3 = new Loan("Automotive",300000.000, Arrays.asList(6, 12, 24, 36));
 			loanRepository.save(loan3);
 
 			////-----------------------------------////
@@ -105,9 +105,9 @@ public class HomebankingApplication {
 			transactionRepository.save(transaction3);
 
 
-			Transaction transaction4 = new Transaction(350,"ingreso",now, TransactionType.CREDIT);
-			Transaction transaction5 = new Transaction(-920,"egreso",now.plusHours(1), TransactionType.DEBIT);
-			Transaction transaction6 = new Transaction(1300,"ingreso",now.plusHours(2), TransactionType.CREDIT);
+			Transaction transaction4 = new Transaction(350,"entered",now, TransactionType.CREDIT);
+			Transaction transaction5 = new Transaction(-920,"issued",now.plusHours(1), TransactionType.DEBIT);
+			Transaction transaction6 = new Transaction(1300,"entered",now.plusHours(2), TransactionType.CREDIT);
 			account2.addTransactions(transaction4);
 			account2.addTransactions(transaction5);
 			account2.addTransactions(transaction6);
