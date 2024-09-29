@@ -12,8 +12,9 @@ import java.util.List;
 public interface LoanService {
 
     void createLoan(CreateLoanDto createLoanDto, Authentication authentication);
+    void validateDestinationAccount(CreateLoanDto createLoanDto);
     void validateLoanAmount(CreateLoanDto createLoanDto);
-    void validateOthersFields(CreateLoanDto createLoanDto);
+    void validatePayments(CreateLoanDto createLoanDto);
     Loan validateExistsLoan(CreateLoanDto createLoanDto);
     void verifySameType(Client client, Loan loan);
     void validateLoanAmount(CreateLoanDto createLoanDto, Loan loan);

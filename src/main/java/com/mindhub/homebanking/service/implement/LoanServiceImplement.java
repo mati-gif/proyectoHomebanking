@@ -44,8 +44,9 @@ public class LoanServiceImplement implements LoanService {
         // Obtener el cliente autenticado
         Client client = clientService.findClientByEmail(authentication.getName());
 
+        validateDestinationAccount( createLoanDto);
         validateLoanAmount(createLoanDto);
-        validateOthersFields(createLoanDto);
+        validatePayments(createLoanDto);
         Loan loan = validateExistsLoan(createLoanDto);
         verifySameType(client, loan);
         validateLoanAmount(createLoanDto, loan);
@@ -58,6 +59,13 @@ public class LoanServiceImplement implements LoanService {
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //Metodos para validar  el monto del prestamo,los payments,y si existe el prestamo.
+
+    @Override
+    public void validateDestinationAccount(CreateLoanDto createLoanDto){
+        if(createLoanDto.destinationAccountNumber() == null || createLoanDto.destinationAccountNumber().isBlank() ){
+            throw new IllegalArgumentException("the destination account number must not be empty");
+        }
+    }
     @Override
     public void validateLoanAmount(CreateLoanDto createLoanDto) {
         // Verificar que amount no sea nulo o esté vacío
@@ -68,13 +76,9 @@ public class LoanServiceImplement implements LoanService {
     }
 
     @Override
-    public void validateOthersFields(CreateLoanDto createLoanDto) {
+    public void validatePayments(CreateLoanDto createLoanDto) {
         if(createLoanDto.payments() == null || createLoanDto.payments() <= 0 ){
             throw new IllegalArgumentException("the payments must be obligatory and must be greater than 0");
-        }
-
-        if(createLoanDto.destinationAccountNumber() == null || createLoanDto.destinationAccountNumber().isBlank() ){
-            throw new IllegalArgumentException("the destination account number must not be empty");
         }
     }
 
