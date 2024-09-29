@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 public interface TransactionService {
 
    void createTransaction(CreateTransactionDto createTransactionDto, Authentication authentication);
-   void validateTransactionAmount(CreateTransactionDto createTransactionDto);
+//   void validateTransactionAmount(CreateTransactionDto createTransactionDto);
   void validateOthersFields(CreateTransactionDto createTransactionDto);
    void validateNumbersAccountsNotSame(CreateTransactionDto createTransactionDto);
    Account validateSourceAccount(CreateTransactionDto createTransactionDto, Client client);

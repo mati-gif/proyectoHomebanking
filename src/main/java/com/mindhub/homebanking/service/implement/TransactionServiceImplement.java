@@ -43,7 +43,7 @@ public class TransactionServiceImplement implements TransactionService {
     public void createTransaction(CreateTransactionDto createTransactionDto, Authentication authentication) {
 
         Client client = clientService.findClientByEmail(authentication.getName());
-        validateTransactionAmount(createTransactionDto);
+//        validateTransactionAmount(createTransactionDto);
         validateOthersFields(createTransactionDto);
         validateNumbersAccountsNotSame(createTransactionDto);
         Account sourceAccount = validateSourceAccount(createTransactionDto, client);
@@ -53,15 +53,15 @@ public class TransactionServiceImplement implements TransactionService {
 
     }
 
-    @Override
-    public void validateTransactionAmount(CreateTransactionDto createTransactionDto){
-
-        // Verificar que amount no sea nulo o esté vacío
-        if (createTransactionDto.amount() == null || createTransactionDto.amount() <= 0 ) {
-            System.out.println(createTransactionDto.amount());
-            throw new IllegalArgumentException("the amount is obligatory and must be greater than 0.");
-        }
-    }
+//    @Override
+//    public void validateTransactionAmount(CreateTransactionDto createTransactionDto){
+//
+//        // Verificar que amount no sea nulo o esté vacío
+//        if (createTransactionDto.amount() == null || createTransactionDto.amount() <= 0 ) {
+//            System.out.println(createTransactionDto.amount());
+//            throw new IllegalArgumentException("the amount is obligatory and must be greater than 0.");
+//        }
+//    }
 
     @Override
     public void validateOthersFields(CreateTransactionDto createTransactionDto) {
@@ -72,14 +72,22 @@ public class TransactionServiceImplement implements TransactionService {
 //                createTransactionDto.destinationAccountNumber() == null || createTransactionDto.destinationAccountNumber().isBlank()) {
 //            throw new IllegalArgumentException("All fields are obligatory.");
 //        }
-        if(createTransactionDto.description() == null || createTransactionDto.description().isBlank()){
-            throw new IllegalArgumentException("Description  must not be empty");
-        }
+
         if(createTransactionDto.sourceAccountNumber() == null || createTransactionDto.sourceAccountNumber().isBlank()){
             throw new IllegalArgumentException("Source account number must not be empty");
         }
         if(createTransactionDto.destinationAccountNumber() == null || createTransactionDto.destinationAccountNumber().isBlank()){
             throw new IllegalArgumentException("Destination account number must not be empty");
+        }
+
+        // Verificar que amount no sea nulo o esté vacío
+        if (createTransactionDto.amount() == null || createTransactionDto.amount() <= 0 ) {
+            System.out.println(createTransactionDto.amount());
+            throw new IllegalArgumentException("the amount is obligatory and must be greater than 0.");
+        }
+
+        if(createTransactionDto.description() == null || createTransactionDto.description().isBlank()){
+            throw new IllegalArgumentException("Description  must not be empty");
         }
     }
 
