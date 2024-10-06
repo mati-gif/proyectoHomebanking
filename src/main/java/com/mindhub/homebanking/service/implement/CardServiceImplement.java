@@ -177,6 +177,11 @@ public class CardServiceImplement implements CardService {
                 .collect(Collectors.toSet());
     }
 
+    //---------------------------------------------------------------
+    //metodo que busca una tarjeta por su numero.
+    public Card getCardByNumber(String cardNumber) {
+        return cardRepository.findByNumber(cardNumber);
+    }
 
 
 

@@ -28,4 +28,7 @@ public interface CardService {
 
     List<String> getAvailableCardsForUser(Client client);
 
+
+    Card getCardByNumber(String cardNumber);//busca una tarjeta por su nuemero y la devuelve
+
 }
