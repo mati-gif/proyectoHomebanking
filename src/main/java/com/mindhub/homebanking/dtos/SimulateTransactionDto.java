@@ -1,17 +1,20 @@
 package com.mindhub.homebanking.dtos;
 
+import java.time.LocalDateTime;
+
 public class SimulateTransactionDto {
 
     private Long id;
     private String cardHolder;          // Nombre del titular de la tarjeta
     private String cardNumber;          // Número de tarjeta ingresado
-    private String expirationDate;      // Fecha de vencimiento de la tarjeta
-    private String cvv;                 // CVV ingresado
+    private LocalDateTime expirationDate;      // Fecha de vencimiento de la tarjeta
+    private int cvv;                 // CVV ingresado
     private double amount;              // Monto a pagar
     private String description;         // Descripción del pago
     private String destinationAccountNumber;  // La cuenta de destino (pago) en el homebanking
+    private String sourceAccountNumber; // Número de cuenta de origen
 
-    public SimulateTransactionDto(String cardHolder, String cardNumber, String expirationDate, String cvv, double amount, String description, String destinationAccountNumber) {
+    public SimulateTransactionDto(String cardHolder, String cardNumber, LocalDateTime expirationDate, int cvv, double amount, String description, String destinationAccountNumber) {
         this.cardHolder = cardHolder;
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
@@ -21,6 +24,24 @@ public class SimulateTransactionDto {
         this.destinationAccountNumber = destinationAccountNumber;
     }
 
+
+    public SimulateTransactionDto(String sourceAccountNumber, String description, double amount, int cvv, LocalDateTime expirationDate, String cardHolder, String cardNumber) {
+        this.sourceAccountNumber = sourceAccountNumber;
+        this.description = description;
+        this.amount = amount;
+        this.cvv = cvv;
+        this.expirationDate = expirationDate;
+        this.cardHolder = cardHolder;
+        this.cardNumber = cardNumber;
+    }
+
+    public SimulateTransactionDto(String cardNumber, String destinationAccountNumber, String description, double amount, int cvv) {
+        this.cardNumber = cardNumber;
+        this.destinationAccountNumber = destinationAccountNumber;
+        this.description = description;
+        this.amount = amount;
+        this.cvv = cvv;
+    }
 
     public Long getId() {
         return id;
@@ -46,19 +67,19 @@ public class SimulateTransactionDto {
         this.cardNumber = cardNumber;
     }
 
-    public String getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 
-    public String getCvv() {
+    public int getCvv() {
         return cvv;
     }
 
-    public void setCvv(String cvv) {
+    public void setCvv(int cvv) {
         this.cvv = cvv;
     }
 
@@ -84,5 +105,13 @@ public class SimulateTransactionDto {
 
     public void setDestinationAccountNumber(String destinationAccountNumber) {
         this.destinationAccountNumber = destinationAccountNumber;
+    }
+
+    public String getSourceAccountNumber() {
+        return sourceAccountNumber;
+    }
+
+    public void setSourceAccountNumber(String sourceAccountNumber) {
+        this.sourceAccountNumber = sourceAccountNumber;
     }
 }

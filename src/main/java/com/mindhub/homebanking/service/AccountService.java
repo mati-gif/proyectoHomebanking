@@ -25,4 +25,7 @@ public interface AccountService {
     Boolean existsAccountByNumber(String number);
     String generateUniqueAccountNumber();
     Account getAccountByNumber(String number);
+
+
+    Account getAccountByClientId(Long id);
 }

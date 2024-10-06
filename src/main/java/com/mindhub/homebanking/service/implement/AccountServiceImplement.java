@@ -142,5 +142,9 @@ public class AccountServiceImplement implements AccountService {
         return accountNumber;
     }
 
+    @Override
+    public Account getAccountByClientId(Long id) {
+        return accountRepository.findByClientId(id);
+    }
 
 }

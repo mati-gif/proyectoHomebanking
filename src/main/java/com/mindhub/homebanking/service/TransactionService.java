@@ -1,6 +1,7 @@
 package com.mindhub.homebanking.service;
 
 import com.mindhub.homebanking.dtos.CreateTransactionDto;
+import com.mindhub.homebanking.dtos.SimulateTransactionDto;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
@@ -18,4 +19,7 @@ public interface TransactionService {
   void validateAmountAvaliable(Account sourceAccount, Double amount );
    void executeTransaction(CreateTransactionDto createTransactionDto, Account sourceAccount,Account destinationAccount);
    Transaction saveTransaction(Transaction transaction);
+
+
+    void createTransactionWithCard(SimulateTransactionDto simulateTransactionDto);
 }
