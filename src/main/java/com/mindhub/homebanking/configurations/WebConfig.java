@@ -45,7 +45,7 @@ public class WebConfig {
                         authorize
                                 .requestMatchers("/api/current","/api/accounts/clients/current/accounts","/api/cards/clients/current/cards","/api/transactions","/api/loans","/api/cards/clients/current/availables").hasRole("CLIENT")
                                 .requestMatchers("/api/clients/","/api/clients/**","/api/accounts/**","/api/accounts/all","/api/loans").hasRole("ADMIN")
-                                .requestMatchers("/api/auth/login","/api/auth/register", "/h2-console/**").permitAll()
+                                .requestMatchers("/api/auth/login","/api/auth/register", "/h2-console/**","/api/external/payment").permitAll()
                                 .anyRequest().authenticated()
                         )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

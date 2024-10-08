@@ -1,11 +1,9 @@
 package com.mindhub.homebanking.service;
 
 import com.mindhub.homebanking.dtos.CreateTransactionDto;
-import com.mindhub.homebanking.dtos.SimulateTransactionDto;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
 public interface TransactionService {
@@ -21,5 +19,5 @@ public interface TransactionService {
    Transaction saveTransaction(Transaction transaction);
 
 
-    void createTransactionWithCard(SimulateTransactionDto simulateTransactionDto);
+
 }

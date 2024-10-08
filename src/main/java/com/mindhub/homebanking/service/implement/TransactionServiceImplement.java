@@ -1,26 +1,17 @@
 package com.mindhub.homebanking.service.implement;
 
 import com.mindhub.homebanking.dtos.CreateTransactionDto;
-import com.mindhub.homebanking.dtos.SimulateTransactionDto;
 import com.mindhub.homebanking.models.*;
-import com.mindhub.homebanking.repositories.AccountRepository;
-import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
 import com.mindhub.homebanking.service.AccountService;
 import com.mindhub.homebanking.service.CardService;
 import com.mindhub.homebanking.service.ClientService;
 import com.mindhub.homebanking.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.login.AccountNotFoundException;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 @Service
 public class TransactionServiceImplement implements TransactionService {
@@ -180,70 +171,6 @@ public class TransactionServiceImplement implements TransactionService {
     }
 
 
-    @Override
-    public void createTransactionWithCard(SimulateTransactionDto simulateTransactionDto) {
-        // Buscar la tarjeta por su número
-        Card card = cardService.getCardByNumber(simulateTransactionDto.getCardNumber());
 
-        // Validar que la tarjeta exista
-        if (card == null) {
-            throw new IllegalArgumentException("Card not found");
-        }
-
-        // Validar el CVV
-        if (card.getCvv() != simulateTransactionDto.getCvv()) {
-            throw new IllegalArgumentException("Invalid CVV");
-        }
-
-        // Verificar que la tarjeta sea de tipo débito
-        if (!card.getType().equals(CardType.DEBIT)) {
-            throw new IllegalArgumentException("Only debit cards are accepted");
-        }
-
-        // Obtener la cuenta asociada a la tarjeta
-        Account sourceAccount = accountService.getAccountByClientId(card.getClient().getId());
-
-        // Validar que la cuenta tenga suficiente saldo
-        if (sourceAccount.getBalance() < simulateTransactionDto.getAmount()) {
-            throw new IllegalArgumentException("Insufficient funds in source account");
-        }
-
-        // Obtener la cuenta de destino
-        Account destinationAccount = accountService.getAccountByNumber(simulateTransactionDto.getDestinationAccountNumber());
-        if (destinationAccount == null) {
-            throw new IllegalArgumentException("Destination account not found");
-        }
-
-        // Crear las transacciones (débito y crédito)
-        Transaction debitTransaction = new Transaction(
-                -simulateTransactionDto.getAmount(),
-                "Payment to account " + simulateTransactionDto.getDestinationAccountNumber(),
-                LocalDateTime.now(),
-                TransactionType.DEBIT
-        );
-
-        Transaction creditTransaction = new Transaction(
-                simulateTransactionDto.getAmount(),
-                "Payment from card " + simulateTransactionDto.getCardNumber(),
-                LocalDateTime.now(),
-                TransactionType.CREDIT
-        );
-
-        // Asociar las transacciones a las cuentas
-        sourceAccount.addTransactions(debitTransaction);
-        destinationAccount.addTransactions(creditTransaction);
-
-        // Guardar las transacciones en la base de datos
-        saveTransaction(debitTransaction);
-        saveTransaction(creditTransaction);
-
-        // Actualizar los saldos de las cuentas
-        sourceAccount.setBalance(sourceAccount.getBalance() - simulateTransactionDto.getAmount());
-        destinationAccount.setBalance(destinationAccount.getBalance() + simulateTransactionDto.getAmount());
-
-        // Guardar las cuentas actualizadas
-        accountService.saveAccount(sourceAccount);
-        accountService.saveAccount(destinationAccount);
-    }
 }
 
