@@ -142,13 +142,16 @@ clientLoanRepository.save(clientLoan2);
 
 Card card1 = new Card(CardType.DEBIT,ColorType.GOLD,fromDate,thruDate);
 Card card2 = new Card(CardType.CREDIT,ColorType.PLATINUM,fromDate,thruDate);
+Card card5 = new Card(CardType.DEBIT,ColorType.SILVER,"3435-6736-2470-2857",123,fromDate,thruDate);
 
 
 client1.addCards(card1);
 client1.addCards(card2);
+client1.addCards2(card5);
 
 cardRepository.save(card1);
 cardRepository.save(card2);
+cardRepository.save(card5);
 
 
 

@@ -188,6 +188,11 @@ public class Client {
     //Resumen:
     //Este método recorre una lista (clientePrestamos), extrae un objeto Prestamo de cada elemento en esa lista usando getPrestamo(), y luego almacena todos estos objetos Prestamo en una nueva lista que es devuelta como resultado.
 
+    public void addCards2(Card card){
+
+        card.setClient(this);
+        cards.add(card);
+    }
     public List<Loan> getLoans(){
         return clientLoans.stream().map(c -> c.getLoan()).collect(Collectors.toList());
     }

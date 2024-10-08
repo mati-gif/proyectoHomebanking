@@ -32,6 +32,16 @@ public class Card {
         this.thruDate = thruDate;
     }
 
+    public Card( CardType type, ColorType color, String number, int cvv, LocalDate fromDate, LocalDate thruDate) {
+
+        this.type = type;
+        this.color = color;
+        this.number = number;
+        this.cvv = cvv;
+        this.fromDate = fromDate;
+        this.thruDate = thruDate;
+    }
+
     public Card() {
     }
 
