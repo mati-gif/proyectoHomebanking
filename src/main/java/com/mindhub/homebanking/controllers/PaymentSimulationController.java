@@ -70,27 +70,27 @@ public class PaymentSimulationController {
 
             );
 
-            Transaction creditTransaction = new Transaction(
-                    paymentDto.maxAmount(),
-            "Payment from account" + paymentDto.accountNumber(),
-                    LocalDateTime.now(),
-                    TransactionType.CREDIT
-            );
+//            Transaction creditTransaction = new Transaction(
+//                    paymentDto.maxAmount(),
+//            "Payment from account" + paymentDto.accountNumber(),
+//                    LocalDateTime.now(),
+//                    TransactionType.CREDIT
+//            );
 
 
             newAccount.addTransactions(debitTransaction);
-            restauranteAccount.addTransactions(creditTransaction);
+//            restauranteAccount.addTransactions(creditTransaction);
 
 
             transactionService.saveTransaction(debitTransaction);
-            transactionService.saveTransaction(creditTransaction);
+//            transactionService.saveTransaction(creditTransaction);
 
             newAccount.setBalance(newAccount.getBalance() - paymentDto.maxAmount());
-            restauranteAccount.setBalance(restauranteAccount.getBalance() + paymentDto.maxAmount());
+//            restauranteAccount.setBalance(restauranteAccount.getBalance() + paymentDto.maxAmount());
 
 
             accountService.saveAccount(newAccount);
-            accountService.saveAccount(restauranteAccount);
+//            accountService.saveAccount(restauranteAccount);
 
 
             return new ResponseEntity<>("Transaction processed successfully", HttpStatus.OK);
