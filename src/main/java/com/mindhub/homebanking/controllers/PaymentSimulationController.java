@@ -50,47 +50,52 @@ public class PaymentSimulationController {
             }
             Client client  = clientCard.getClient();
 
-            Account newAccount = client.getAccounts().stream()
+            Account sourceAccount = client.getAccounts().stream()
                     .filter(account -> account.getBalance() >= paymentDto.maxAmount()).findFirst().orElse(null);
 
-            if(newAccount == null){
+            if(sourceAccount == null){
                 return new ResponseEntity<>("Not enough balance", HttpStatus.FORBIDDEN);
             }
 
-            Account restauranteAccount =  accountService.getAccountByNumber(paymentDto.accountNumber());
+            // Buscar la cuenta destino (cuenta del restaurante) usando el accountNumber del PaymentDto
+            Account destinationAccount = accountService.getAccountByNumber(paymentDto.accountNumber());
 
+            if (destinationAccount == null) {
+                return new ResponseEntity<>("Destination account not found", HttpStatus.BAD_REQUEST);
+            }
 
+            // Crear transacción de débito en la cuenta de origen (cliente)
             Transaction debitTransaction = new Transaction(
-
-                    - paymentDto.maxAmount(),
-                     "Payment to account" + paymentDto.accountNumber(),
+                    -paymentDto.maxAmount(), // Monto negativo
+                    "Payment to account " + paymentDto.accountNumber(),
                     LocalDateTime.now(),
                     TransactionType.DEBIT
-
-
             );
 
-//            Transaction creditTransaction = new Transaction(
-//                    paymentDto.maxAmount(),
-//            "Payment from account" + paymentDto.accountNumber(),
-//                    LocalDateTime.now(),
-//                    TransactionType.CREDIT
-//            );
+            // Crear transacción de crédito en la cuenta destino (restaurante)
+            Transaction creditTransaction = new Transaction(
+                    paymentDto.maxAmount(), // Monto positivo
+                    "Payment from account " + paymentDto.cardNumber(),
+                    LocalDateTime.now(),
+                    TransactionType.CREDIT
+            );
 
+            // Asociar las transacciones a las cuentas correctas
+            sourceAccount.addTransactions(debitTransaction); // Debitar en cuenta de origen
+            destinationAccount.addTransactions(creditTransaction); // Acreditar en cuenta destino
 
-            newAccount.addTransactions(debitTransaction);
-//            restauranteAccount.addTransactions(creditTransaction);
-
-
+            // Guardar las transacciones en la base de datos
             transactionService.saveTransaction(debitTransaction);
-//            transactionService.saveTransaction(creditTransaction);
+            transactionService.saveTransaction(creditTransaction);
 
-            newAccount.setBalance(newAccount.getBalance() - paymentDto.maxAmount());
-//            restauranteAccount.setBalance(restauranteAccount.getBalance() + paymentDto.maxAmount());
+            // Actualizar los balances de las cuentas
+            sourceAccount.setBalance(sourceAccount.getBalance() - paymentDto.maxAmount()); // Restar en origen
+            destinationAccount.setBalance(destinationAccount.getBalance() + paymentDto.maxAmount()); // Sumar en destino
 
+            // Guardar las cuentas actualizadas
+            accountService.saveAccount(sourceAccount); // Guardar la cuenta de origen
+            accountService.saveAccount(destinationAccount); // Guardar la cuenta de destino
 
-            accountService.saveAccount(newAccount);
-//            accountService.saveAccount(restauranteAccount);
 
 
             return new ResponseEntity<>("Transaction processed successfully", HttpStatus.OK);
